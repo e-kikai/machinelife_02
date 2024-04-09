@@ -1,0 +1,7 @@
+- set_meta_tags title: "新規ユーザ登録"
+- breadcrumb :system_users_new
+
+h1 新規ユーザ登録
+
+= form_with model: @user_form, url: "/system/users", method: :post do |f|
+  = render "form", f:

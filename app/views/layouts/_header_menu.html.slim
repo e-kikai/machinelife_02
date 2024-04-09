@@ -1,0 +1,24 @@
+.header_menu.row.gx-0
+  .col.top = link_to "TOP", "/"
+  .col
+    = link_to "新着情報", "#", data: { bs_toggle: :dropdown }, aria_expanded: false
+    ul.dropdown-menu.border-top.p-0.rounded-0 data-bs-theme="dark"
+      li = link_to "新着中古機械一覧", "/news/machines", class: "dropdown-item border-bottom border-top"
+      li = link_to "新着中古工具一覧", "/news/tools", class: "dropdown-item border-bottom"
+
+  .col = link_to "会社一覧", "/companies"
+  .col
+    = link_to("マシンライフについて", "/helps/about", data: { bs_toggle: :dropdown }, aria_expanded: false)
+    ul.dropdown-menu.p-0.rounded-0 data-bs-theme="dark"
+      li = link_to "全機連とは", "/helps/zenkiren", class: "dropdown-item border-bottom border-top"
+      li = link_to "サイトマップ", "/helps/sitemap", class: "dropdown-item border-bottom"
+      li = link_to "会員区分について", "/helps/rank", class: "dropdown-item border-bottom"
+      li = link_to "事務局にお問い合わせ", "/contacts/new", class: "dropdown-item border-bottom"
+
+  .col = link_to "広告バナーのご案内", "/help/banner"
+  .col = link_to "電子カタログ", "/admin/catalogs"
+  .col
+    - if session[:user_id].present?
+      = link_to "会員メニュー", "/admin/"
+    - else
+      = link_to "会員ログイン", "/admin/login"

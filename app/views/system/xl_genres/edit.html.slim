@@ -1,0 +1,7 @@
+- set_meta_tags title: "大ジャンル変更"
+- breadcrumb :system_xl_genres_edit, @xl_genre
+
+h1 大ジャンル変更
+
+= form_with model: @xl_genre_form, url: "/system/xl_genres/#{@xl_genre.id}", method: :patch do |f|
+  = render "form", f:

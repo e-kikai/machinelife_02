@@ -1,0 +1,34 @@
+= turbo_frame_tag :catalog_list do
+  - if params[:model].blank?
+    .alert.alert-danger.mt-2.mx-auto.col-10
+      . #{mi(:info)} 型式を入力してください。
+  - if @catalogs.blank?
+    .alert.alert-danger.mt-2.mx-auto.col-10
+      . #{mi(:info)} この型式のカタログはありませんでした。
+  - else
+    table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+      thead
+        tr
+          th scope="col" style="width: 140px;" メーカー・ジャンル
+          th scope="col" style="width: 120px;"
+          th scope="col" 型式
+          th scope="col" style="width: 140px;" 作成年・カタログNo
+
+      tbody
+        - @catalogs.each do |ca|
+            tr
+              td.text-break
+                = ca.maker
+                - ca.genres.each do |ge|
+                  . = ge.genre
+                = button_tag type: :button, class: "btn btn-primary", value: ca.id, onclick: "catalog_id.value = this.value;", 'data-bs-dismiss': "modal" do
+                  . #{mi(:done)} 選択
+
+              td.text-center
+                . = link_to "/catalogs/#{ca.id}.pdf", 'data-turbo-frame': :_top, target: :_blank, rel: :noopener do
+                  = image_tag ca.thumbnail_media.url, alt: ca.uid, style: "max-width:120px;max-height:120px;"
+
+              td.text-break = ca.models
+              td.text-break
+                . = ca.year
+                . = ca.catalog_no

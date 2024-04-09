@@ -1,0 +1,186 @@
+- set_meta_tags title: @machine.full_name
+- set_meta_tags description: "#{@machine.full_name}の中古機械詳細情報です。#{@machine.company.addr1}・#{@machine.company.company_remove_kabu}の中古機械情報ならマシンライフ！"
+
+- breadcrumb :machine, @machine
+
+h1 #{@machine.full_name}
+
+.contents
+  .row.gx-2
+    - if @machine.deleted_at.blank?
+      .col-6.px-1
+        /** 画像表示カルーセル **/
+        #imagesCarousel.carousel.slide
+          .carousel-inner.ratio.ratio-4x3
+            .carousel-item.active
+              = image_tag @machine.top_image_url, alt: @machine.full_name, class: "d-block w-100 h-100 object-fit-contain"
+
+            - @machine.machine_images.each do |img|
+              .carousel-item
+                = image_tag img.image.url, alt: @machine.full_name, class: "d-block w-100 h-100 object-fit-contain"
+
+            - @machine.imgs_parsed.medias.each do |img|
+              .carousel-item
+                = image_tag img.url, alt: @machine.full_name, class: "d-block w-100 h-100 object-fit-contain"
+
+          button.carousel-control-prev type="button" data-bs-target="#imagesCarousel" data-bs-slide="prev"
+            | #{mi(:arrow_back_ios, "text-dark fs-1 fw-bolder")}
+            span.visually-hidden Previous
+
+          button.carousel-control-next type="button" data-bs-target="#imagesCarousel" data-bs-slide="next"
+            | #{mi(:arrow_forward_ios, "text-dark fs-1 fw-bolder")}
+            span.visually-hidden Next
+
+        /** カルーセルリスト **/
+        .row.my-2.gx-2
+          .col-1.p-1 style="width:20%;"
+            . data-bs-target="#imagesCarousel" data-bs-slide-to="0" class="active ratio ratio-1x1" aria-current="true"
+              = image_tag @machine.top_image_thumb, alt: @machine.full_name, class: "object-fit-cover"
+
+          - @machine.machine_images.each_with_index do |img, i|
+            .col.p-1 style="flex: 0 0 auto;width:20%;"
+              . data-bs-target="#imagesCarousel" data-bs-slide-to=(i + 1) class="active ratio ratio-1x1 " aria-current="true"
+                = image_tag img.image.thumb.url, alt: @machine.full_name, class: "object-fit-cover"
+
+          - @machine.imgs_parsed.medias.each_with_index do |img, i|
+            .col.p-1 style="flex: 0 0 auto;width:20%;"
+              . data-bs-target="#imagesCarousel" data-bs-slide-to=(i + 1) class="active ratio ratio-1x1 " aria-current="true"
+                = image_tag img.thumbnail, alt: @machine.full_name, class: "object-fit-cover"
+
+        /** youtube **/
+        - @machine.youtube_ids.each do |yt|
+            iframe.w-100 src="https://www.youtube.com/embed/#{yt}" style="aspect-ratio: 16/9;"
+
+        /** 問い合わせ  **/
+        h2 中古機械についてのお問い合せ
+        p.small お問い合せフォーム TEL FAXより掲載会社へお問い合せください。
+        .row
+          .col-6
+            = link_to "/contacts/new?m=#{@machine.id}", class: "btn btn-lg btn-warning" do
+              . #{mi(:forward_to_inbox)} 問い合わせ (無料)
+              .small お気軽に
+          .col-6
+            .text-danger.fs-4 TEL : #{@machine.company.tel}
+            .text-danger.fs-4 FAX : #{@machine.company.fax}
+
+      .col-6.px-1
+        dl.dl-spec.row.gx-0
+          dt.col-3 管理番号
+          dd.col-9 = @machine.no
+          dt.col-3 商品名
+          dd.col-9 = @machine.name
+          dt.col-3 メーカー
+          dd.col-9 = @machine.maker
+          dt.col-3 型式
+          dd.col-9 = @machine.model
+
+          / 能力
+          - if @machine.genre.capacity_label.present?
+            dt.col-3 = @machine.genre.capacity_label
+            dd.col-9
+              | #{ActiveSupport::NumberHelper.number_to_rounded(@machine.capacity, strip_insignificant_zeros: true)}#{@machine.genre.capacity_unit}
+
+          / その他能力
+          - @machine.others_hash.each_value do |other|
+            dt.col-3 #{other[:label]}
+            dd.col-9 #{other[:disp]}
+          dt.col-3 年式
+          dd.col-9 = @machine.myear
+
+        dl.dl-spec.row.gx-0
+          dt.col-3 仕様
+          dd.col-9 = simple_format @machine.spec
+          dt.col-3 付属品
+          dd.col-9 = simple_format @machine.accessory
+          dt.col-3 コメント
+          dd.col-9 = simple_format @machine.comment
+
+          dt.col-3 在庫場所
+          dd.col-9
+            .row.gx-0
+              .col-8
+                . #{@machine.addr}
+                - if @machine.location.present?
+                  . = "(#{@machine.location})"
+              .col-4.text-end
+                - if @machine.addr3.present?
+                  . = link_to "https://www.google.co.jp/maps/dir//#{@machine.addr}+#{@machine.company.company}/", rel: :noopener, target: :_blank, class: "btn btn-primary" do
+                    | #{mi(:map)} MAP
+
+        /** ラベル枠  **/
+        .gx-2 = render partial: "label", locals: { machine: @machine, cls: "" }
+
+        h2 掲載会社情報
+        dl.dl-spec.row.gx-0
+          dt.col-3 会社名
+          dd.col-9 = link_to @machine.company.company, "/companies/#{@machine.company_id}"
+          dt.col-3 担当者
+          dd.col-9 = @machine.company.officer
+          dt.col-3 営業時間
+          dd.col-9 = @machine.company.infos_parsed.to_h[:opening]
+          dt.col-3 定休日
+          dd.col-9 = @machine.company.infos_parsed.to_h[:holiday]
+          dt.col-3 古物免許
+          dd.col-9 = @machine.company.infos_parsed.to_h[:license]
+          dt.col-3 所属団体
+          dd.col-9
+            . = @machine.company&.parent&.groupname
+            . = @machine.company.group.groupname
+
+    - else
+      .col-8.m-auto
+        .alert.alert-danger
+          .mb-2 #{mi(:warning)} この機械は売却されました。
+          . お手数ですが、再度マシンライフでお探しの機械を検索して下さい。
+        .my-4 = link_to "/" do
+          | #{mi(:home)} 中古機械情報 マシンライフ トップページへ
+
+    / = @sames.to_sql
+    - if @sames.present?
+      .
+        h2 この機械と同じ機械はこちら
+        /** 同じ機械カルーセル  **/
+        #samesCarousel.carousel.slide
+          .row
+            .carousel-inner style="width:88%;margin:auto;"
+              - @sames.each_slice(5).with_index do |mas, i|
+                .carousel-item class=(:active if i.zero?)
+                  .row.gx-2
+                    - mas.each do |ma|
+                      .col-1.p-1 style="width:20%;"
+                        = render partial: "card", locals: { machine: ma, titles: [ma.myear, ma.addr1, ma.company.company_remove_kabu] }
+
+            button.carousel-control-prev type="button" data-bs-target="#samesCarousel" data-bs-slide="prev" style="width:6%;"
+              | #{mi(:arrow_back_ios, "text-dark fs-1 fw-bolder")}
+
+            button.carousel-control-next type="button" data-bs-target="#samesCarousel" data-bs-slide="next" style="width:6%;"
+              | #{mi(:arrow_forward_ios, "text-dark fs-1 fw-bolder")}
+
+          .carousel-indicators
+              - @sames.each_slice(5).with_index do |_, i|
+                button[type="button" data-bs-target="#samesCarousel" data-bs-slide-to=i class=(:active if i.zero?)]
+
+    - if @nitamonos.present?
+      .my-2
+        h2 この機械と<span class="text-success">見た目が似ている</span>機械はこちら
+        /** 見た目が似ている機械カルーセル  **/
+        #nitamonosCarousel.carousel.slide
+          .row
+            .carousel-inner style="width:88%;margin:auto;"
+              - @nitamonos.each_slice(5).with_index do |mas, i|
+                .carousel-item class=(:active if i.zero?)
+                  .row.gx-2
+                    - mas.each do |ma|
+                      .col-1.p-1 style="width:20%;"
+                        = render partial: "card", locals: { machine: ma, titles: [ma.maker, ma.name, ma.model, ma.myear, ma.addr1] }
+
+            button.carousel-control-prev type="button" data-bs-target="#nitamonosCarousel" data-bs-slide="prev" style="width:6%;"
+              | #{mi(:arrow_back_ios, "text-dark fs-1 fw-bolder")}
+
+            button.carousel-control-next type="button" data-bs-target="#nitamonosCarousel" data-bs-slide="next" style="width:6%;"
+              | #{mi(:arrow_forward_ios, "text-dark fs-1 fw-bolder")}
+
+  .keywords
+    | #{@machine.hint} #{@machine.maker2} #{@machine.model2}
+    | #{@machine.maker_m.try(:maker_master)} #{@machine.maker_m.try(:maker_kana)}
+    | #{@machine.genre.genre} #{@machine.genre.genre_kana}

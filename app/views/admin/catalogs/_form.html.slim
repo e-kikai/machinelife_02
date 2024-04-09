@@ -1,0 +1,32 @@
+= turbo_frame_tag :catalog_request_form do
+  - if notice.present?
+    .modal-body
+      .alert.alert-success.mt-2.mx-auto.col-10
+        span #{mi(:info)} #{simple_format(notice, {}, wrapper_tag: :span)}
+    .modal-footer = button_tag 'data-bs-dismiss': "modal", class: "btn btn-secondary" do
+      . #{mi(:close)} 閉じる
+
+  - else
+    = form_with model: @catalog_request_form, url: "/admin/catalogs", method: :post do |f|
+      .modal-body
+        .my-2
+          |
+            お探しのカタログのメーカー、型式をご記入下さい。<br />
+            全機連事務局より、全機連会員に向けて調査依頼メールを配信いたします。
+
+        = render 'layouts/error_messages', obj: f.object
+
+        .row.mb-2
+          .col-3.text-end = f.label :maker, "メーカー", class: "col-form-label required"
+          .col-9 = f.text_field :maker, class: "form-control", required: true
+
+        .row.mb-2
+          .col-3.text-end = f.label :model, "型式", class: "col-form-label required"
+          .col-9 = f.text_field :model, class: "form-control", required: true
+
+        .row.mb-2
+          .col-3.text-end = f.label :comment, "コメント", class: "col-form-label"
+          .col-9 = f.text_area :comment, class: "form-control", style: "height:8rem;"
+
+      .modal-footer = button_tag class: "btn btn-success" do
+        . #{mi(:send)} リクエストを送信する

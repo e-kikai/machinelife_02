@@ -1,0 +1,32 @@
+- set_meta_tags title: "カタログリクエスト一覧"
+- breadcrumb :system_something, "カタログリクエスト一覧"
+
+h1 カタログリクエスト一覧
+
+. == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
+
+table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+  thead
+    tr.small
+      th scope="col" style="width: 40px;" ID
+      th scope="col" style="width: 200px;" 送信元
+      th scope="col" style="width: 100px;" メーカー
+      th scope="col" style="width: 100px;" 型式
+      th scope="col" コメント
+      th scope="col" style="width: 70px;" 送信数
+      th scope="col" style="width: 120px;" 登録日時
+
+  tbody
+    - @pcatalog_requests.each do |cr|
+      tr
+        td.text-end #{cr.request_id}
+        td
+          . #{cr.user&.user_name}
+          . #{cr.company&.company_remove_kabu}
+        td #{cr.maker}
+        td #{cr.model}
+        td #{simple_format(cr.comment)}
+        td.text-end #{cr.send_count.to_fs(:delimited)}
+        td.text-end #{l(cr.created_at, format: :short)}
+
+. == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1

@@ -1,0 +1,62 @@
+- set_meta_tags title: "会社一覧"
+- breadcrumb :system_companies
+
+h1 会員一覧
+
+.my-2
+  = link_to "/system/companies/new", class: "btn btn-primary" do
+    . #{mi(:person_add)} 新規登録
+  = link_to "/system/companies.csv", class: "btn btn-success ms-2" do
+    . #{mi(:file_download)} CSV出力
+
+- @groups.each do |gr|
+  - next if gr.companies.size.blank?
+
+  h2 #{gr.parent&.groupname} #{gr.groupname}
+
+  table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+    thead
+      tr.small
+        th scope="col" style="width: 30px;" ID
+        th scope="col" style="width: 85px;" 代理ログイン
+        th scope="col" style="width: 50px;" ランク
+        th scope="col" 会社名
+        th scope="col" style="width: 100px;" 代表者
+        th scope="col" style="width: 200px;" 住所
+        th scope="col" style="width: 100px;" TEL・FAX
+        th scope="col" style="width: 30px;"  link
+        th scope="col" style="width: 160px;" 代表メールアドレス
+        th scope="col" style="width: 60px;"  削除
+
+    tbody
+      - gr.companies.each do |co|
+        tr
+          td.text-end #{co.id}
+          td.text-center
+            = link_to("/system/companies/#{co.id}/login", class: "btn btn-info btn-sm",
+              data: { turbo_method: :post, turbo_confirm: "#{co.id} : #{co.company}\n\nこの会社に代理ログインします。よろしいですか？" }) do
+                . #{mi(:login)} 代理
+
+          - color = case co.rank.to_sym when :a_member; :danger when :b_member; :primary else :black end
+          td class="== text-#{color}" #{co.rank_ja}
+          td = link_to co.company, "/system/companies/#{co.id}/edit"
+          td #{co.representative}
+          td
+            . 〒 #{co.zip}
+            . #{co.addr}
+
+          td
+            . #{co.tel}
+            . #{co.fax}
+
+          td.text-center
+            - if co.website.present?
+              = link_to co.website, rel: :noopener, target: :_blank do
+                . #{mi(:exit_to_app)}
+
+          td.text-break = mail_to co.mail
+
+          td.text-center
+            = link_to("/system/companies/#{co.id}", class: "btn btn-outline-danger btn-xs",
+              data: { turbo_method: :delete, turbo_confirm: "#{co.id} : #{co.company}\n\nこの会社情報を削除します。よろしいですか？" }) do
+                . #{mi(:clear)} 削除

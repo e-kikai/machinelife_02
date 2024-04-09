@@ -1,0 +1,16 @@
+- set_meta_tags title: "電子カタログCSV一括登録・変更"
+- breadcrumb :system_something, "電子カタログCSV一括登録・変更"
+
+h1 電子カタログCSV一括登録・変更
+
+= form_tag({ action: :csv_upload }, multipart: true, method: :post, class: 'form-horizontal') do
+  .col-md-8.mx-auto.my-2
+    .row.mb-2
+      .col-4.text-end = label_tag :csv, "CSVファイル", class: "col-form-label required"
+      .col-8 = file_field_tag :file, class: "form-control", accept: ".csv", required: "required"
+
+    = button_tag(class: "btn btn-success d-block mx-auto my-4") do
+      .show-when-enabled #{mi(:upload_file)} アップロード
+      .show-when-disabled
+        span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+        | アップロード処理中

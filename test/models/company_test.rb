@@ -1,0 +1,45 @@
+# == Schema Information
+#
+# Table name: companies
+#
+#  id(会社ID)                              :integer          not null, primary key
+#  addr1(住所)                             :text
+#  addr2(住所(市区町村))                   :text
+#  addr3(住所(番地その他))                 :text
+#  bid_entries(入札会出品登録)             :text
+#  changed_at(変更日時)                    :datetime
+#  company(会社名)                         :text
+#  company_kana(会社名（カナ）)            :text
+#  contact_fax(問い合わせFAX)              :text
+#  contact_mail(問い合わせメールアドレス)  :text
+#  contact_tel(問い合わせTEL)              :text
+#  deleted_at(削除日時)                    :datetime
+#  ekikai_order                            :integer
+#  ekikai_subdomain                        :text
+#  fax(FAX)                                :text
+#  imgs(画像情報(JSON))                    :text
+#  infos(情報(JSON)	 項目は設定ファイルで) :text
+#  lat(緯度)                               :decimal(10, 7)
+#  lng(経度)                               :decimal(10, 7)
+#  mail(メールアドレス)                    :text
+#  officer(担当者名)                       :text
+#  offices(営業所情報(JSON))               :text
+#  rank                                    :integer          default(NULL)
+#  representative(代表者)                  :text
+#  tel(TEL)                                :text
+#  top_image                               :string
+#  top_img(トップ画像)                     :text
+#  website(ウェブサイトアドレス)           :text
+#  zip(郵便番号)                           :text
+#  created_at(登録日時)                    :datetime
+#  ekikai_id                               :integer
+#  group_id(団体ID)                        :integer
+#  parent_company_id                       :integer
+#
+require "test_helper"
+
+class CompanyTest < ActiveSupport::TestCase
+  # test "the truth" do
+  #   assert true
+  # end
+end

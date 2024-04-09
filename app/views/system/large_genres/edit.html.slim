@@ -1,0 +1,7 @@
+- set_meta_tags title: "中ジャンル変更"
+- breadcrumb :system_large_genres_edit, @large_genre
+
+h1 中ジャンル変更
+
+= form_with model: @large_genre_form, url: "/system/large_genres/#{@large_genre.id}", method: :patch do |f|
+  = render "form", f:

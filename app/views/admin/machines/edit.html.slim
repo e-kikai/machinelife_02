@@ -1,0 +1,7 @@
+- set_meta_tags title: "在庫機械情報変更"
+- breadcrumb :admin_machines_edit, @machine
+
+h1 在庫機械情報変更
+
+= form_with model: @machine_form, url: "/admin/machines/#{@machine.id}", method: :patch, data: { turbo: false } do |f|
+  = render "form", f:

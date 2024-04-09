@@ -1,0 +1,7 @@
+- set_meta_tags title: "ジャンル変更"
+- breadcrumb :system_genres_edit, @genre
+
+h1 ジャンル変更
+
+= form_with model: @genre_form, url: "/system/genres/#{@genre.id}", method: :patch do |f|
+  = render "form", f:

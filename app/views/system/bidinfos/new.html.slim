@@ -1,0 +1,7 @@
+- set_meta_tags title: "新規入札会バナー登録"
+- breadcrumb :system_bidinfos_new
+
+h1 新規入札会バナー登録
+
+= form_with model: @bidinfo_form, url: "/system/bidinfos", method: :post do |f|
+  = render "form", f:

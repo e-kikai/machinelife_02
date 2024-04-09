@@ -1,0 +1,70 @@
+- set_meta_tags title: "出品会社一覧"
+- set_meta_tags description: "マシンライフに出品している全機連メンバーの一覧です。"
+
+- breadcrumb :companies
+
+css:
+  html {
+    scroll-padding: 800px;
+  }
+
+h1 会社一覧
+
+nav#navbar.navbar.navbar-expand-lg.rounded.px-2.py-0.mb-1.border.border-success
+  .navbar-brand.fs-6 50音順
+  ul.nav.nav-pills
+    - Company::KANA_INDEXES.each_with_index do |ka, i|
+      li.nav-item(data-turbolinks="false") = link_to "#{ka}行", "#kana_#{i}", class: "nav-link"
+
+.navbar-nav-scroll data-bs-spy="scroll" data-bs-target="#navbar" data-bs-smooth-scroll="true"  data-bs-root-margin="0 0 0"
+  = form_with(url: "/contacts/new", local: true, method: :get, html: { 'data-turbo-frame': :_top }) do |f|
+
+    - Company::KANA_INDEXES.each_with_index do |ka, i|
+      .
+        h2 id="kana_#{i}" #{ka}行
+
+        . = f.button class: "btn btn-warning btn-sm"
+          | #{mi(:mark_email_read)} まとめて問合せ
+
+        table.table.table-bordered.align-middle.table-hover.table-striped.small.mt-2
+          thead
+            tr
+              th scope="col" style="width: 30px;"
+              th scope="col" style="width: 90px;"
+              th scope="col" style="width: 180px;" 会社名
+              th scope="col" style="width: 180px;" 所属団体
+              th scope="col" 住所・TEL・FAX
+              th scope="col" style="width: 112px;" 在庫件数
+              th scope="col" style="width: 100px;" 問合せ
+
+          - @companies.each do |co|
+              - next if @counts_by_company[co.id].blank?
+              - next unless (ka...Company::KANA_INDEXES[i + 1]).cover?(co.company_kana[0])
+
+              tr
+                td.text-center
+                  = check_box_tag 'c[]', co.id, { class: "form-check-input", multiple: true, include_hidden: false }
+
+                td.p-1 = link_to "/companies/#{co.id}" do
+                  / = image_tag co.top_img_media.url, alt: co.company, class: "news_thumbnail"
+                  = image_tag co.top_image_url, alt: co.company, class: "news_thumbnail"
+
+                td = link_to co.company, "/companies/#{co.id}"
+                td
+                  . = co.parent&.groupname
+                  . = co.group.groupname
+                td
+                  . 〒 #{co.zip}
+                  . = co.addr
+                  . TEL : #{co.tel}
+                  . FAX : #{co.fax}
+                td.text-end
+                  .
+                    span.count_no = number_with_delimiter(@counts_by_company[co.id])
+                    | 件
+
+                  = link_to "/machines/company/#{co.id}" do
+                    | #{mi(:list)} 在庫一覧
+                td.text-center
+                  = link_to "/contacts/new?c=#{co.id}", class: "btn btn-warning btn-sm" do
+                    | #{mi(:forward_to_inbox)} 問合せ

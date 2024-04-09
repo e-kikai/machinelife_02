@@ -1,0 +1,69 @@
+- set_meta_tags title: "管理者ページ"
+- breadcrumb :system_root
+
+h1 マシンライフ 管理者ページ
+
+.row
+  .col-6
+    h2 会員情報
+    nav.nav.flex-column
+      = link_to "/system/companies", class: "nav-link" do
+        . #{mi(:business)} 会員会社一覧(変更・削除・代理ログイン)
+      / nav.nav.flex-column
+      /   = link_to "/system/companies.csv", class: "nav-link" do
+      /     . #{mi(:file_download)} CSV出力
+      = link_to "/system/companies/pdf", class: "nav-link" do
+        . #{mi(:picture_as_pdf)} 請求書PDF出力フォーム
+      = link_to "/system/users", class: "nav-link" do
+        . #{mi(:people)} ユーザ一覧(変更・削除)
+
+    h2 在庫情報
+    nav.nav.flex-column
+      = link_to "/system/machines/csv", class: "nav-link" do
+        . #{mi(:upload_file)} CSV一括登録(百貨店汎用)
+      = link_to "/system/xl_genres", class: "nav-link" do
+        . #{mi(:category)} ジャンル管理
+
+    h2 情報発信
+    nav.nav.flex-column
+      = link_to "/system/infos", class: "nav-link" do
+        . #{mi(:info)} 事務局からのお知らせ一覧
+      = link_to "/system/bidinfos", class: "nav-link" do
+        . #{mi(:label)} 入札会バナー一覧
+
+  .col-6
+    h2 電子カタログ
+    nav.nav.flex-column
+      = link_to "/system/catalogs/csv", class: "nav-link" do
+        . #{mi(:upload_file)} 電子カタログCSV一括登録・変更
+      = link_to "/system/catalog_requests", class: "nav-link" do
+        . #{mi(:schedule_send)} カタログリクエスト一覧
+
+    h2 ログ
+
+    ul.nav.flex-column
+      li.nav-item = link_to "/system/contacts", class: "nav-link" do
+        . #{mi(:mark_email_unread)} 問い合わせ一覧
+      li.nav-item = link_to("https://analytics.google.com/analytics/web/?hl=ja&pli=1#/p395460014/reports/intelligenthome",
+        class: "nav-link", target: :_blank, rel: :noopener) do
+          . #{mi(:auto_graph)} Google Analytics
+      li.nav-item = link_to("https://search.google.com/search-console?hl=ja&utm_source=wmx&utm_medium=deprecation-pane&utm_content=home&resource_id=https://www.zenkiren.net/",
+        class: "nav-link", target: :_blank, rel: :noopener) do
+          . #{mi(:query_stats)} Google Search Console
+
+      - if Rails.env.development?
+        li.nav-item = link_to("https://ap-northeast-1.console.aws.amazon.com/console/home?region=ap-northeast-1",
+          class: "nav-link", target: :_blank, rel: :noopener) do
+            . #{mi(:settings_system_daydream)} AWS
+
+        li.nav-item
+          = link_to("/system/letter_opener/", class: "nav-link", target: :_blank, rel: :noopener) do
+            . #{mi(:move_to_inbox)} letter opener
+
+    h2 会員情報
+
+    nav.nav.flex-column
+      = link_to "/", class: "nav-link" do
+        . #{mi(:home)} マシンライフ トップページへ
+      = link_to "/admin/logout", data: { turbo_method: :delete, turbo_confirm: "ログアウトしますか？" }, class: "nav-link" do
+        . #{mi(:logout)} ログアウト

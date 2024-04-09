@@ -1,0 +1,22 @@
+. class="#{cls}"
+  /-- 商談中 --/
+  - if machine.view_option == :negotiation
+    .btn.bg-danger.text-white.rounded-0.m-1 style="cursor:auto;" #{mi(:forum)} 商談中
+
+  /-- 試運転可 --/
+  - if machine.commission == 1
+    .btn.bg-success.text-white.rounded-0.m-1 style="cursor:auto;" #{mi(:precision_manufacturing)} 試運転可
+
+  /-- 動画 --/
+  - machine.youtube_ids.each do |yt|
+    = link_to "https://www.youtube.com/watch?v=#{yt}", rel: :noopener, target: :_blank, class: "btn btn-danger m-1" do
+      | #{mi(:movie)} 動画
+
+  /-- PDF --/
+  - machine.pdfs_parsed.medias.each do |pdf|
+    = link_to pdf.url, rel: :noopener, target: :_blank, class: "btn btn-secondary m-1" do
+      | #{mi(:picture_as_pdf)} PDF : #{pdf.name}
+  /-- 電子カタログ --/
+  - if machine.catalog_id
+    = link_to "/catalogs/#{machine.catalog_id}.pdf", rel: :noopener, target: :_blank, class: "btn btn-primary m-1" do
+      | #{mi(:menu_book)} 電子カタログ

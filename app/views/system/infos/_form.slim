@@ -1,0 +1,29 @@
+.row: .col-6.m-auto.my-4
+  = render 'layouts/error_messages', obj: f.object
+
+  .row.mb-2
+    .col-4.text-end お知らせID
+    .col-8 = f.object.id || "新規"
+
+  .row.mb-2
+    .col-4.text-end = f.label :info_date, "日付", class: 'col-form-label required'
+    .col-8 = f.date_field :info_date, class: "form-control", required: true
+
+  .row.mb-2
+    .col-4.text-end = f.label :target, "対象", class: "col-form-label required"
+    .col-8 = f.select :target, Info::SELECT_TARGETS, { include_blank: false }, { class: "form-select" }
+
+  .row.mb-2
+    .col-4.text-end = f.label :group_id, "対象団体", class: "col-form-label"
+    .col-8 = f.collection_select(:group_id, f.object.select_groups, :id, :groupname, { include_blank: "すべて" }, { class: 'form-select' })
+
+  .row.mb-2
+    .col-4.text-end = f.label :contents, "内容", class: 'col-form-label required'
+    .col-8 = f.text_area :contents, class: "form-control", style: "height:8rem;", required: true
+
+  = f.button(data: { turbo_confirm: "お知らせ情報をします。よろしいですか？" },
+    class: "btn btn-success d-block mx-auto my-4") do
+    .show-when-enabled #{mi(:save_alt)} お知らせ情報を保存
+    .show-when-disabled
+      span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+      | 保存処理中

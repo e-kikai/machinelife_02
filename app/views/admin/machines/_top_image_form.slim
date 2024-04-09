@@ -1,0 +1,24 @@
+javascript:
+  function preview_top_image() {
+    // var file = top_image_file.files[0];
+    // var fr = new FileReader();
+    // fr.onload = () => top_image_preview.src = fr.result;
+    // fr.readAsDataURL(file);
+
+    var url = URL.createObjectURL(top_image_file.files[0]);
+    top_image_preview.src = url;
+    top_image_url.href = url;
+  }
+
+/* ファイルインプット */
+= f.file_field :top_image, class: "form-control", id: "top_image_file", accept: 'image/*', onchange: "preview_top_image();"
+
+.form-text 登録できる画像ファイル形式はJPEGのみです。
+
+/* プレビュエリア */
+.row.mt-2
+  .col-auto = link_to f.object.top_image_url, class: :top_image_url, target: :_blank, rel: :noopener do
+    = image_tag f.object.top_image_url, alt: "", style: "width: 120px;", id: "top_image_preview"
+  .col-auto.form-check
+    = f.check_box :top_image_delete, { class: "form-check-input" }, true, false
+    = f.label :top_image_delete, "画像を削除する", class: "form-check-label"

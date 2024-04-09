@@ -1,0 +1,185 @@
+javascript:
+  function filterling_genres() {
+    genre_select.querySelectorAll('optgroup').forEach((e) => {e.style.display = 'none';});
+
+    var genres = genre_select.querySelector('optgroup[label="' + large_genre_select.value + '"]');
+
+    genres.querySelector('option').selected = true;
+    genres.style.display = 'block';
+
+    genre_select.dispatchEvent(new Event('change'));
+  }
+
+.row: .col-9.m-auto.my-4
+  = render 'layouts/error_messages', obj: f.object
+
+  .row.mb-2
+    .col-3.text-end = f.label :no, "管理番号", class: 'col-form-label'
+    .col-3 = f.text_field :no, class: "form-control"
+
+  .row.mb-2
+    .col-3.text-end = f.label :genre_id, "ジャンル", class: "col-form-label required"
+    .col-4 = grouped_collection_select("", :large_genre,
+      f.object.select_xl_genre_large_genres, :large_genres, :xl_genre, :large_genre, :large_genre,
+      { include_blank: false, selected: f.object.genre.large_genre.large_genre },
+      { class: 'form-select', id: :large_genre_select, onchange: "filterling_genres();" })
+    .col-auto: .form-control-plaintext »
+    .col-4 = f.grouped_collection_select(:genre_id,
+      f.object.select_large_genre_genres, :genres, :large_genre, :id, :genre,
+      { include_blank: false },
+      { class: 'form-select', id: :genre_select, onchange: "genre_specs.src = `/admin/machines/genre_specs?genre_id=${this.value}`;" })
+
+  .row.mb-2
+    .col-3.text-end = f.label :name, "機械名", class: 'col-form-label required'
+    .col-9 = f.text_field :name, class: "form-control", required: true
+
+  .row.mb-2
+    .col-3.text-end = f.label :maker, "メーカー", class: 'col-form-label'
+    .col-9 = f.text_field :maker, class: "form-control"
+
+  .row.mb-2
+    .col-3.text-end = f.label :model, "型式", class: 'col-form-label'
+    .col-9
+      = f.text_field :model, class: "form-control", id: :model_input
+      .row.mt-1
+        .col-auto: .form-control-plaintext  電子カタログ連携
+        .col-auto = button_tag(type: :button, class: "btn btn-primary", id: :catalog_search,
+          data: { bs_toggle: :modal, bs_target: "#catalog_modal" },
+          onclick: "catalog_list.src = `/admin/machines/catalog_search?model=${model_input.value}`;") do
+            . #{mi(:search)} カタログ検索
+        .col-auto = f.number_field :catalog_id, class: "form-control", id: :catalog_id, placeholder: "カタログID"
+
+  .row.mb-2
+    .col-3.text-end = f.label :year, "年式", class: "col-form-label"
+    .col-3 = f.select :year, f.object.select_years, { include_blank: "-" }, { class: "form-select" }
+
+  /* 能力枠 */
+  = turbo_frame_tag :genre_specs, src: "/admin/machines/genre_specs?id=#{f.object.id}&genre_id=#{f.object.genre_id}"
+
+  .row.mb-2
+    .col-3.text-end = f.label :spec, "仕様", class: "col-form-label"
+    .col-9 = f.text_area :spec, class: "form-control", style: "height:5rem;"
+
+  .row.mb-2
+    .col-3.text-end = f.label :accessory, "附属品", class: 'col-form-label'
+    .col-9 = f.text_field :accessory, class: "form-control"
+
+  .row.mb-2
+    .col-3.text-end = f.label :comment, "コメント", class: "col-form-label"
+    .col-9 = f.text_area :comment, class: "form-control", style: "height:5rem;"
+
+  .row.mb-2
+    .col-3.text-end = f.label :commission, "試運転", class: 'col-form-label'
+    .col-9: .form-control-plaintext
+      .form-check.form-check-inline
+        = f.radio_button :commission, 0, { class: "form-check-input" }
+        = f.label :commission, "不可", class: "form-check-label", value: 0
+      .form-check.form-check-inline
+        = f.radio_button :commission, 1, { class: "form-check-input" }
+        = f.label :commission, "可", class: "form-check-label", value: 1
+
+  .row.mb-2
+    .col-3.text-end = f.label :location, "在庫場所", class: 'col-form-label'
+    .col-9
+      = f.text_field :location, class: "form-control dropdown-toggle", 'data-bs-toggle' => "dropdown", id: :lc
+      ul.dropdown-menu
+        li = link_to("本社 (#{current_company.addr})", "javascript:void(0);", class: "dropdown-item",
+          onclick: "lc.value='本社';addr1.value='#{current_company.addr1}';addr2.value='#{current_company.addr2}';addr3.value='#{current_company.addr3}';")
+        - current_company.offices_parsed.datas.each do |office|
+          li = link_to("#{office[:name]} (#{office[:addr1]}#{office[:addr2]}#{office[:addr3]})", "javascript:void(0);", class: "dropdown-item",
+          onclick: "lc.value='#{office[:name]}';addr1.value='#{office[:addr1]}';addr2.value='#{office[:addr2]}';addr3.value='#{office[:addr3]}';")
+        li = link_to("現場 (地図には表示されません)", "javascript:void(0);", class: "dropdown-item",
+          onclick: "lc.value='現場';addr1.value='';addr2.value='';addr3.value='';")
+        li = link_to("その他 (地図に表示させる場合は、在庫場所・住所を入力してください)", "javascript:void(0);", class: "dropdown-item",
+          onclick: "lc.value='';addr1.value='';addr2.value='';addr3.value='';")
+
+      .row.mt-1
+        .col-3 = f.text_field :addr1, class: "form-control", placeholder: "都道府県", id: "addr1"
+        .col-4 = f.text_field :addr2, class: "form-control", placeholder: "市区町村", id: "addr2"
+        .col-5 = f.text_field :addr3, class: "form-control", placeholder: "番地その他", id: "addr3"
+
+  .row.mb-2
+    .col-3.text-end = f.label :location, class: 'col-form-label' do
+      . 金額 <span class="text-primary">(会員のみ公開)</span>
+    .col-4 = f.number_field :price, class: "form-control", placeholder: "金額(数値で入力)"
+    .col-4 = f.select :price_tax, f.object.select_price_taxes, { include_blank: false }, { class: "form-select" }
+
+  .row.mb-2
+    .col-3.text-end = f.label :banner_file, "TOP画像", class: 'col-form-label'
+    .col-9 = render "top_image_form", f:
+
+  /* images */
+  .row.mb-2
+    .col-3.text-end = f.label :banner_file, "画像 (複数可)", class: 'col-form-label'
+    .col-9
+      = render "images_form", f:, images: f.object.machine_images
+
+      .row.mt-2
+        - f.object.imgs_parsed.medias.each do |im|
+          .col-3
+            .form-check
+              = f.check_box :imgs_delete, { multiple: true, include_hidden: false, class: "form-check-input" }, im.file
+              = f.label :imgs_delete, "削除", class: "form-check-label", value: im.file
+            . = link_to im.url, target: :_blank, rel: :noopener do
+              = image_tag im.url, alt: "", class: "mw-100 mb-2"
+
+  /* PDF */
+  .row.mb-2
+    .col-3.text-end = f.label :banner_file, "PDF (複数可)", class: 'col-form-label'
+    .col-9
+      = render "pdfs_form", f:
+
+      #old_pdfs_area
+        - f.object.pdfs_parsed.medias.each do |pdf|
+          .row.mt-1.g-1
+            .col-2 = link_to pdf.url, target: :_blank, rel: :noopener do
+              . #{mi(:picture_as_pdf)} PDF
+            .col-5 = pdf.name
+            / .col-2
+            /   .form-check
+            /     = f.check_box :old_pdfs_delete, { multiple: true, include_hidden: false, class: "form-check-input" }, pdf.file
+            /     = f.label :old_pdfs_delete, "削除", class: "form-check-label", value: pdf.file
+
+  .row.mb-2
+    .col-3.text-end = f.label :name, "youtube ID", class: 'col-form-label'
+    .col-9
+      = f.text_field :youtube, class: "form-control", placeholder: "YouTube IDを入力してください"
+      .form-text 表示させる動画の「共有」ボタンで表示されるURLを入力してください。
+      .form-text 空白区切りで復数登録が可能です。
+      .form-text
+        | 動画のアップロードは予め
+        = link_to "https://www.youtube.com/", target: :_blank, rel: :noopener do
+          | #{mi(:exit_to_app)} YouTube
+        | で行なってください
+
+  .row.mb-2
+    .col-3.text-end = f.label :view_option, "表示オプション", class: 'col-form-label'
+    .col-9: .form-control-plaintext
+      .form-check.form-check-inline
+        = f.radio_button :view_option, :display, { class: "form-check-input" }
+        = f.label :view_option, "表示", class: "form-check-label", value: :display
+      .form-check.form-check-inline
+        = f.radio_button :view_option, :hide, { class: "form-check-input" }
+        = f.label :view_option, "非表示", class: "form-check-label", value: :hide
+      .form-check.form-check-inline
+        = f.radio_button :view_option, :negotiation, { class: "form-check-input" }
+        = f.label :view_option, "商談中", class: "form-check-label", value: :negotiation
+
+  = f.button(data: { turbo_confirm: "在庫機械情報をします。よろしいですか？" },
+    class: "btn btn-success d-block mx-auto my-4") do
+    .show-when-enabled #{mi(:save_alt)} 在庫機械情報を保存
+    .show-when-disabled
+      span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+      | 保存処理中
+
+/** カタログフォームモーダル **/
+.modal.fade#catalog_modal
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        | 電子カタログ連携
+        = button_tag "", type: :button, 'data-bs-dismiss': "modal", class: "btn-close", 'aria-label': "Close"
+      .modal-body = turbo_frame_tag :catalog_list do
+        . 検索中…
+      .modal-footer = button_tag type: :button, 'data-bs-dismiss': "modal", class: "btn btn-secondary" do
+        . #{mi(:close)} 閉じる

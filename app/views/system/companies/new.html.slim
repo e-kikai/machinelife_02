@@ -1,0 +1,7 @@
+- set_meta_tags title: "新規会社登録"
+- breadcrumb :system_companies_new
+
+h1 新規会社登録
+
+= form_with model: @company_form, url: "/system/companies", method: :post do |f|
+  = render "form", f:

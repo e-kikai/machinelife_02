@@ -1,0 +1,62 @@
+.row: .col-9.m-auto.my-4
+  = render 'layouts/error_messages', obj: f.object
+
+  .row.mb-2
+    .col-3.text-end 会社ID
+    .col-9 = f.object.id || "新規"
+
+  .row.mb-2
+    .col-3.text-end = f.label :company_name, "会社名", class: 'col-form-label required'
+    .col-9 = f.text_field :company_name, class: "form-control", required: true
+
+  .row.mb-2
+    .col-3.text-end = f.label :company_kana, "会社名(カナ)", class: 'col-form-label required'
+    .col-9 = f.text_field :company_kana, class: "form-control", required: true
+
+  .row.mb-2
+    .col-3.text-end = f.label :representative, "代表者名", class: 'col-form-label required'
+    .col-9 = f.text_field :representative, class: "form-control", required: true
+
+  .row.mb-2
+    .col-3.text-end = f.label :zip, "〒", class: 'col-form-label required'
+    .col-4 = f.text_field :zip, class: "form-control", required: true
+
+  .row.mb-2
+    .col-3.text-end = f.label :addr1, "住所", class: 'col-form-label required'
+    .col.row.gx-1.px-2
+      .col-3 = f.text_field :addr1, class: "form-control", required: true, placeholder: "都道府県"
+      .col-4 = f.text_field :addr2, class: "form-control", required: true, placeholder: "市区町村"
+      .col-5 = f.text_field :addr3, class: "form-control", required: true, placeholder: "番地その他"
+
+  .row.mb-2
+    .col-3.text-end = f.label :tel, "代表者TEL", class: 'col-form-label required'
+    .col-9 = f.text_field :tel, class: "form-control", required: true
+
+  .row.mb-2
+    .col-3.text-end = f.label :fax, "代表者FAX", class: 'col-form-label'
+    .col-9 = f.telephone_field :fax, class: "form-control"
+
+  .row.mb-2
+    .col-3.text-end = f.label :mail, class: "col-form-label"
+    .col-9 = f.email_field :mail, class: "form-control"
+
+  .row.mb-2
+    .col-3.text-end = f.label :website, class: "col-form-label"
+    .col-9 = f.url_field :website, class: "form-control"
+
+  .row.mb-2
+    .col-3.text-end = f.label :group_id, "対象団体", class: "col-form-label required"
+    .col-6 = f.collection_select(:group_id, f.object.select_groups, :id, :groupname,
+      { include_blank: false }, { class: 'form-select' })
+
+  .row.mb-2
+    = f.object.rank
+    .col-3.text-end = f.label :rank, "ランク", class: "col-form-label required"
+    .col-3 = f.select :rank, Company.ranks, { include_blank: false }, { class: "form-select" }
+
+  = f.button(data: { turbo_confirm: "会社情報をします。よろしいですか？" },
+    class: "btn btn-success d-block mx-auto my-4") do
+    .show-when-enabled #{mi(:save_alt)} 会社情報を保存
+    .show-when-disabled
+      span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+      | 保存処理中

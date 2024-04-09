@@ -1,0 +1,32 @@
+<%= @to.company %> 様
+
+マシンライフに売りたし買いたしの書きこみがありました。
+
+-------------------------------
+No. <%= @urikai.id %> [[<%= @urikai.goal_jp %>]]
+依頼主: <%= @urikai.company.company %>
+https://www.zenkiren.net/companies/<%= @urikai.company_id %>
+書きこみ日時 : <%= @urikai.created_at %>
+
+<%= @urikai.contents %>
+-------------------------------
+
+詳細情報はこちら
+http://www.zenkiren.net/admin/urikais/<%= @urikai.id %>
+
+この書きこみへのお問い合わせは、以下の問い合わせ先へお願いいたします。
+※ このメールへの返信ではお問い合わせできません。
+
+問い合わせTEL: <%= @urikai.tel %>
+問い合わせFAX: <%= @urikai.fax %>
+問い合わせメールアドレス: <%= @urikai.mail %>
+
+問い合わせフォーム:
+https://www.zenkiren.net/contacts/new/?c=<%= @urikai.company_id %>&mes=No.<%= @urikai.id %>[[<%= @urikai.goal_jp %>]]について問合せ
+
+
+マシンライフ｜全機連の中古機械情報サイト
+http://www.zenkiren.net/
+
+全日本機械業連合会
+http://www.zenkiren.org/

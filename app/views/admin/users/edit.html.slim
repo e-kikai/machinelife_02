@@ -1,0 +1,27 @@
+- set_meta_tags title: "パスワード変更"
+- breadcrumb :admin_something, "パスワード変更"
+
+h1 パスワード変更
+
+= form_with model: @password_form, url: "/admin/user/", method: :patch do |f|
+  .row: .col-9.m-auto.my-4
+    = render 'layouts/error_messages', obj: f.object
+
+    .row.mb-2
+      .col-3.text-end = f.label :current_password, "現在のパスワード", class: 'col-form-label required'
+      .col-9 = f.password_field :current_password, class: "form-control", required: true
+
+    .row.mb-2
+      .col-3.text-end = f.label :password, "新しいパスワード", class: 'col-form-label required'
+      .col-9 = f.password_field :password, class: "form-control", required: true
+
+    .row.mb-2
+      .col-3.text-end = f.label :password_confirmation, "パスワード確認", class: 'col-form-label required'
+      .col-9 = f.password_field :password_confirmation, class: "form-control", required: true
+
+    = f.button(data: { turbo_confirm: "パスワードを変更します。よろしいですか？" },
+      class: "btn btn-success d-block mx-auto my-4") do
+      .show-when-enabled #{mi(:password)} パスワードの変更を保存
+      .show-when-disabled
+        span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+        | 保存処理中

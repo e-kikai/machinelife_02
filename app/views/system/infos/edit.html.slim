@@ -1,0 +1,7 @@
+- set_meta_tags title: "お知らせ情報変更"
+- breadcrumb :system_infos_edit, @info
+
+h1 お知らせ情報変更
+
+= form_with model: @info_form, url: "/system/infos/#{@info.id}", method: :patch do |f|
+  = render "form", f:

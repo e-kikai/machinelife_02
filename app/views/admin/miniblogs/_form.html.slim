@@ -1,0 +1,24 @@
+= turbo_frame_tag :miniblog_form do
+  - if notice.present?
+    .modal-body
+      .alert.alert-success.mt-2.mx-auto.col-10
+        span #{mi(:info)} #{simple_format(notice, {}, wrapper_tag: :span)}
+    .modal-footer = button_tag onclick: "window.location.reload(true);", class: "btn btn-secondary" do
+      . #{mi(:refresh)} ページを再読み込みする
+
+  - else
+    = form_with model: @miniblog_form, url: "/admin/miniblogs", method: :post do |f|
+      .modal-body
+        .my-2
+          |
+            メッセージを書きこんで「送信する」をクリックしてください。<br />
+            書きこんだ内容はトップページに表示されます。
+
+        = render 'layouts/error_messages', obj: f.object
+
+        = f.hidden_field :target
+
+        .row.m-2 = f.text_area :contents, class: "form-control", style: "height:8rem;", required: true
+
+      .modal-footer = button_tag class: "btn btn-success" do
+        . #{mi(:create)} メッセージを書き込む

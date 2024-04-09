@@ -1,0 +1,62 @@
+javascript:
+  var pdfs_dt = new DataTransfer();
+
+  // PDFファイル格納
+  function stock_pdfs() {
+    var files = pdfs_file.files;
+
+    for(var i = 0; i < files.length; i++) {
+      pdfs_dt.items.add(files[i]);
+      pdf_make_preview(files[i]); // preview
+    }
+
+    pdfs_file.files = pdfs_dt.files;
+  }
+
+  // pdfs_preview
+  function pdf_make_preview(file) {
+    var url = URL.createObjectURL(file);
+    var pv = pdf_preview_mock.cloneNode(true);
+    pv.id = "";
+    pv.querySelector("a").href = url;
+    pv.querySelector("input[type=hidden]").value = file.name;
+    pv.querySelector("input[type=text]").value = file.name.replace(/\..*?$/g, "");
+    pv.querySelector("input[type=checkbox]").value = file.name;
+    pv.querySelector("input[type=checkbox]").id = file.name;
+    pv.querySelector("label").htmlFor = file.name;
+    pv.classList.remove('d-none');
+
+    pdf_preview_area.append(pv);
+  }
+
+/* ファイルインプット */
+= f.file_field(:pdfs, class: "form-control form-control-lg", id: "pdfs_file", multiple: true, accept: '	application/pdf', onchange: "stock_pdfs();")
+
+/* プレビュエリア */
+#pdf_preview_area
+
+/* プレビュのベース */
+#pdf_preview_mock.row.mt-1.g-1.d-none
+  .col-2: .form-control-plaintext = link_to "", target: :_blank, rel: :noopener do
+    . #{mi(:picture_as_pdf)} PDF
+  .col-5
+    = f.text_field :pdfs_name, class: "form-control", multiple: true, placeholder: "PDFタイトル"
+    = f.hidden_field :pdfs_filename, class: "form-control", multiple: true
+  .col-2: .form-control-plaintext
+    .form-check
+      = f.check_box :pdfs_delete, { multiple: true, include_hidden: false, class: "form-check-input" }, :dummy
+      = f.label :pdfs_delete, "削除", class: "form-check-label", value: :dummy
+
+/* 変更エリア */
+.pdfs_delete_area
+  - f.object.machine_pdfs.each do |pdf|
+    = f.fields_for "machine_pdfs[]", pdf do |pdf_f|
+      .row.mt-1.g-1
+        .col-2: .form-control-plaintext = link_to pdf.pdf.url, target: :_blank, rel: :noopener do
+          . #{mi(:picture_as_pdf)} PDF
+        .col-5
+          = pdf_f.text_field :name, class: "form-control", placeholder: "PDFタイトル"
+        .col-2: .form-control-plaintext
+          .form-check
+            = pdf_f.check_box :deleted_at, { class: "form-check-input" }, Time.current
+            = pdf_f.label :deleted_at, "削除", class: "form-check-label"

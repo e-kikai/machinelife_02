@@ -1,0 +1,57 @@
+.row: .col-8.m-auto.my-4
+  = render 'layouts/error_messages', obj: f.object
+
+  .row.mb-2
+    .col-4.text-end 入札会バナーID
+    .col-8 = f.object.id || "新規"
+
+  .row.mb-2
+    .col-4.text-end = f.label :bid_name, "入札会名", class: 'col-form-label required'
+    .col-8 = f.text_field :bid_name, class: "form-control", required: true
+
+  .row.mb-2
+    .col-4.text-end = f.label :uri, "リンクURL", class: 'col-form-label required'
+    .col-8 = f.url_field :uri, class: "form-control", required: true, placeholder: "http://www.～～～～.com/"
+
+  .row.mb-2
+    .col-4.text-end = f.label :organizer, "主催者名", class: 'col-form-label required'
+    .col-8 = f.text_field :organizer, class: "form-control", required: true
+
+  .row.mb-2
+    .col-4.text-end = f.label :place, "入札会場", class: 'col-form-label required'
+    .col-8 = f.text_area :place, class: "form-control", style: "height:8rem;"
+
+  .row.mb-2
+    .col-4.text-end = f.label :preview_start_date, "下見期間", class: 'col-form-label required'
+    .col-8
+      .row
+        .col-auto = f.date_field :preview_start_date, class: "form-control"
+        .col-auto: .form-control-plaintext 〜
+        .col-auto = f.date_field :preview_end_date, class: "form-control"
+
+  .row.mb-2
+    .col-4.text-end = f.label :bid_date, "入札日時", class: 'col-form-label required'
+    .col-8 = f.datetime_field :bid_date, class: "form-control"
+
+  .row.mb-2
+    .col-4.text-end = f.label :banner_file, "バナー画像", class: 'col-form-label'
+    .col-8
+      .form-text.mb-2 バナー画像がない場合、新着メールのみに表示されます。
+      - if f.object.banner_image.present?
+        .row.mb-2
+          .col-auto = image_tag f.object.banner_image.url, alt: f.object.bid_name, style: "width: 240px;"
+          .col-auto.form-check
+            = f.check_box :banner_image_delete, { class: "form-check-input" }, true, false
+            = f.label :banner_image_delete, "画像を削除する", class: "form-check-label"
+      - elsif f.object.banner_file_media.present?
+        .row.mb-2
+          .col-auto = image_tag f.object.banner_file_media.url, alt: f.object.bid_name, style: "width: 240px;"
+
+      = f.file_field :banner_image, class: "form-control", accept: 'image/*'
+
+  = f.button(data: { turbo_confirm: "入札会バナー情報をします。よろしいですか？" },
+    class: "btn btn-success d-block mx-auto my-4") do
+    .show-when-enabled #{mi(:save_alt)} 入札会バナー情報を保存
+    .show-when-disabled
+      span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+      | 保存処理中

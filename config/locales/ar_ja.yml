@@ -1,0 +1,20 @@
+ja:
+  activerecord:
+    models:
+      company: 会社
+      user: ユーザ
+      catalog: 電子カタログ
+      catalog_request: カタログリクエスト
+      machine: 在庫機械
+    attributes:
+      company:
+        company: 会社名
+        rank: ランク
+    enum:
+      company:
+        rank:
+          c_member: C会員
+          b_member: B会員
+          a_member: A会員
+          branch: 支店・営業所
+          special: 特別会員

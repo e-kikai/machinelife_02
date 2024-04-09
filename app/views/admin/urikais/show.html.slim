@@ -1,0 +1,39 @@
+- set_meta_tags title: "[#{@urikai.goal_jp}] No. #{@urikai.id} 詳細"
+- breadcrumb :admin_something, "[#{@urikai.goal_jp}] No. #{@urikai.id} 詳細"
+
+h1 <span class="#{@urikai.goal_class}">#{@urikai.goal_jp}</span> No. #{@urikai.id} 詳細
+
+.row
+  .col-8.mx-auto.my-2
+    dl.dl-spec.row.gx-0
+      dt.col-4 No.
+      dd.col-8 #{@urikai.id}
+      dt.col-4 依頼主
+      dd.col-8 = link_to @urikai.company.company, "/companies/#{@urikai.company_id}"
+      dt.col-4 書きこみ日時
+      dd.col-8 #{l @urikai.created_at}
+      dt.col-4 内容
+      dd.col-8 #{simple_format @urikai.contents}
+      dt.col-4 問い合わせTEL
+      dd.col-8 #{@urikai.tel}
+      dt.col-4 問い合わせFAX
+      dd.col-8 #{@urikai.fax}
+      dt.col-4 問い合わせメールアドレス
+      dd.col-8 = mail_to @urikai.mail
+      dt.col-4 問い合わせフォーム
+      dd.col-8
+        - if @urikai.end_date.blank?
+          = link_to "/contacts/new/?c=#{@urikai.company_id}&mes=No.#{@urikai.id}[[#{@urikai.goal_jp}]]について問合せ", class: "btn btn-warning" do
+            . #{mi(:forward_to_inbox)} この#{@urikai.goal_jp}について問い合わせ
+        - else
+          . この情報は解決済みです (#{l @urikai.end_date})
+
+.row
+  .col-8.mx-auto.my-2
+    - @urikai.urikai_images.each do |im|
+      . = link_to im.image.url, rel: :noopener, target: "_blank" do
+        = image_tag im.image.url, alt: @urikai.company.company, class: "mw-100 mb-2"
+
+    - @urikai.imgs_parsed.medias.each do |im|
+      . = link_to im.url, rel: :noopener, target: "_blank" do
+        = image_tag im.url, alt: @urikai.company.company, class: "d-block mw-100 mb-2 mx-auto"

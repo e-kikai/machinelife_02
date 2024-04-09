@@ -1,0 +1,111 @@
+- set_meta_tags title: @title
+- breadcrumb :something, @title
+
+h1 = @title
+
+.row
+  .col-9.m-auto = form_with model: @contact_form, url: "/contacts", method: :post, data: { turbo: false } do |f|
+
+    = render 'layouts/error_messages', obj: f.object
+
+    .row.mb-2
+      legend.col-4.text-end.col-form-label お問い合わせ先
+      .col-8: ol
+        - if @targets&.klass == Machine
+          - @targets.each do |ma|
+            li
+              = link_to ma.full_name, "/machines/#{ma.id}"
+              = " → "
+              = link_to ma.company.company, "/companies/#{ma.company_id}"
+
+              = hidden_field_tag "m[]", ma.id
+        - elsif @targets&.klass == Company
+          - @targets.each do |co|
+              li = link_to co.company, "/companies/#{co.id}"
+
+              = hidden_field_tag "c[]", co.id
+        - else
+          li = link_to "全機連事務局", "/zenkiren/"
+
+    .row.mb-2
+      .col-4.text-end = f.label :mail, class: "col-form-label" do
+        | メールアドレス <span class='text-danger'>(必須)</span>
+      .col-8#mail_div
+        = f.email_field :mail, class: "form-control", required: true
+
+        .input-group.mt-1
+          =  f.label :mail_check_1, "確認", class: "input-group-text"
+          =  f.text_field :mail_check_1, class: "form-control", required: true
+          =  f.label :mail_check_2, "@", class: "input-group-text"
+          =  f.text_field :mail_check_2, class: "form-control", required: true
+
+    .row.mb-2
+      .col-4.text-end = f.label :user_company, class: "col-form-label" do
+        | 会社名 <span class='text-danger'>(必須)</span>
+      .col-8
+        = f.text_field :user_company, class: "form-control", required: true
+        .form-text <span class="text-danger">※</span> 個人の場合は個人名を記入してください
+
+    .row.mb-2
+      .col-4.text-end = f.label :user_name, "担当者名", class: "col-form-label"
+      .col-8 = f.text_field :user_name, class: "form-control"
+
+    .row.mb-2
+      .col-4.text-end = f.label :tel, "TEL", class: "col-form-label"
+      .col-4 = f.telephone_field :tel, class: "form-control"
+
+    .row.mb-2
+      .col-4.text-end = f.label :addr1, "都道府県", class: "col-form-label"
+      .col-3 = f.select :addr1, State.selector_states, { include_blank: "▼ 選択 ▼" }, { class: "form-control" }
+
+    .row.mb-2
+      = f.label :other_message, class: "col-4 text-end col-form-label" do
+        | お問い合わせ内容 <span class='text-danger'>(必須)</span>
+      .col-8
+        - if @targets&.klass == Machine
+          - ContactForm::PRESETS.each do |pre|
+            .form-check
+              = f.check_box :s, { multiple: true, include_hidden: false, class: "form-check-input" }, pre
+              = f.label :s, pre, class: "form-check-label", value: pre
+
+          .form-text その他問い合わせ（下記に記入してください）
+        = f.text_area :other_message, class: "form-control", style: "height:8rem;"
+
+    .row.mb-2
+      legend.col-4.text-end.col-form-label 希望連絡方法
+      .col-8
+        - ContactForm::RETURN_TYPES.each do |typ|
+          .form-check
+            = f.check_box :r, { multiple: true, include_hidden: false, class: "form-check-input" }, typ
+            = f.label :r, typ, class: "form-check-label", value: typ
+        = f.label :fax, "FAX番号", class: "col-form-label"
+        = f.telephone_field :fax, class: "form-control", placeholder: "FAXで連絡を希望される場合"
+
+    .row.mb-2
+      .col-4
+      .col-8 = recaptcha_tags
+
+    .row.mb-2
+      legend.col-4.text-end.col-form-label マシンライフお知らせメール
+      .col-8.form-check
+        .form-switch
+          = f.check_box :mailuser_flag, { class: "form-check-input", checked: true }, true, false
+          = f.label :mailuser_flag, "マシンライフからのお知らせメールを受信する", class: "form-check-label"
+        .form-text マシンライフ内外の機械・工具業界のさまざまな情報をお送りいたします
+
+    h2 個人情報の取り扱いについて
+    p
+      |
+        マシンライフでは、皆様からお預かりした個人情報をお問合せ先の会員会社に提供するとともに、<br />
+        個人情報が特定できない形での統計データとして利用いたします。
+    p
+      |
+        必須項目に不備があった場合、機械業者からの連絡が受けられないことがあります。<br />
+        あらかじめご了承ください。
+
+    = f.button(data: { turbo_confirm: "お問い合わせメールを送信します。よろしいですか？" },
+      class: "btn btn-success d-block mx-auto my-4") do
+      span.show-when-enabled #{mi(:send)} 上記に同意の上、お問い合わせを送信
+      span.show-when-disabled
+        span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+        | 処理中

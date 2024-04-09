@@ -1,0 +1,13 @@
+- set_meta_tags title: @title
+/ - set_meta_tags description: @machine.company.addr
+- breadcrumb :something, @title
+
+h1 = @title
+
+. == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
+
+- @pnews.each_with_index do |ma, i|
+  .row.gx-0
+    .col class=(i.even? ? "bg-light" : "bg-white") = render "machines/news", machine: ma
+
+. == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1

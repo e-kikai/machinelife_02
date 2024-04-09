@@ -1,0 +1,29 @@
+※ このメールは、自動返信メールです。
+このメールに直接返信しないようお願いします。
+
+<%= @contact.user_name %> 様
+
+マシンライフのお問い合せフォームから、
+お問い合わせありがとうございました。
+
+お問い合わせ先に、お問い合わせメールを送信しましたので、
+回答をしばらくお待ちください。
+
+＜お問い合わせ先＞
+<%= @targets.join("\n") %>
+
+＜問い合わせ内容＞
+<%= @contact.message %>
+
+＜お客様情報＞
+お名前 : <%= @contact.user_name %>
+会社名 : <%= @contact.user_company %>
+都道府県 : <%= @contact.addr1 %>
+メールアドレス : <%= @contact.mail %>
+TEL : <%= @contact.tel %>
+FAX : <%= @contact.fax %>
+<%= @contact.return_time %>
+
+
+マシンライフ｜全機連の中古機械情報サイト
+http://www.zenkiren.net/

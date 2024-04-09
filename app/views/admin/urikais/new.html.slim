@@ -1,0 +1,69 @@
+- set_meta_tags title: "売りたし買いたし 書き込む"
+- breadcrumb :admin_something, "売りたし買いたし 書き込む"
+
+javascript:
+  document.addEventListener('DOMContentLoaded', () => {
+    let image_upload = document.getElementById('image_upload');
+
+    console.log(image_upload);
+    image_upload.addEventListener('change', (e) => {
+        const reader = new FileReader();
+
+        image_upload.files.forEach((file, i) => {
+          reader.readAsDataURL(file);
+
+          previewElement.src = reader.result;
+        });
+    })
+  });
+
+#test TEST
+h1 売りたし買いたし 書き込む
+
+= form_with model: @urikai_form, url: "/admin/urikais", method: :post do |f|
+  .row: .col-9.m-auto.my-4
+    = render 'layouts/error_messages', obj: f.object
+
+    .row.mb-2
+      .col-4.text-end No.
+      .col-8 = f.object.id || "新規"
+
+      .col-4.text-end 書き込み日時
+      .col-8 = l(Time.current)
+
+    .row.mb-2
+      .col-4.text-end = f.label :user_name, "売り買い", class: 'col-form-label required'
+      .col-8
+        .form-check.form-check-inline
+          = f.radio_button :goal, :cell, { class: "form-check-input" }
+          = f.label :goal, "売りたし", class: "form-check-label #{Urikai::GOALS_JP[:cell][1]}", value: :cell
+        .form-check.form-check-inline
+          = f.radio_button :goal, :buy, { class: "form-check-input" }
+          = f.label :goal, "買いたし", class: "form-check-label #{Urikai::GOALS_JP[:buy][1]}", value: :buy
+
+    .row.mb-2
+      .col-4.text-end = f.label :contents, "内容", class: 'col-form-label required'
+      .col-8 = f.text_area :contents, class: "form-control", style: "height:8rem;"
+
+    .row.mb-2
+      .col-4.text-end = f.label :tel, "問い合わせTEL", class: "col-form-label"
+      .col-4 = f.telephone_field :tel, class: "form-control"
+
+    .row.mb-2
+      .col-4.text-end = f.label :fax, "問い合わせFAX", class: "col-form-label"
+      .col-4 = f.telephone_field :fax, class: "form-control"
+
+    .row.mb-2
+      .col-4.text-end = f.label :mail, "問い合わせメールアドレス	", class: "col-form-label"
+      .col-4 = f.email_field :mail, class: "form-control"
+
+    .row.mb-2
+      .col-4.text-end = f.label :banner_file, "画像 (複数可)", class: 'col-form-label'
+      .col-8 = render "/admin/machines/images_form", f:, images: f.object.urikai_images
+
+    = f.button(data: { turbo_confirm: "売りたし書いたし書き込み・メール送信をします。よろしいですか？" },
+      class: "btn btn-success d-block mx-auto my-4") do
+      .show-when-enabled #{mi(:create)} 売りたし書いたしを書き込み・メール送信
+      .show-when-disabled
+        span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+        | 保存・メール送信処理中

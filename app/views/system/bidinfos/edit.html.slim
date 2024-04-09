@@ -1,0 +1,7 @@
+- set_meta_tags title: "入札会バナー変更"
+- breadcrumb :system_bidinfos_edit, @bidinfo
+
+h1 入札会バナー変更
+
+= form_with model: @bidinfo_form, url: "/system/bidinfos/#{@bidinfo.id}", method: :patch do |f|
+  = render "form", f:

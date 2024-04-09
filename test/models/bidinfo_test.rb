@@ -1,0 +1,32 @@
+# == Schema Information
+#
+# Table name: bidinfos
+#
+#  id(情報ID)                     :integer          not null, primary key
+#  banner_file(バナーファイル)    :text
+#  banner_image                   :string
+#  bid_date(入札日時)             :datetime
+#  bid_name(入札会名)             :text
+#  changed_at(変更日時)           :datetime
+#  comment(コメント)              :text
+#  deleted_at(削除日時)           :datetime
+#  organizer(主催者名)            :text
+#  place(開催場所)                :text
+#  preview_end_date(下見終了日)   :date
+#  preview_start_date(下見開始日) :date
+#  uri(リンク先)                  :text
+#  created_at(登録日時)           :datetime
+#
+# Indexes
+#
+#  bidinfos_ix1  (preview_start_date)
+#  bidinfos_ix2  (preview_end_date)
+#  bidinfos_ix3  (bid_date)
+#
+require "test_helper"
+
+class BidinfoTest < ActiveSupport::TestCase
+  # test "the truth" do
+  #   assert true
+  # end
+end

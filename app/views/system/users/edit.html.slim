@@ -1,0 +1,7 @@
+- set_meta_tags title: "ユーザ情報変更"
+- breadcrumb :system_users_edit, @user
+
+h1 ユーザ情報変更
+
+= form_with model: @user_form, url: "/system/users/#{@user.id}", method: :patch do |f|
+  = render "form", f:

@@ -1,0 +1,77 @@
+- set_meta_tags title: "電子カタログ"
+
+- breadcrumb :admin_catalogs
+
+h1 電子カタログ
+
+/** 書き込みボタン **/
+= button_tag class: "btn btn-primary position-fixed bottom-0 start-0 m-3", data: { bs_toggle: :modal, bs_target: "#miniblog_modal" } do
+  . #{mi(:create)} 書き込む
+
+/** フォームモーダル **/
+.modal.fade#miniblog_modal
+  .modal-dialog.modal-md
+    .modal-content style="background: rgba(255, 255, 144);"
+      = render "/admin/miniblogs/form", target: :catalog
+
+.row.mt-2
+  .col-8
+    .bg-danger.rounded-top.text-white.fw-bold.w-25.text-center 書きこみ
+    .border.border-danger.overflow-scroll style="height: 164px;"
+      - @miniblogs.each do |mb|
+        .border-bottom.mx-2.py-2
+          .
+            span.text-success.me-2.fw-bold = mb.user&.user_name
+            span.text-secondary.small = l(mb.created_at)
+          = simple_format(mb.contents)
+
+    h2.mt-3 型式から検索
+    = form_tag "/admin/catalogs/search", method: :get do
+      .input-group
+        = text_field_tag :mo, "", placeholder: "例 : 2SP-150H", class: "form-control form-control-sm", id: :k_mo, required: true
+        = button_tag type: :submit, class: "btn btn-primary btn-sm" do
+          | #{mi(:search)} 検索
+
+  - dir = "https://s3-ap-northeast-1.amazonaws.com/machinelife/catalog/public/media/banner/"
+  - ads = %w[02_mazak.png 03_okabe.png 04_yamazakig.png 05_kobayashi.png 06_semba.png 07_kusumoto.png 08_katae.png 09_horikawa.png 10_dainichi.png 11_takizawa.png 12_nomura.png 13_okamoto.png 14_yutaka.png 15_sanwa.png 16_deguchi.png 17_kawahara.png 18_masuda.png" 19_mekani.png 20_presshozen.png 21_hagiwara.png 22_shiba.png]
+
+  .col-4
+    #adsCarousel.carousel.slide.carousel-fade.border.border-primary data-bs-ride="carousel"
+      .carousel-inner
+        .carousel-item.active = image_tag "#{dir}01_okuma.png", class: "d-block w-100"
+        - ads.each do |ad|
+          .carousel-item = image_tag "#{dir}#{ad}", class: "d-block w-100"
+
+    . 現在のカタログ件数 <span class="count_no">#{number_with_delimiter(@catalog_count)}</span> 件
+    . 登録メーカー数 <span class="count_no">#{number_with_delimiter(@maker_counts.length)}</span> メーカー
+
+h2.mt-3 メーカーからさがす
+
+.row
+  - Company::KANA_INDEXES.each_with_index do |ka, i|
+    .col-3
+      .card.my-2
+        .card-header #{ka}行
+        .card-body.overflow-scroll style="height: 260px;"
+          - @maker_counts.each do |ma, count|
+              - next unless (ka...Company::KANA_INDEXES[i + 1]).cover?(ma[1][0])
+
+              . = link_to "#{ma[0]} (#{count})", "/admin/catalogs/search?ma=#{ma[0]}"
+
+  .col-3
+    .card.my-2
+      .card-header 英数字
+      .card-body.overflow-scroll style="height: 260px;"
+        - @maker_counts.each do |ma, count|
+            - next unless ma[1][0].match?(/^[a-zA-Z0-9]/)
+
+            . = link_to "#{ma[0]} (#{count})", "/admin/catalogs/search?ma=#{ma[0]}"
+
+  .col-3
+    .card.my-2
+      .card-header その他
+      .card-body.overflow-scroll style="height: 260px;"
+        - @maker_counts.each do |ma, count|
+            - next unless ma[1][0].match?(/^ン/)
+
+            . = link_to "#{ma[0]} (#{count})", "/admin/catalogs/search?ma=#{ma[0]}"

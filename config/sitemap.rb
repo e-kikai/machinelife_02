@@ -1,0 +1,46 @@
+# Set the host name for URL creation
+SitemapGenerator::Sitemap.default_host = "http://www.example.com"
+
+SitemapGenerator::Sitemap.create do
+  add '/', priority: 1.0, changefreq: 'daily'
+
+  ### 商品詳細 ###
+  machines = Machine.sales
+  machines.only_machines.pluck(:id).each do |id|
+    add "/products/#{id}", priority: 0.95, changefreq: 'daily'
+  end
+
+  Machine.sales.only_tools.pluck(:id).each do |id|
+    add "/products/#{id}", priority: 0.9, changefreq: 'daily'
+  end
+
+  ### 新着商品 ###
+  add "/news/machines", priority: 0.75, changefreq: 'daily'
+  add "/news/tools", priority: 0.7, changefreq: 'daily'
+
+
+  ### 大ジャンル ###
+  LargeGenre.where(xl_genre_id: XlGenre::MACHINE_IDS).pluck(:id).each do |id|
+    add "/products/large_genre/#{id}", priority: 0.75, changefreq: 'daily'
+  end
+
+  LargeGenre.where.not(xl_genre_id: XlGenre::MACHINE_IDS).pluck(:id).each do |id|
+    add "/products/large_genre/#{id}", priority: 0.7, changefreq: 'daily'
+  end
+
+  ### ジャンル ###
+  Genre.pluck(:id).each do |id|
+    add "/products/genre/#{id}", priority: 0.65, changefreq: 'daily'
+  end
+
+  ### メーカー ###
+  machines.where.not(maker2: "").group("COALESCE(makers.maker_master, machines.maker2)").count.each do |maker, count|
+    add "/products/maker/#{maker}", priority: 0.6, changefreq: 'daily'
+  end
+
+  ### 出品会社 ###
+  machines.group("company_id").count.each do |id, count|
+    add "/companies/#{id}", priority: 0.65, changefreq: 'daily'
+    add "/products/company/#{id}", priority: 0.65, changefreq: 'daily'
+  end
+end

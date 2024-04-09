@@ -1,0 +1,7 @@
+- set_meta_tags title: "新規在庫機械登録"
+- breadcrumb :admin_machines_new
+
+h1 新規在庫機械登録
+
+= form_with model: @machine_form, url: "/admin/machines", method: :post, data: { turbo: false } do |f|
+  = render "form", f:

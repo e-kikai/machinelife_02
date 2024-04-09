@@ -1,0 +1,33 @@
+- set_meta_tags title: "ジャンル一覧"
+- breadcrumb :system_genres, @large_genre
+
+h1 ジャンル一覧
+
+.row
+  .col-10.m-auto
+    .my-2
+      = link_to "/system/genres/new?large_genre_id=#{@large_genre.id}", class: "btn btn-primary" do
+        . #{mi(:add)} 新規登録
+
+    table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+      thead
+        tr.small
+          th scope="col" style="width: 40px;" ID
+          th scope="col" style="width: 200px;" ジャンル名
+          th scope="col" style="width: 200px;" ジャンル名(カナ)
+          th scope="col" style="width: 100px;" 能力
+          th scope="col" style="width: 100px;" 並び順
+          th scope="col" style="width: 60px;"  削除
+
+      tbody
+        - @genres.each do |ge|
+          tr
+            td.text-end #{ge.id}
+            td = link_to ge.genre, "/system/genres/#{ge.id}/edit"
+            td #{ge.genre_kana}
+            td #{ge.capacity_label} (#{ge.capacity_unit})
+            td.text-end #{ge.order_no.to_fs(:delimited)}
+            td.text-center
+              = link_to("/system/genres/#{ge.id}", class: "btn btn-outline-danger btn-xs",
+                data: { turbo_method: :delete, turbo_confirm: "#{ge.genre}\n\nこのジャンルを削除します。よろしいですか？" }) do
+                  . #{mi(:clear)} 削除

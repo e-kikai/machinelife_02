@@ -1,0 +1,92 @@
+- set_meta_tags title: "在庫機械一覧"
+- breadcrumb :admin_machines
+
+h1 在庫機械一覧
+
+/* 検索枠 */
+.row
+  .col-8.m-auto
+    .card.mb-2
+      .card-body.p-1
+        .card-title 検索
+
+        = form_with(url: "/admin/machines/", local: true, method: :get, html: { 'data-turbo-frame': :machine_list }) do |f|
+          .row.g-1
+            .col-4 = f.select :genre_ids, @filtering_genres, { include_blank: "▼ ジャンル ▼" }, { class: "form-select" }
+            .col-4 = f.select :makers, @filtering_makers, { include_blank: "▼ メーカー ▼" }, { class: "form-select" }
+            .col-4 = f.text_field :k, class: "form-control", placehodler: "キーワード検索"
+          .row.g-1.mt-1
+            .col-auto: .form-control-plaintext  登録日
+            .col-auto = f.date_field :start_date, class: "form-control"
+            .col-auto: .form-control-plaintext  〜
+            .col-auto = f.date_field :end_date, class: "form-control"
+            .col-auto = f.button class: "btn btn-primary" do
+              . #{mi(:search)} 検索
+            .col-auto.m-2: .form-control-plaintext = link_to "/admin/machines" do
+              . #{mi(:clear)} 条件リセット
+
+.row
+  .col-auto = link_to "/admin/machines/new", class: "btn btn-success" do
+    . #{mi(:add)} 新規在庫機械登録
+
+/* 検索結果 */
+= turbo_frame_tag :machine_list do
+  / . = @pmachines.to_sql
+
+  = form_with(url: "/admin/machines/delete_all", local: true, method: :delete, html: { 'data-turbo-frame': :_top }) do |f|
+    .row
+      .col-2
+        .small 検索結果 : #{number_with_delimiter @machines.count} 件
+
+      .col == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
+
+    table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+      thead
+        tr
+          th scope="col" style="width: 90px;" colspan=2
+            = f.button class: "btn btn-danger btn-sm"
+              | #{mi(:clear)} 削除
+          th scope="col" style="width: 30px;" 同期
+          th scope="col" style="width: 90px;" 管理番号
+          th scope="col" 機械名
+          th scope="col" style="width: 100px;" メーカー
+          th scope="col" style="width: 100px;" 型式
+          th scope="col" style="width: 80px;" 年式
+          th scope="col" style="width: 80px;" 在庫場所
+          th scope="col" style="width: 30px;" 試運
+          th scope="col" style="width: 30px;" 表示
+          th scope="col" style="width: 100px;" 登録日時
+          th scope="col" style="width: 30px;" 閲覧
+
+      tbody
+        - @pmachines.each do |ma|
+            tr
+              td.text-center
+                = check_box_tag 'm[]', ma.id, { class: "form-check-input", multiple: true, include_hidden: false }
+
+              td.p-0 = image_tag ma.top_image_thumb, alt: ma.full_name, class: "news_thumbnail", style: "width:60px;height:60px;"
+              td.text-center
+                - if ma.used_id.present?
+                  - if ma.changed_at.present?
+                    = "△"
+                  - else
+                    = "◯"
+              td.text-break = ma.no
+              td.text-break = link_to ma.name, "/admin/machines/#{ma.id}/edit", 'data-turbo-frame': :_top
+              td.text-break = ma.maker
+              td.text-break = ma.model
+              td.text-break = ma.myear
+              td.text-break = ma.location
+              td.text-center = "◯" if ma.commission == 1
+              td.text-center
+                - if ma.view_option == :negotiation
+                  = "商"
+                - elsif ma.view_option == :hide
+                  = "✕"
+              td.text-break = l(ma.created_at, format: :date)
+
+              td.text-break
+
+  .row
+    .col-2.small 検索結果 : #{number_with_delimiter @machines.count} 件
+    .col == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1

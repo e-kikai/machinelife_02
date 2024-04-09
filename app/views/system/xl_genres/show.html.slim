@@ -1,0 +1,33 @@
+- set_meta_tags title: "中ジャンル一覧"
+- breadcrumb :system_large_genres, @xl_genre
+
+h1 中ジャンル一覧
+
+.row
+  .col-10.m-auto
+    .my-2
+      = link_to "/system/large_genres/new?xl_genre_id=#{@xl_genre.id}", class: "btn btn-primary" do
+        . #{mi(:add)} 新規登録
+
+    table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+      thead
+        tr.small
+          th scope="col" style="width: 40px;" ID
+          th scope="col" style="width: 200px;" 中ジャンル名
+          th scope="col" style="width: 200px;" 中ジャンル名(カナ)
+          th scope="col" style="width: 100px;" ジャンル一覧
+          th scope="col" style="width: 100px;" 並び順
+          th scope="col" style="width: 60px;"  削除
+
+      tbody
+        - @large_genres.each do |lg|
+          tr
+            td.text-end #{lg.id}
+            td = link_to lg.large_genre, "/system/large_genres/#{lg.id}/edit"
+            td #{lg.large_genre_kana}
+            td = link_to "ジャンル一覧 >>", "/system/large_genres/#{lg.id}"
+            td.text-end #{lg.order_no.to_fs(:delimited)}
+            td.text-center
+              = link_to("/system/large_genres/#{lg.id}", class: "btn btn-outline-danger btn-xs",
+                data: { turbo_method: :delete, turbo_confirm: "#{lg.large_genre}\n\nこの中ジャンルを削除します。よろしいですか？" }) do
+                  . #{mi(:clear)} 削除

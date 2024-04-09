@@ -1,0 +1,21 @@
+- set_meta_tags title: "CSV一括登録(百貨店汎用)"
+- breadcrumb :system_something, "CSV一括登録(百貨店汎用)"
+
+h1 CSV一括登録(百貨店汎用)
+
+= form_tag({ action: :csv_upload }, multipart: true, method: :post, class: 'form-horizontal') do
+  .col-md-8.mx-auto.my-2
+    .row.mb-2
+      .col-4.text-end = label_tag :csv, "CSVファイル", class: "col-form-label required"
+      .col-8 = file_field_tag :file, class: "form-control", accept: ".csv", required: "required"
+
+    .row.mb-2
+      .col-4.text-end = label_tag :company_id, "会社名", class: "col-form-label required"
+      .col-8 = grouped_collection_select(nil, :company_id, @select_companies, :companies, :groupname, :id, :company_remove_kabu,
+        { include_blank: false }, { class: 'form-select' })
+
+    = button_tag(class: "btn btn-success d-block mx-auto my-4") do
+      .show-when-enabled #{mi(:upload_file)} アップロード
+      .show-when-disabled
+        span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+        | アップロード処理中

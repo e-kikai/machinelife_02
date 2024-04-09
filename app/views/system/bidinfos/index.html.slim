@@ -1,0 +1,43 @@
+- set_meta_tags title: "入札会バナー一覧"
+- breadcrumb :system_bidinfos
+
+h1 会員一覧
+
+.my-2
+  = link_to "/system/bidinfos/new", class: "btn btn-primary" do
+    . #{mi(:person_add)} 新規登録
+
+table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+  thead
+    tr.small
+      th scope="col" style="width: 30px;" ID
+      th scope="col" style="width: 124px;" 入札会バナー/リンク
+      th scope="col" style="width: 200px;" 入札会名
+      th scope="col" 主催者名
+      th scope="col" style="width: 200px;" 入札会場
+      th scope="col" style="width: 100px;" 下見期間
+      th scope="col" style="width: 100px;" 入札日時
+      th scope="col" style="width: 60px;"  削除
+
+  tbody
+    - @bidinfos.each do |bi|
+      tr
+        td.text-end #{bi.id}
+        td.text-center
+          = link_to bi.uri, target: :_blank, rel: :noopener do
+            - if bi.banner_image.present?
+              = image_tag bi.banner_image.url, alt: bi.bid_name, style: "width: 120px;"
+            - elsif bi.banner_file.present?
+              = image_tag bi.banner_file_media.url, alt: bi.bid_name, style: "width: 120px;"
+            - else
+              | バナー画像なし<br />(会員メール配信のみ)
+        td = link_to bi.bid_name, "/system/bidinfos/#{bi.id}/edit"
+        td #{bi.organizer}
+        td #{simple_format(bi.place, {}, wrapper_tag: :span)}
+        td #{l(bi.preview_start_date)} 〜 #{l(bi.preview_end_date)}
+        td #{l(bi.bid_date)}
+
+        td.text-center
+          = link_to("/system/bidinfos/#{bi.id}", class: "btn btn-outline-danger btn-xs",
+            data: { turbo_method: :delete, turbo_confirm: "#{bi.id} : #{bi.bid_name}\n\nこの入札会バナー情報を削除します。よろしいですか？" }) do
+              . #{mi(:clear)} 削除

@@ -1,0 +1,4 @@
+- if obj.errors.any?
+  .alert.alert-danger
+    - obj.errors.full_messages.each do |msg|
+      . #{mi(:warning)} #{simple_format(msg, {}, wrapper_tag: :span)}

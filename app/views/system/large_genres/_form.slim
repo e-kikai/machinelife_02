@@ -1,0 +1,29 @@
+.row: .col-6.m-auto.my-4
+  = render 'layouts/error_messages', obj: f.object
+
+  .row.mb-2
+    .col-4.text-end 中ジャンルID
+    .col-8 = f.object.id || "新規"
+
+  .row.mb-2
+    .col-4.text-end 大ジャンル
+    .col-8 = f.object.xl_genre.xl_genre
+
+  .row.mb-2
+    .col-4.text-end = f.label :large_genre_name, "中ジャンル名", class: 'col-form-label required'
+    .col-8 = f.text_field :large_genre_name, class: "form-control", required: true
+
+  .row.mb-2
+    .col-4.text-end = f.label :large_genre_kana, "中ジャンル名(カナ)", class: 'col-form-label'
+    .col-8 = f.text_field :large_genre_kana, class: "form-control"
+
+  .row.mb-2
+    .col-4.text-end = f.label :order_no, "並び順", class: 'col-form-label required'
+    .col-4 = f.number_field :order_no, class: "form-control text-end", required: true
+
+  = f.button(data: { turbo_confirm: "中ジャンル情報をします。よろしいですか？" },
+    class: "btn btn-success d-block mx-auto my-4") do
+    .show-when-enabled #{mi(:save_alt)} 中ジャンル情報を保存
+    .show-when-disabled
+      span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+      | 保存処理中

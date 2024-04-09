@@ -1,0 +1,91 @@
+doctype html
+html lang="ja"
+  head
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    = display_meta_tags(default_meta_tags)
+
+    = stylesheet_link_tag 'https://fonts.googleapis.com/icon?family=Material+Icons', media: 'all'
+    = stylesheet_link_tag "application.css", 'data-turbo-track' => "reload"
+
+    = javascript_importmap_tags
+
+    /-- Google tag --/
+    - if Rails.env.production?
+      script[async src="https://www.googletagmanager.com/gtag/js?id=G-9FCEEFBV1P"]
+      javascript:
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-9FCEEFBV1P');
+
+  body class="#{"full" if @header_full}"
+    /-- ヘッダ --/
+    header
+      - if @header_full
+        .row.my-1
+          .col-4.py-2 = link_to image_tag("header/logo_machinelife.png", alt: "マシンライフ"), "/"
+
+          .col-6.p-0.small
+            . 中古機械のスペシャリスト、全機連会員の中古機械在庫情報を掲載しています
+            .
+              | 登録会社数<span class="count_no">#{number_with_delimiter(@companies_count)}</span>社、
+              | <span class="count_no">#{number_with_delimiter(@machines_count)}</span>件の中古機械が登録されています
+
+            = form_tag("/machines", method: :get) do
+              .input-group
+                = text_field_tag :k, params[:k], placeholder: "キーワード検索 例 : 2SP-150H", class: "form-control form-control-sm", required: true
+                = button_tag type: :submit, class: "btn btn-primary btn-sm" do
+                    | #{mi(:search)} 検索
+
+          .col.text-end = image_tag "header/logo_zenkiren_02.png", alt: "全機連"
+
+      - else
+        .row.my-1
+          .col-4.py-0 = link_to image_tag("header/logo_machinelife_mini.png", alt: "マシンライフ"), "/"
+
+          .col-6.p-0
+            = form_tag("/machines", method: :get) do
+              .input-group
+                = text_field_tag :k, params[:k], placeholder: "キーワード検索 例 : 2SP-150H", class: "form-control", required: true
+                = button_tag type: :submit, class: "btn btn-primary btn-md" do
+                    | #{mi(:search)} 検索
+
+          .col.text-end
+            = button_tag type: :button, onclick: "window.print(); return false;", class: "btn btn-secondary" do
+              | #{mi(:print)} ページ印刷
+
+      = render "/layouts/header_menu"
+
+    .main_container
+      /-- 広告小バナー --/
+      .row.my-1.gx-0
+        - Bidinfo::HEADER_BANNERS.sample(10).each do |ba|
+          .col.text-center.p-0
+            = link_to ba[2], rel: :noopener, target: :_blank, onClick: "ga('send', 'event', 'banner', 'half', '#{ba[0]}', 1, true);" do
+              = image_tag "#{Bidinfo::MEDIA_URL}#{ba[1]}", alt: ba[0]
+
+      /-- パンくず --/
+      nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb"
+        = breadcrumbs style: :bootstrap5, semantic: true, autoroot: false,
+          class: 'breadcrumb bg-success-subtle py-1 px-2'
+
+      - if notice.present?
+        .alert.alert-success.mt-2.mx-auto.col-10
+          span #{mi(:info)} #{simple_format(notice, {}, wrapper_tag: :span)}
+
+      - if alert.present?
+        .alert.alert-danger.mt-2.mx-auto.col-10
+          span #{mi(:warning)} #{simple_format(alert, {}, wrapper_tag: :span)}
+
+      = yield
+
+    /-- フッタ --/
+    footer
+      .footer_menu = render "/layouts/header_menu"
+      .text-center.py-1.bg-dark.text-white Copyright &copy; #{Time.current.year} 全日本機械業連合会 All Rights Reserved.
+
+    /-- トップリンク --/
+    = link_to "#", class: "btn btn-outline-success btn-lg position-fixed bottom-0 end-0 m-3" do
+      | #{mi(:change_history, "fw-bold")}

@@ -1,0 +1,23 @@
+- set_meta_tags title: "全機連 会員ログイン"
+- breadcrumb  :something, "全機連 会員ログイン"
+
+h1 全機連 会員ログイン
+
+.row.mt-4
+  fieldset.col-6.mx-auto.my-4 = form_with model: @login_form, url: "/admin/login", method: :post do |f|
+
+    = render 'layouts/error_messages', obj: f.object
+
+    .row.mb-2
+      .col-3.text-end = f.label :account, "アカウント", class: "col-form-label"
+      .col-9 = f.text_field :account, class: "form-control", required: true
+
+    .row.mb-2
+      .col-3.text-end = f.label :passwd, "パスワード", class: "col-form-label"
+      .col-9 = f.password_field :passwd, class: "form-control", required: true
+
+    = f.button(class: "btn btn-primary d-block mx-auto my-4") do
+      span.show-when-enabled #{mi(:login)} ログイン
+      span.show-when-disabled
+        span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+        |< ログイン処理中

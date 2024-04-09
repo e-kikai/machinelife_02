@@ -1,0 +1,121 @@
+- set_meta_tags title: "電子カタログ #{@title}:検索結果"
+
+- breadcrumb :admin_catalogs_search, @title
+
+.position-relative
+  h1.position-absolute #{@title}:検索結果
+
+/** カタログリクエスト **/
+.border.rounded.border-success.border-3.bg-success-subtle.p-1.px-2.ms-auto style="width:62%;"
+  .row
+    .col
+      .text-danger.fw-bold お探しのカタログは見つかりましたか？
+      .small 見つからない時は「カタログ探してます」をご利用下さい
+    .col-auto.text-end = button_tag class: "btn btn-primary my-1", data: { bs_toggle: :modal, bs_target: "#request_modal" } do
+      . #{mi(:travel_explore)} カタログ探してます
+
+/** フォームモーダル **/
+.modal.fade#request_modal
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        | カタログのリクエスト
+        = button_tag "", 'data-bs-dismiss': "modal", class: "btn-close", 'aria-label': "Close"
+      = render "form"
+
+/** フィルタリング **/
+= form_with(url: request.fullpath, local: true, method: :get, html: { 'data-turbo-frame': :catalog_list, id: :filtering_from }) do |f|
+  = f.hidden_field :ma, value: params[:ma]
+  = f.hidden_field :mo, value: params[:mo]
+
+  .row.g-0.my-1.p-1.border.border-success.small
+    .col-2.fw-bold #{mi(:filter_alt)} ジャンル
+    - @filtering_genres.each.with_index do |(ge, count), i|
+      - if i == 10
+        .col-2 = link_to "#genre_idsCol", data: { 'bs-toggle': :collapse } do
+          | #{mi(:more_horiz)} もっと表示
+        - break
+      .col-2 = render "machines/filtering_checkbox", { target: :genre_ids, label: ge[1], value: ge[0], count: }
+
+    #genre_idsCol.collapse.row.g-0
+      - @filtering_genres.each.with_index do |(ge, count), i|
+        - next if i < 10
+        .col-2 = render "machines/filtering_checkbox", { target: :genre_ids, label: ge[1], value: ge[0], count: }
+
+  .row.g-0.my-1.p-1.border.border-success.small
+    .col-2.fw-bold #{mi(:filter_alt)} メーカー
+    - @filtering_makers.each.with_index(0) do |(maker, count), i|
+      - if i == 10
+        .col-2 = link_to "#makersCol", data: { 'bs-toggle': :collapse } do
+          | #{mi(:more_horiz)} もっと表示
+        - break
+      .col-2 = render "machines/filtering_checkbox", target: :makers, label: maker, value: maker, count:
+
+    #makersCol.collapse.row.g-0
+      - @filtering_makers.each.with_index(0) do |(maker, count), i|
+        - next if i < 10
+        .col-2 = render "machines/filtering_checkbox", target: :makers, label: maker, value: maker, count:
+
+  .row.g-1.mb-2
+    .col-3
+      .input-group.input-group-sm
+        = f.label :model, class: "input-group-text fw-bold" do
+          | #{mi(:filter_alt)} 型式
+        = f.text_field :model, class: "form-control form-control-sm", onchange: "filtering_btn.click();"
+
+    / .col-3
+    /   .input-group.input-group-sm
+    /     = f.label :sort, class: "input-group-text fw-bold" do
+    /       | #{mi(:sort)} 並び替え
+    /     = f.select :sort, Machine.selector_sorts, {}, { class: "form-select form-select-sm", onchange: "filtering_btn.click();" }
+
+    .col-3.ms-auto.text-end = link_to request.fullpath, class: "btn btn-secondary btn-sm" do
+      | #{mi(:filter_alt_off)} フィルタリング解除
+
+  = f.button "フィルタリング", class: "d-none", id: :filtering_btn
+
+/** 検索結果 **/
+= turbo_frame_tag :catalog_list do
+  .nav.nav-tabs
+    .nav-item = link_to "リストで表示", "#list", class: "nav-link active me-1", data: { bs_toggle: :tab, bs_target: "#list", role: :tab }
+    .nav-item = link_to "写真で表示", "#image", class: "nav-link", data: { bs_toggle: :tab, bs_target: "#image", role: :tab }
+
+  .tab-content.mt-2
+    /** リストで表示 **/
+    #list.tab-pane.fade.show.active
+      table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+        thead
+          tr
+            th scope="col" style="width: 120px;"
+            th scope="col" style="width: 140px;" ジャンル
+            th scope="col" style="width: 140px;" メーカー
+            th scope="col" style="width: 350px;" 型式
+            th scope="col" style="width: 140px;" 作成年・カタログNo
+
+          tbody
+            - @catalogs.each do |ca|
+                tr
+                  td.text-center
+                    . = link_to "/catalogs/#{ca.id}.pdf", 'data-turbo-frame': :_top, target: :_blank, rel: :noopener do
+                      = image_tag ca.thumbnail_media.url, alt: ca.uid, style: "max-width:120px;max-height:120px;"
+                    . = link_to "/catalogs/#{ca.id}.pdf?dl=1", 'data-turbo-frame': :_top, class: "btn btn-primary mt-1", target: :_blank, rel: :noopener do
+                      . #{mi(:file_download)} Download
+                  td.text-break
+                    - ca.genres.each do |ge|
+                      . = ge.genre
+                  td.text-break = ca.maker
+                  td.text-break = ca.models
+                  td.text-break
+                    . = ca.year
+                    . = ca.catalog_no
+
+    /** 写真で表示 **/
+    #image.tab-pane.fade
+      .row.gx-1.gy-1
+        - @catalogs.each do |ca|
+            .col-auto
+              .border.border-primary.p-1.text-center.w-auto.bg-light
+                . = link_to "/catalogs/#{ca.id}.pdf", 'data-turbo-frame': :_top, target: :_blank, rel: :noopener do
+                  = image_tag ca.thumbnail_media.url, alt: ca.uid, style: "height:320px;"
+                . = link_to "/catalogs/#{ca.id}.pdf?dl=1", 'data-turbo-frame': :_top, class: "btn btn-primary mt-1", target: :_blank, rel: :noopener do
+                  . #{mi(:file_download)} Download

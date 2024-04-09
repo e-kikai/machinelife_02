@@ -1,0 +1,17 @@
+- set_meta_tags title: "請求書PDF出力フォーム"
+- breadcrumb :system_companies_new
+
+h1 請求書PDF出力フォーム
+
+= form_tag("/system/companies/pdf.pdf", method: :get) do
+
+  .row: .col-6.m-auto.my-4
+    .row.mb-2
+      .col-3.text-end = label_tag :date, "支払日", class: 'col-form-label required'
+      .col-9 = date_field_tag :date, Date.current, class: "form-control", required: true
+
+  = button_tag class: "btn btn-success d-block mx-auto my-4" do
+    .show-when-enabled #{mi(:file_download)} PDFをダウンロード
+    .show-when-disabled
+      span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+      | PDF生成中

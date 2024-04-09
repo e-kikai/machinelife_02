@@ -1,0 +1,72 @@
+javascript:
+  var fileList = [];
+  var dt = new DataTransfer();
+
+  function stock_images() {
+    var files = images_file.files;
+
+    for(var i = 0; i < files.length; i++) {
+      // fileList.push(files[i]);
+      dt.items.add(files[i]);
+      make_preview(files[i]); // preview
+    }
+
+    // fileList.forEach((fl) => dt.items.add(fl));
+    images_file.files = dt.files;
+  }
+
+  // images_preview
+  function make_preview(file) {
+    /*
+    var fr = new FileReader();
+    fr.onload = () => {
+      var pv = preview_mock.cloneNode(true);
+      pv.id = "";
+      pv.querySelector("img").src = fr.result;
+      pv.querySelector("input").value = file.name;
+      pv.querySelector("input").id = file.name;
+      pv.querySelector("label").htmlFor = file.name;
+      pv.classList.remove('d-none');
+
+      preview_area.append(pv);
+    }
+
+    fr.readAsDataURL(file);
+    */
+
+    var url = URL.createObjectURL(file);
+    var pv = preview_mock.cloneNode(true);
+    pv.id = "";
+    pv.querySelector("a").href = url;
+    pv.querySelector("img").src = url;
+    pv.querySelector("input").value = file.name;
+    pv.querySelector("input").id = file.name;
+    pv.querySelector("label").htmlFor = file.name;
+    pv.classList.remove('d-none');
+
+    preview_area.append(pv);
+  }
+
+/* ファイルインプット */
+= f.file_field(:images, class: "form-control form-control-lg", id: "images_file", multiple: true, accept: 'image/*', onchange: "stock_images();")
+
+/* プレビュエリア */
+#preview_area.row.mt-2
+
+/* プレビュのベース */
+#preview_mock.col-3.d-none
+  .form-check
+    = f.check_box :images_cancel, { multiple: true, include_hidden: false, class: "form-check-input" }, :dummy
+    = f.label :images_cancel, "削除", class: "form-check-label", value: :dummy
+  . = link_to "", target: :_blank, rel: :noopener do
+    = image_tag "", alt: "", class: "mw-100 mb-2"
+
+/* 削除エリア */
+.row.mt-2
+  - images.each do |im|
+    .col-3
+      .form-check
+        = f.check_box :images_delete, { multiple: true, include_hidden: false, class: "form-check-input" }, im.id
+        = f.label :images_delete, "削除", class: "form-check-label", value: im.id
+      . = link_to im.image.url, target: :_blank, rel: :noopener do
+        = image_tag im.image.url, alt: im.image, class: "mw-100 mb-2"

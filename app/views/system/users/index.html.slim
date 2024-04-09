@@ -1,0 +1,36 @@
+- set_meta_tags title: "ユーザ一覧"
+- breadcrumb :system_users
+
+h1 ユーザ一覧
+
+.my-2
+  = link_to "/system/users/new", class: "btn btn-primary" do
+    . #{mi(:person_add)} 新規登録
+  = link_to "/system/users.csv", class: "btn btn-success ms-2" do
+    . #{mi(:file_download)} CSV出力
+
+table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+  thead
+    tr.small
+      th scope="col" style="width: 30px;" ID
+      th scope="col" style="width: 240px;" ユーザ名
+      th scope="col" 会社名
+      th scope="col" style="width: 80px;" 権限
+      th scope="col" style="width: 140px;" 変更日時
+      th scope="col" style="width: 140px;" パスワード変更日時
+      th scope="col" style="width: 60px;" 削除
+
+  tbody
+    - @users.each do |us|
+      tr
+        td.text-end #{us.id}
+        td = link_to us.user_name, "/system/users/#{us.id}/edit"
+        td #{us.company&.company}
+        td #{us.role}
+        td.text-end #{us.changed_at ? l(us.changed_at, format: :short) : ""}
+        td.text-end
+          | #{us.passwd_changed_at ? l(us.passwd_changed_at, format: :short) : ""}
+        td.text-center
+          = link_to("/system/users/#{us.id}", class: "btn btn-outline-danger btn-xs",
+            data: { turbo_method: :delete, turbo_confirm: "#{us.id} : #{us.user_name}\n\nこのユーザ情報を削除します。よろしいですか？" }) do
+              . #{mi(:clear)} 削除

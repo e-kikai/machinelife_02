@@ -1,0 +1,9 @@
+- id = "chk_#{target}_#{value}"
+
+.form-check.overflow-x-hidden.text-nowrap.
+  = check_box_tag("#{target}[]", value,
+    { multiple: true, include_hidden: false, class: "form-check-input", id: id, onchange: "filtering_btn.click();" })
+
+  label.form-check-label for=id
+    = label
+    span.text-danger.small = " (#{count})"

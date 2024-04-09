@@ -1,0 +1,41 @@
+.row: .col-6.m-auto.my-4
+  = render 'layouts/error_messages', obj: f.object
+
+  .row.mb-2
+    .col-4.text-end ジャンルID
+    .col-8 = f.object.id || "新規"
+
+  .row.mb-2
+    .col-4.text-end 大ジャンル
+    .col-8 = f.object.xl_genre.xl_genre
+
+  .row.mb-2
+    .col-4.text-end 中ジャンル
+    .col-8 = f.object.large_genre.large_genre
+
+  .row.mb-2
+    .col-4.text-end = f.label :genre_name, "ジャンル名", class: 'col-form-label required'
+    .col-8 = f.text_field :genre_name, class: "form-control", required: true
+
+  .row.mb-2
+    .col-4.text-end = f.label :genre_kana, "ジャンル名(カナ)", class: 'col-form-label'
+    .col-8 = f.text_field :genre_kana, class: "form-control"
+
+  .row.mb-2
+    .col-4.text-end = f.label :capacity_label, "能力", class: 'col-form-label'
+    .col-4 = f.text_field :capacity_label, class: "form-control"
+
+  .row.mb-2
+    .col-4.text-end = f.label :capacity_unit, "能力(単位)", class: 'col-form-label'
+    .col-4 = f.text_field :capacity_unit, class: "form-control"
+
+  .row.mb-2
+    .col-4.text-end = f.label :order_no, "並び順", class: 'col-form-label required'
+    .col-4 = f.number_field :order_no, class: "form-control text-end", required: true
+
+  = f.button(data: { turbo_confirm: "ジャンル情報をします。よろしいですか？" },
+    class: "btn btn-success d-block mx-auto my-4") do
+    .show-when-enabled #{mi(:save_alt)} ジャンル情報を保存
+    .show-when-disabled
+      span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+      | 保存処理

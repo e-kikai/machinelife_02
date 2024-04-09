@@ -1,0 +1,6 @@
+.card = link_to "/machines/#{machine.id}" do
+  .ratio.ratio-1x1 = image_tag machine.top_img_media.url, class: "card-img-top object-fit-cover"
+  .card-body.p-1.bg-light.overflow-y-hidden style="height:5rem;"
+    - titles.each do |t|
+      - if t.present?
+        .d-inline-block> = t

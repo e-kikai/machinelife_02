@@ -1,0 +1,7 @@
+- set_meta_tags title: "会社情報変更"
+- breadcrumb :system_companies_edit, @company
+
+h1 会社情報変更
+
+= form_with model: @company_form, url: "/system/companies/#{@company.id}", method: :patch do |f|
+  = render "form", f:

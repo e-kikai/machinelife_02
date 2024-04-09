@@ -1,0 +1,33 @@
+- set_meta_tags title: "大ジャンル一覧"
+- breadcrumb :system_xl_genres
+
+h1 大ジャンル一覧
+
+.row
+  .col-10.m-auto
+    .my-2
+      = link_to "/system/xl_genres/new", class: "btn btn-primary" do
+        . #{mi(:add)} 新規登録
+
+    table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+      thead
+        tr.small
+          th scope="col" style="width: 40px;" ID
+          th scope="col" style="width: 200px;" 大ジャンル名
+          th scope="col" style="width: 200px;" 大ジャンル名(カナ)
+          th scope="col" style="width: 120px;" 中ジャンル一覧
+          th scope="col" style="width: 100px;" 並び順
+          th scope="col" style="width: 60px;"  削除
+
+      tbody
+        - @xl_genres.each do |xl|
+          tr
+            td.text-end #{xl.id}
+            td = link_to xl.xl_genre, "/system/xl_genres/#{xl.id}/edit"
+            td #{xl.xl_genre_kana}
+            td = link_to "中ジャンル一覧 >>", "/system/xl_genres/#{xl.id}"
+            td.text-end #{xl.order_no.to_fs(:delimited)}
+            td.text-center
+              = link_to("/system/xl_genres/#{xl.id}", class: "btn btn-outline-danger btn-xs",
+                data: { turbo_method: :delete, turbo_confirm: "#{xl.xl_genre}\n\nこの大ジャンルを削除します。よろしいですか？" }) do
+                  . #{mi(:clear)} 削除

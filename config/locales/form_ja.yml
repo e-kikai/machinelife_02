@@ -1,0 +1,25 @@
+ja:
+  activemodel:
+    models:
+      contact_form: 問い合わせフォーム
+      admin/login_form: ログインフォーム
+      admin/catalog_request_form: カタログリクエストフォーム
+      admin/password_form: パスワード変更フォーム
+      admin/company_form: 会社情報変更フォーム
+      admin/machine_form: 在庫機械フォーム
+      system/user_form: ユーザ登録フォーム
+      system/bidinfo_form: 入札会情報フォーム
+      system/genre_form: ジャンルフォーム
+      system/large_genre_form: 中ジャンルフォーム
+      system/xl_genre_form: 大ジャンルフォーム
+      system/catalog_csv_form: カタログ一括登録フォーム
+      system/catalog_form: カタログ登録フォーム
+      system/info_form: お知らせフォーム
+      system/mail_form: メール一括送信フォーム
+    attributes:
+      system/user_form:
+        user_name: ユーザ名
+        company_id: 会社名
+        role: 権限
+        account: アカウント
+        passwd: パスワード

@@ -1,0 +1,62 @@
+# == Schema Information
+#
+# Table name: machines
+#
+#  id(機械ID)                     :integer          not null, primary key
+#  accessory(附属品)              :text
+#  addr1(住所(都道府県))          :text
+#  addr2(住所(市区町村))          :text
+#  addr3(住所(番地その他))        :text
+#  capacity(能力)                 :float
+#  changed_at(変更日時)           :datetime
+#  comment(コメント)              :text
+#  commission(試運転)             :integer
+#  deleted_at(削除日時)           :datetime
+#  ekikai_price                   :integer
+#  hint                           :string(200)
+#  imgs(画像情報(JSON)	 JSON)     :text
+#  lat(緯度)                      :decimal(10, 7)
+#  lng(経度)                      :decimal(10, 7)
+#  location(在庫場所)             :text
+#  location_address(在庫場所住所) :text
+#  maker(メーカー)                :text
+#  maker2                         :string
+#  model(型式)                    :text
+#  model2                         :string
+#  name(機械名)                   :string(100)
+#  no(管理番号)                   :text
+#  others(その他能力(JSON)	 JSON) :text
+#  pdfs(PDF(JSON))                :text
+#  price(金額)                    :integer
+#  price_tax                      :integer
+#  spec(仕様)                     :text
+#  top_image                      :string
+#  top_img(トップ画像)            :text
+#  used_change                    :integer
+#  view_option(表示オプション)    :integer
+#  year(年式)                     :text
+#  youtube(Youtube ID)            :text
+#  created_at(登録日時)           :datetime
+#  catalog_id(カタログID)         :integer
+#  company_id(会社ID)             :integer          not null
+#  genre_id(ジャンルID)           :integer          not null
+#  used_id                        :string(200)
+#
+# Indexes
+#
+#  machines_ix1  (deleted_at)
+#  machines_ix2  (genre_id)
+#  machines_ix3  (maker)
+#  machines_ix4  (company_id)
+#  machines_ix5  (created_at)
+#
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the "{}" from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+one: {}
+# column: value
+#
+two: {}
+# column: value

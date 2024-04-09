@@ -1,0 +1,40 @@
+.row: .col-6.m-auto.my-4
+  = render 'layouts/error_messages', obj: f.object
+
+  .row.mb-2
+    .col-4.text-end ユーザID
+    .col-8 = f.object.id || "新規"
+
+  .row.mb-2
+    .col-4.text-end = f.label :user_name, "ユーザ名", class: 'col-form-label required'
+    .col-8 = f.text_field :user_name, class: "form-control", required: true
+
+  .row.mb-2
+    .col-4.text-end = f.label :company_id, "会社名", class: "col-form-label"
+    .col-8 = f.grouped_collection_select(:company_id, f.object.select_companies,
+      :companies, :groupname, :id, :company_remove_kabu,
+      { include_blank: '会社名なし' }, { class: 'form-select' })
+
+  .row.mb-2
+    .col-4.text-end = f.label :role, "権限", class: "col-form-label required"
+    .col-8 = f.select :role, User::SELECT_ROLES, {}, { class: "form-select", required: true }
+
+  .row.mb-2
+    .col-4.text-end = f.label :account, "アカウント", class: "col-form-label required"
+    .col-8 = f.text_field :account, class: "form-control", required: true
+
+  .row.mb-2
+    - if f.object.persisted?
+      .col-4.text-end
+        = f.label :passwd, class: "col-form-label"
+      .col-8 = f.password_field :passwd, class: "form-control", placeholder: "パスワード変更する場合のみ入力"
+    - else
+      .col-4.text-end = f.label :passwd, "パスワード", class: "col-form-label required"
+      .col-8 = f.password_field :passwd, class: "form-control", required: true
+
+  = f.button(data: { turbo_confirm: "ユーザ情報をします。よろしいですか？" },
+    class: "btn btn-success d-block mx-auto my-4") do
+    .show-when-enabled #{mi(:save_alt)} ユーザ情報を保存
+    .show-when-disabled
+      span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+      | 保存処理中

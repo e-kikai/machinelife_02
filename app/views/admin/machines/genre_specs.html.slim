@@ -1,0 +1,59 @@
+= turbo_frame_tag :genre_specs do
+  - if @genre.capacity_unit.present?
+    .row.mb-2
+      .col-3.text-end = label_tag :capacity, @genre.capacity_label, class: "col-form-label"
+      .col-3 = number_field_tag :capacity, @machine.capacity, class: "form-control"
+      .col-auto: .form-control-plaintext = @genre.capacity_unit
+
+  - @genre.spec_labels_parsed.datas.each do |k, sp|
+    .row.mb-2
+      .col-3.text-end = label_tag "others[#{k}]", sp[:label], class: "col-form-label"
+      - case sp[:type]
+      - when "number"
+        .col-2 = number_field_tag "others[#{k}]", @machine.others_hash.dig(k, :value), class: "form-control"
+        .col-auto: .form-control-plaintext = sp[:unit]
+
+      - when "text"
+        .col-4 = text_field_tag "others[#{k}]", @machine.others_hash.dig(k, :value), class: "form-control"
+        .col-auto: .form-control-plaintext = sp[:unit]
+
+      - when "x2"
+        .col-2 = number_field_tag "others[#{k}][]", @machine.others_hash.dig(k, :value, 0), class: "form-control"
+        .col-auto: .form-control-plaintext #{sp[:unit]} ✕
+        .col-2 = number_field_tag "others[#{k}][]", @machine.others_hash.dig(k, :value, 1), class: "form-control"
+        .col-auto: .form-control-plaintext #{sp[:unit]}
+
+      - when "x3"
+        .col-2 = number_field_tag "others[#{k}][]", @machine.others_hash.dig(k, :value, 0), class: "form-control"
+        .col-auto: .form-control-plaintext #{sp[:unit]} ✕
+        .col-2 = number_field_tag "others[#{k}][]", @machine.others_hash.dig(k, :value, 1), class: "form-control"
+        .col-auto: .form-control-plaintext #{sp[:unit]} ✕
+        .col-2 = number_field_tag "others[#{k}][]", @machine.others_hash.dig(k, :value, 2), class: "form-control"
+        .col-auto: .form-control-plaintext #{sp[:unit]}
+
+      - when "t2"
+        .col-2 = number_field_tag "others[#{k}][]", @machine.others_hash.dig(k, :value, 0), class: "form-control"
+        .col-auto: .form-control-plaintext #{sp[:unit]} 〜
+        .col-2 = number_field_tag "others[#{k}][]", @machine.others_hash.dig(k, :value, 2), class: "form-control"
+        .col-auto: .form-control-plaintext #{sp[:unit]}
+
+      - when "c3"
+        .col-2 = number_field_tag "others[#{k}][]", @machine.others_hash.dig(k, :value, 0), class: "form-control"
+        .col-auto: .form-control-plaintext #{sp[:unit]} :
+        .col-2 = number_field_tag "others[#{k}][]", @machine.others_hash.dig(k, :value, 1), class: "form-control"
+        .col-auto: .form-control-plaintext #{sp[:unit]} :
+        .col-2 = number_field_tag "others[#{k}][]", @machine.others_hash.dig(k, :value, 2), class: "form-control"
+        .col-auto: .form-control-plaintext #{sp[:unit]}
+
+      - when "select"
+        .col-9: .form-control-plaintext
+          - sp[:options].each do |op|
+            .form-check.form-check-inline
+              = radio_button_tag "others[#{k}]", op, (@machine.others_hash.dig(k, :value) == op), { class: "form-check-input" }
+              = label_tag "others[#{k}]", op, class: "form-check-label", value: op
+
+      - when "nc"
+        .col-auto: .form-control-plaintext メーカー :
+        .col-3 = text_field_tag "others[#{k}][maker]", @machine.others_hash.dig(k, :value, :maker), class: "form-control"
+        .col-auto: .form-control-plaintext 型式 :
+        .col-3 = text_field_tag "others[#{k}][model]", @machine.others_hash.dig(k, :value, :model), class: "form-control"

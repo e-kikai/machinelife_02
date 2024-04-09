@@ -1,0 +1,98 @@
+- set_meta_tags title: "会員ページ"
+- breadcrumb :something, "会員ページ"
+
+.row
+  .col-6
+    h1 会員ページ
+  .col-6.ms-auto.mb-2
+    . 会員名 : #{current_company.company}
+    .
+      |> 会員区分 : #{current_company.rank_ja}
+      = link_to "/helps/rank" do
+        | #{mi(:help_outline)} 会員区分と利用サービスについて
+
+.row
+  .col-6
+    .mb-3
+      .bg-danger.rounded-top.text-white.fw-bold.w-50.text-center 事務局からのお知らせ
+      .border.border-danger.overflow-scroll style="height: 200px;"
+        - @infos.each do |inf|
+          .border-bottom.mx-2.py-2
+            .text-secondary.small = l(inf.info_date)
+            = simple_format(inf.contents)
+
+    .mb-3
+      .bg-danger.rounded-top.text-white.fw-bold.w-50.text-center 売りたし買いたし
+      .border.border-danger.overflow-scroll style="height: 200px;"
+        - @urikais.each do |uk|
+          .border-bottom.mx-2.py-2
+            .
+              span.me-2.fw-bold class="#{uk.goal_class}"  #{uk.goal_jp}
+              span.text-success.me-2.fw-bold = uk.company&.company
+              span.text-secondary.small = l(uk.created_at)
+            = simple_format(uk.contents.truncate(100), {}, { wrapper_tag: :span })
+            span.ms-2 = link_to "→ 詳細を見る", "/admin/urikais/#{uk.id}"
+
+    .mb-3
+      .bg-danger.rounded-top.text-white.fw-bold.w-25.text-center 書きこみ
+      .border.border-danger.overflow-scroll style="height: 500px;"
+        - @miniblogs.each do |mb|
+          .border-bottom.mx-2.py-2
+            .
+              span.text-success.me-2.fw-bold = mb.user&.user_name
+              span.text-secondary.small = l(mb.created_at)
+            = simple_format(mb.contents)
+  .col-6
+    h2 在庫機械管理
+    nav.nav.flex-column
+      = link_to "/admin/machines/new", class: "nav-link", data: { turbo: false } do
+        . #{mi(:add)} 新規在庫機械登録
+      = link_to "/admin/machines/", class: "nav-link" do
+        . #{mi(:list)} 在庫機械一覧(変更・削除)
+
+    h2 問い合わせ
+    nav.nav.flex-column
+      = link_to "/admin/contacts/", class: "nav-link" do
+        . #{mi(:mark_email_unread)} 問い合わせ一覧
+
+    h2 電子カタログ
+    nav.nav.flex-column
+      = link_to "/admin/catalogs/", class: "nav-link" do
+        . #{mi(:menu_book)} 電子カタログ
+      = link_to "/admin/catalogs/manuals", class: "nav-link" do
+        . #{mi(:library_books)} 機械情報センター 機械取扱説明書について
+
+    h2 売りたし買いたし
+    nav.nav.flex-column
+      = link_to "/admin/urikais/new", class: "nav-link" do
+        . #{mi(:create)} 書き込む
+      = link_to "/admin/urikais/", class: "nav-link" do
+        . #{mi(:edit_note)} 売りたし買いたし書き込み一覧
+      = link_to "/assets/admin/urikai_manual.pdf", class: "nav-link", target: :_blank, rel: :noopener do
+        . #{mi(:picture_as_pdf)} 売りたし買いたしマニュアルPDF
+
+    h2 会員情報
+    nav.nav.flex-column
+      = link_to "/admin/company/edit", class: "nav-link" do
+        . #{mi(:business)} 会社情報変更
+      = link_to "/assets/admin/company_form.pdf", class: "nav-link", target: :_blank, rel: :noopener do
+        . #{mi(:picture_as_pdf)} 会社情報変更マニュアルPDF
+      = link_to "/admin/user/edit", class: "nav-link" do
+        . #{mi(:password)} パスワード変更
+
+    h2 全機連マシンライフ
+    nav.nav.flex-column
+      = link_to "/", class: "nav-link" do
+        . #{mi(:home)} トップページへ
+      = link_to "/admin/logout", data: { turbo_method: :delete, turbo_confirm: "ログアウトしますか？" }, class: "nav-link" do
+        . #{mi(:logout)} ログアウト
+
+/** 書き込みボタン **/
+= button_tag class: "btn btn-primary position-fixed bottom-0 start-0 m-3", data: { bs_toggle: :modal, bs_target: "#miniblog_modal" } do
+  . #{mi(:create)} 書き込む
+
+/** フォームモーダル **/
+.modal.fade#miniblog_modal
+  .modal-dialog.modal-md
+    .modal-content style="background: rgba(255, 255, 144);"
+      = render "/admin/miniblogs/form", target: :catalog

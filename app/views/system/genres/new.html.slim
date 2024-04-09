@@ -1,0 +1,9 @@
+- set_meta_tags title: "新規ジャンル登録"
+- breadcrumb :system_genres_new, @genre_form.large_genre
+
+h1 新規ジャンル登録
+
+= form_with model: @genre_form, url: "/system/genres", method: :post do |f|
+  = hidden_field_tag :large_genre_id, @genre_form.large_genre.id
+
+  = render "form", f:

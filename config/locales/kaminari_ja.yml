@@ -1,0 +1,24 @@
+ja:
+  views:
+    pagination:
+      first: <i class="material-icons " aria-hidden="true">first_page</i>
+      last: <i class="material-icons " aria-hidden="true">last_page</i>
+      previous: <i class="material-icons " aria-hidden="true">navigate_before</i>
+      next: <i class="material-icons " aria-hidden="true">navigate_next</i>
+      truncate: "..."
+  helpers:
+    page_entries_info:
+      one_page:
+        zero: "<b>該当データがありません。</b>"
+        one: "<b>1件中 1-1 件を表示</b>"
+        display_entries: "1 〜 %{count}件を表示中 / 合計 %{count}件"
+      more_pages:
+        display_entries: "%{first} 〜 %{last}件を表示中 / 合計 %{total}件"
+  enums:
+    company:
+      rank:
+        c_member: "C会員"
+        b_member: "B会員"
+        a_member: "A会員"
+        branch: "支店・営業所"
+        special: "特別会員"

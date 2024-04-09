@@ -1,0 +1,54 @@
+- set_meta_tags title: "問い合わせ一覧(すべて)"
+- breadcrumb :system_something, "問い合わせ一覧(すべて)"
+
+h1 問い合わせ一覧(すべて)
+
+.my-2
+  = form_with url: "/system/contacts/all", method: :get do |f|
+    .row
+      .col-auto = f.select :year, options_for_select((2013..Time.current.year).to_a.reverse, params[:year]),
+        { include_blank: false }, { class: "form-select" }
+      .col-auto: .form-control-plaintext = "/"
+      .col-auto = f.select :month, options_for_select(1..12, params[:month]),
+        { include_blank: false }, { class: "form-select" }
+
+      .col-auto = f.button class: "btn btn-primary d-block" do
+        .show-when-enabled #{mi(:calendar_month)} 表示月変更
+        .show-when-disabled
+          span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+          | 検索中
+      .col-auto = link_to "/system/contacts/all", class: "btn btn-secondary" do
+        | #{mi(:free_cancellation)} 表示月をリセット
+
+table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+  thead
+    tr.small
+      th scope="col" style="width: 30px;" ID
+      th scope="col" style="width: 140px;" 送信先
+      th scope="col" style="width: 140px;" お名前
+      th scope="col" style="width: 140px;" 連絡先
+      th scope="col" 内容
+      th scope="col" style="width: 80px;" 登録日時
+
+  tbody
+    - @contacts.each do |co|
+      tr
+        td.text-end #{co.id}
+        td
+          . #{co.company&.company_remove_kabu}
+          .mt-2 #{co.machine&.no}
+          . #{co.machine&.full_name}
+
+        td
+          . #{co.user_company}
+          . #{co.user_name}
+          . = "(#{co.addr1})"
+
+        td
+          . = mail_to co.mail
+          . TEL : #{co.tel}
+          . FAX : #{co.fax}
+          .mt-2 = co.return_time
+
+        td.text-wrap.text-break = simple_format(co.message)
+        td.text-end #{l(co.created_at)}

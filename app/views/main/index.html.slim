@@ -1,0 +1,76 @@
+/-- 検索枠 --/
+.row.gx-2
+  .col-9
+    h2 #{mi(:engineering)} 中古機械ジャンル検索
+    .row.gx-1
+      - @xl_genres.each do |xg|
+        .col-4.p-1
+          .dropdown
+            button.btn.btn-light.border.w-100.rounded-0.px-0 type="button" data-bs-toggle="dropdown" aria-expanded="false"
+              | #{xg.xl_genre} (#{number_with_delimiter(@counts_by_xl_genre[xg.id])})
+            ul.dropdown-menu.dd_lg
+              - xg.large_genres.each do |lg|
+                - if @counts_by_large_genre[lg.id].present?
+                  li = link_to "/machines/large_genre/#{lg.id}", class: "dropdown-item" do
+                    | #{lg.large_genre}
+                    small.text-danger = " (#{number_with_delimiter(@counts_by_large_genre[lg.id])})"
+
+  .col-3
+    h2 #{mi(:pin_drop)} 在庫地域検索
+    = form_tag "/machines", method: :get do
+      .input-group.my-2
+        select.form-control.form-select-sm name="k" require="require"
+          option ▼ 選択 ▼
+          - @states.each do |st|
+            - if @counts_by_state[st.state].present?
+              option value=st.state #{st.state} (#{number_with_delimiter(@counts_by_state[st.state])})
+            - else
+              option value=st.state disabled="disabled" #{st.state}
+        = button_tag type: :submit, class: "btn btn-primary btn-sm" do
+          | #{mi(:search)} 検索
+
+    h2 #{mi(:abc)} キーワード検索
+    .my-1 = form_tag "/machines", method: :get do
+      label.small for="k_mo" 型式から検索
+      .input-group
+        = text_field_tag :k, "", placeholder: "例 : 2SP-150H", class: "form-control form-control-sm", id: :k_mo, required: true
+        = button_tag type: :submit, class: "btn btn-primary btn-sm" do
+          | #{mi(:search)} 検索
+
+    .my-1 = form_tag "/machines", method: :get do
+      label.small for="k_ma" メーカーから検索
+      .input-group
+        = text_field_tag :k, "", placeholder: "例 : オークマ", class: "form-control form-control-sm", id: :k_ma, required: true
+        = button_tag type: :submit, class: "btn btn-primary btn-sm" do
+          | #{mi(:search)} 検索
+
+/-- 入札会バナー枠 --/
+.row.my-2.gx-0
+  - @bidinfos.each do |bi|
+    - next if bi.banner_image.blank?
+
+    .col.text-center = link_to bi.uri, onclick: "ga('send', 'event', 'banner', 'bid', #{bi.bid_name}, 1, true);", rel: :noopener, target: :_blank do
+      = image_tag bi.banner_image.url, alt: bi.bid_name, style: "width: 240px;"
+
+  .col.text-center = link_to "https://www.magnescale.com/jp/info/drocampaign2023/", onclick: "ga('send', 'event', 'banner', 'bid', 'マグネスケール', 1, true);", rel: :noopener, target: :_blank do
+    = image_tag "banner/DRO_BD.gif", alt: "マグネスケール"
+  .col.text-center = link_to "/bid/schedule", onclick: "ga('send', 'event', 'banner', 'bid', 'bid_schedule', 1, true);" do
+    = image_tag "banner/bid_2023.png", alt: "2023年度Web入札会スケジュール"
+  .col.text-center = link_to "/help/ads", onclick: "ga('send', 'event', 'banner', 'bid', 'ad_rec', 1, true);" do
+    = image_tag "banner/rec_02.gif", alt: "広告バナー募集中"
+  .col.text-center = link_to "https://twitter.com/zenkiren", onclick: "ga('send', 'event', 'banner', 'bid', 'twitter', 1, true);", rel: :noopener, target: :_blank do
+    = image_tag "banner/twitter.png", alt: "Twitter"
+
+/-- 新着 --/
+h2 新着中古機械
+
+.row.gx-0
+  - @news.each_with_index do |ma, i|
+    .col-6 class=((i % 4).in?([1, 2]) ? "bg-light" : "bg-white")
+      = render partial: "machines/news", locals: { machine: ma }
+
+/-- 大バナー枠 --/
+.row.gx-0.my-2
+  - Bidinfo::BOTTOM_BANNERS.shuffle.each do |ba|
+    .col.text-center = link_to ba[2], rel: :noopener, target: :_blank, onClick: "ga('send', 'event', 'banner', 'half', '#{ba[0]}', 1, true);" do
+      = image_tag "#{Bidinfo::MEDIA_URL}#{ba[1]}", alt: ba[0]

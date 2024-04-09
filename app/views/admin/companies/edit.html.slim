@@ -1,0 +1,150 @@
+- set_meta_tags title: "会社情報変更"
+- breadcrumb :admin_something, "会社情報変更"
+
+h1 会社情報変更
+
+= form_with model: @company_form, url: "/admin/company/", method: :patch do |f|
+
+  .row: .col-9.m-auto.my-4
+    .mb-2.form-text #{mi(:info)} 以下の項目変更は、全機連の事務局に連絡してください
+
+    .row.mb-2
+      .col-3.text-end 会社名
+      .col-9 = current_company.company
+    .row.mb-2
+      .col-3.text-end 会社名(カナ)
+      .col-9 = current_company.company_kana
+
+    .row.mb-2
+      .col-3.text-end 代表者名
+      .col-9 = current_company.representative
+
+    .row.mb-2
+      .col-3.text-end 〒
+      .col-9 = current_company.zip
+
+    .row.mb-2
+      .col-3.text-end 住所
+      .col-9 = current_company.addr
+
+    .row.mb-2
+      .col-3.text-end TEL
+      .col-9 = current_company.tel
+
+    .row.mb-2
+      .col-3.text-end FAX
+      .col-9 = current_company.fax
+    .row.mb-2
+      .col-3.text-end メールアドレス
+      .col-9 = current_company.mail
+    .row.mb-2
+      .col-3.text-end ウェブサイトアドレス
+      .col-9 = current_company.website
+    .row.mb-2
+      .col-3.text-end 所属団体
+      .col-9
+        . = current_company.parent&.groupname
+        . = current_company.group.groupname
+
+  hr
+
+  .row: .col-9.m-auto.my-4
+    = render 'layouts/error_messages', obj: f.object
+
+    .row.mb-2
+      .col-3.text-end = f.label :officer, "担当者", class: 'col-form-label required'
+      .col-9 = f.text_field :officer, class: "form-control", required: true
+
+    .row.mb-2
+      .col-3.text-end = f.label :contact_tel, "問い合わせTEL", class: 'col-form-label required'
+      .col-4 = f.text_field :contact_tel, class: "form-control", required: true
+
+    .row.mb-2
+      .col-3.text-end = f.label :contact_fax, "問い合わせFAX", class: 'col-form-label'
+      .col-4 = f.telephone_field :contact_fax, class: "form-control"
+
+    .row.mb-2
+      .col-3.text-end = f.label :contact_mail, "問い合わせメール", class: "col-form-label"
+      .col-9 = f.email_field :contact_mail, class: "form-control"
+
+    .row.mb-2
+      .col-3.text-end 営業所・倉庫<br />(複数可)
+      .col-9.offices
+        .form-text 在庫機械の在庫場所の選択項目になります。
+        - @company_form.offices.each do |office|
+          = f.fields_for "offices[]", office do |f2|
+            .border.border-success.bg-success-subtle.rounded-1.p-2.mb-1.office_area class="#{"new" if f2.object.name.blank?}"
+              .row.mb-2.g-1
+                .col-3.text-end = f2.label :name, "営業所・倉庫名", class: 'col-form-label'
+                .col-6 = f2.text_field :name, class: "form-control"
+
+                - if f2.object.name.present?
+                  .col-3.text-end = button_tag(class: "btn btn-danger btn-xs", type: :button,
+                    onclick: "this.closest('.office_area').remove();") do
+                      . #{mi(:close)} 削除
+
+              .row.mb-2.g-1
+                .col-1.text-end = f2.label :zip, "〒", class: 'col-form-label'
+                .col-4 = f2.text_field :zip, class: "form-control", placeholder: "XXX-XXXX"
+              .row.mb-2.g-1
+                .col-1.text-end = f2.label :addr1, "住所", class: 'col-form-label'
+                .col-3 = f2.text_field :addr1, class: "form-control", placeholder: "都道府県"
+                .col-3 = f2.text_field :addr2, class: "form-control", placeholder: "市区町村"
+                .col-5 = f2.text_field :addr3, class: "form-control", placeholder: "番地その他"
+
+        = button_tag(type: :button, class: "btn btn-primary",
+          onclick: "tmp = document.querySelector('.office_area.new');tmp.after(tmp.cloneNode(true));") do
+            . #{mi(:add)} 営業所・倉庫フォームを追加
+
+    .row.mb-2
+      .col-3.text-end = f.label :info_pr, "PR", class: "col-form-label"
+      .col-9 = f.text_area :info_pr, class: "form-control", style: "height:5rem;"
+
+    .row.mb-2
+      .col-3.text-end = f.label :info_comment, "コメント", class: "col-form-label"
+      .col-9 = f.text_area :info_comment, class: "form-control", style: "height:5rem;"
+
+    .row.mb-2
+      .col-3.text-end = f.label :info_access_train, "交通機関：最寄り駅", class: "col-form-label"
+      .col-9 = f.text_area :info_access_train, class: "form-control", style: "height:5rem;"
+
+    .row.mb-2
+      .col-3.text-end = f.label :info_access_car, "交通機関：車", class: "col-form-label"
+      .col-9 = f.text_area :info_access_car, class: "form-control", style: "height:5rem;"
+
+    .row.mb-2
+      .col-3.text-end = f.label :info_opening, "営業時間", class: 'col-form-label'
+      .col-4 = f.text_field :info_opening, class: "form-control"
+
+    .row.mb-2
+      .col-3.text-end = f.label :info_holiday, "定休日", class: 'col-form-label'
+      .col-4 = f.text_field :info_holiday, class: "form-control"
+
+    .row.mb-2
+      .col-3.text-end = f.label :info_license, "古物免許", class: 'col-form-label'
+      .col-4 = f.text_field :info_license, class: "form-control"
+
+    .row.mb-2
+      .col-3.text-end = f.label :banner_file, "TOP画像", class: 'col-form-label'
+      .col-9 = render "/admin/machines/top_image_form", f:
+
+    .row.mb-2
+      .col-3.text-end = f.label :banner_file, "画像(複数可)", class: 'col-form-label'
+      .col-9
+        = render "/admin/machines/images_form", f:, images: f.object.company_images
+
+        .row.mt-2
+            - f.object.imgs_parsed.medias.each do |im|
+              .col-3
+                .form-check
+                  = f.check_box :imgs_delete, { multiple: true, include_hidden: false, class: "form-check-input" }, im.file
+                  = f.label :imgs_delete, "削除", class: "form-check-label", value: im.file
+                . = link_to im.url, target: :_blank, rel: :noopener do
+                  = image_tag im.url, alt: im.file, class: "mw-100 mb-2"
+
+    = f.button(data: { turbo_confirm: "会社情報をします。よろしいですか？" },
+      class: "btn btn-success d-block mx-auto my-4") do
+      .show-when-enabled #{mi(:save_alt)} 会社情報を保存
+      .show-when-disabled
+        span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+        | 保存処理中
