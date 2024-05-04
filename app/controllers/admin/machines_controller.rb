@@ -1,5 +1,6 @@
-class Admin::MachinesController < ApplicationController
-  before_action :set_machine, only: [:edit, :update, :destroy]
+class Admin::MachinesController < Admin::ApplicationController
+  before_action :check_rank
+  before_action :set_machine, only: [:edit, :update]
 
   def index
     ### 検索・フィルタリング処理 ###
@@ -24,6 +25,10 @@ class Admin::MachinesController < ApplicationController
     @machine_form = Admin::MachineForm.new(machine:)
   end
 
+  def edit
+    @machine_form = Admin::MachineForm.new(machine: @machine)
+  end
+
   def create
     @machine_form = Admin::MachineForm.new(machine_params, machine: current_company.machines.build)
 
@@ -32,10 +37,6 @@ class Admin::MachinesController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
-  end
-
-  def edit
-    @machine_form = Admin::MachineForm.new(machine: @machine)
   end
 
   def update
@@ -48,10 +49,10 @@ class Admin::MachinesController < ApplicationController
     end
   end
 
-  def destroy
-    @machine.soft_delete
+  def delete_all
+    current_company.machines.where(id: params[:m]).soft_delete_all
 
-    redirect_to "/admin/machines", status: :see_other, notice: "#{@machine.no} : #{@company.name} を削除しました。"
+    redirect_to "/admin/machines", status: :see_other, notice: "在庫機械を一括削除しました。"
   end
 
   def catalog_search
@@ -80,8 +81,12 @@ class Admin::MachinesController < ApplicationController
         pdfs: [], pdfs_filename: [], pdfs_name: [], pdfs_delete: [], pdfs_cancel: [],
         machine_pdfs: [:name, :deleted_at]
       ).tap do |wl|
-        wl[:others]   = params[:others].permit! if  params[:others].present?
+        wl[:others]   = params[:others].permit! if params[:others].present?
         wl[:capacity] = params[:capacity]
       end
+  end
+
+  def check_rank
+    redirect_to "/admin", alert: "在庫管理の表示権限がありません" unless current_company&.check_rank(:a_member)
   end
 end

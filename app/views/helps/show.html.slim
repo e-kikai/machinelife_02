@@ -1,6 +1,6 @@
 - set_meta_tags title: @title
-- breadcrumb  :something,  @title
+- breadcrumb :something, @title
 
 h1 = @title
 
-render partial: @key
+.my-4 = render partial: @key.to_s

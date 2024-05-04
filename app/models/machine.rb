@@ -55,7 +55,9 @@ class Machine < ApplicationRecord
 
   MEDIA_URL = "https://s3-ap-northeast-1.amazonaws.com/machinelife/machine/public/media/machine/".freeze
   NEWS_LIMIT_DEFAULT = 6
-  NEWS_DAY = Time.current.ago(1.month)
+  NEWS_DAY = Time.current.ago(1.day)
+  NEWS_MAIL_DAY = Time.current.ago(1.week)
+  NEWS_ADMIN_MAIL_DAY = Time.current.ago(1.day)
 
   SORTS = {
     default: ["ジャンル・機械名順", ["large_genres.order_no", "genres.order_no", :name, { created_at: :desc }]],
@@ -91,7 +93,7 @@ class Machine < ApplicationRecord
   # enum view_option: { '表示': nil, '非表示': 1, '商談中': 2 }
 
   ### scope ###
-  scope :includes_all, -> { includes(:company, :genre, :large_genre, :xl_genre, :maker_m) }
+  scope :includes_all, -> { includes(:company, :genre, :large_genre, :xl_genre, :maker_m, :machine_pdfs) }
   scope :sales, -> { includes_all.where(deleted_at: nil, companies: { deleted_at: nil, rank: Company::MACHINE_RANK_RATIO.. }, view_option: [nil, 2]) }
 
   scope :only_machines, -> { where(large_genre: { xl_genre_id: XlGenre::MACHINE_IDS }) }

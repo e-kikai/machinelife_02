@@ -1,0 +1,21 @@
+.row: .col-9.m-auto.my-4
+  = render 'layouts/error_messages', obj: f.object
+
+  .row.mb-2
+    .col-4.text-end = f.label :info_date, "日付", class: "col-form-label required"
+    .col-4 = f.date_field :info_date, class: "form-control", required: true
+
+  .row.mb-2
+    .col-4.text-end = f.label :title, "タイトル", class: "col-form-label required"
+    .col-8 = f.telephone_field :title, class: "form-control", required: true
+
+  .row.mb-2
+    .col-4.text-end = f.label :contents, "内容", class: 'col-form-label required'
+    .col-8 = f.text_area :contents, class: "form-control", style: "height:8rem;", required: true
+
+  = f.button(data: { turbo_confirm: "お知らせを保存します。よろしいですか？" },
+    class: "btn btn-success d-block mx-auto my-4") do
+    .show-when-enabled #{mi(:create)} 入力内容を保存
+    .show-when-disabled
+      span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+      | 保存処理中

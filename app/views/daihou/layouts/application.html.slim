@@ -1,0 +1,85 @@
+doctype html
+html lang="ja"
+  head
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    = display_meta_tags(daihou_meta_tags)
+
+    = stylesheet_link_tag 'https://fonts.googleapis.com/icon?family=Material+Icons', media: :all
+    / = stylesheet_link_tag "application.css", data_turbo_track: :reload
+
+    = stylesheet_link_tag "daihou/daihou.css", data_turbo_track: :reload
+
+    = javascript_importmap_tags
+
+    /-- Google tag --/
+    / - if Rails.env.production?
+    /   script[async src="https://www.googletagmanager.com/gtag/js?id=G-9FCEEFBV1P"]
+    /   javascript:
+    /     window.dataLayer = window.dataLayer || [];
+    /     function gtag(){dataLayer.push(arguments);}
+    /     gtag('js', new Date());
+    /     gtag('config', 'G-9FCEEFBV1P');
+
+  body class="#{"full" if @header_full}": .container-fluid
+    /-- ヘッダ --/
+    header
+      .row
+        = link_to "/", class: "ps-4 pt-2 col-8 col-sm-6" do
+          = image_tag "daihou/daihou_logo_02.png", class: "header_logo", alt: @company.company
+
+        .d-none.d-sm-block.col-4.pt-2.text-end
+          .header_contact_label お問い合わせ
+          .header_contact_tel #{mi(:phone)} #{@company.contact_tel}
+          .header_contact_open = "(受付時間 : 9:00 〜 17:00)"
+        .d-none.d-sm-block.col-2
+          = link_to "https://works.do/R/ti/p/sakai.takeapersonforgranted@daihou", class: "m-auto d-block", style: "width:70%;" do
+            = image_tag "daihou/line_01.jpeg", class: "header_logo w-100", alt: "LINEWOKS"
+        .col-4.d-sm-none.fs-2.d-flex.align-items-center.justify-content-center.navbar-toggler data-bs-toggle="collapse" data-bs-target="#nav-bar" aria-controls="nav-bar" aria-expanded="false" aria-label="Toggle navigation"
+          . #{mi(:menu)}
+    nav.navbar.navbar-expand-md.pt-0
+      #nav-bar.collapse.navbar-collapse
+        ul.navbar-nav.header-menu
+          li.nav-item = link_to "/", class: "nav-link"
+            . #{mi(:home)} TOP
+          li.nav-item = link_to "/machines", class: "nav-link"
+            . #{mi(:settings)} 在庫機械一覧
+          li.nav-item = link_to "/company", class: "nav-link"
+            . #{mi(:business)} 会社情報
+          li.nav-item = link_to "/access", class: "nav-link"
+            . #{mi(:map)} アクセス
+          li.nav-item = link_to "/contact/new", class: "nav-link"
+            . #{mi(:send)} お問い合わせ
+
+    .main_container
+      - if notice.present?
+        .alert.alert-success.mt-2.mx-auto.col-10
+          span #{mi(:info)} #{simple_format(notice, {}, wrapper_tag: :span)}
+
+      - if alert.present?
+        .alert.alert-danger.mt-2.mx-auto.col-10
+          span #{mi(:warning)} #{simple_format(alert, {}, wrapper_tag: :span)}
+
+      = yield
+
+    /-- フッタ --/
+    - if @show_contact == true
+      .footer_link_area
+        = link_to "/contact/new", class: "footer_contact_link" do
+          = image_tag "daihou/daihou_c.png"
+
+    footer.row.footer.mt-5.pb-5
+      .footer_compnies.col-12.col-sm-7.col-md-6.pt-3
+        = link_to "./" do
+          = image_tag "daihou/daihou_logo_w_02.png", class: :footer_logo, alt: "大宝機械株式会社"
+        .footer_zip 〒 578-0965
+        .footer_address 大阪府 東大阪市 本庄西2-4-24
+
+      .d-none.d-sm-block.col-4.offset-1.offset-md-2.pt-3.px-3
+        .footer_menu.px-4
+          = link_to "TOP", "/"
+          = link_to "在庫機械一覧", "/machine"
+          = link_to "会社情報", "/company"
+          = link_to "アクセス", "/access"
+          = link_to "お問い合わせ", "/contact/new"

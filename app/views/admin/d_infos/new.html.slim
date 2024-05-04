@@ -1,0 +1,7 @@
+- set_meta_tags title: "自社サイト 新規お知らせ登録"
+- breadcrumb :admin_d_infos_new
+
+h1 自社サイト 新規お知らせ登録
+
+= form_with model: @d_info_form, url: "/admin/d_infos", method: :post, data: { turbo: false } do |f|
+  = render "form", f:

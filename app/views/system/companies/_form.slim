@@ -50,9 +50,8 @@
       { include_blank: false }, { class: 'form-select' })
 
   .row.mb-2
-    = f.object.rank
     .col-3.text-end = f.label :rank, "ランク", class: "col-form-label required"
-    .col-3 = f.select :rank, Company.ranks, { include_blank: false }, { class: "form-select" }
+    .col-3 = f.select :rank, f.object.select_ranks, { include_blank: false }, { class: "form-select" }
 
   = f.button(data: { turbo_confirm: "会社情報をします。よろしいですか？" },
     class: "btn btn-success d-block mx-auto my-4") do

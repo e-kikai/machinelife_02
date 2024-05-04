@@ -48,25 +48,21 @@ class ContactForm < FormBase
   def persist
     contact.assign_attributes(slice(SLICE_ATTRS).merge({ message:, return_time: }))
 
-    # contact_attrs[:message] = "#{s.join("\n")}\n\n#{other_message}".strip
-    # contact_attrs[:return_time] = r.join("\n")
-
-    # contact_attrs[:message] = message
-    # contact_attrs[:return_time] = return_time
-
     target_labels = []
 
     if @targets&.klass == Machine # 機械問い合わせ
       @targets.each do |ma|
-        ma_contact = contact.dup.update!({ machine_id: ma.id, company_id: ma.company_id })
+        ma_contact = contact.dup
+        ma_contact.update!({ machine_id: ma.id, company_id: ma.company_id })
 
         # メール送信
         ContactMailer.contact_machine(ma_contact, ma).deliver
-        target_labels << "#{ma.no} #{ma.maker} #{ma.no} #{ma.model} → #{ma.company}"
+        target_labels << "#{ma.no} #{ma.maker} #{ma.no} #{ma.model} → #{ma.company.company}"
       end
     elsif @targets&.klass == Company # 出品会社問い合わせ
       @targets.each do |co|
-        co_contact = contact.dup.update!({ company_id: co.id })
+        co_contact = contact.dup
+        co_contact.update!({ company_id: co.id })
 
         # メール送信
         ContactMailer.contact_company(co_contact, co).deliver
@@ -82,6 +78,12 @@ class ContactForm < FormBase
 
     ### 確認メール ###
     ContactMailer.contact_confirm(contact, target_labels).deliver
+
+    ### お知らせ配信 ###
+    if mailuser_flag
+      mailchimp = Mailchimp.new
+      mailchimp.set_list_member(mail, { NAME: user_name, COMPANY: user_company })
+    end
 
     true
   end

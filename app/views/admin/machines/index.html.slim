@@ -33,7 +33,7 @@ h1 在庫機械一覧
 = turbo_frame_tag :machine_list do
   / . = @pmachines.to_sql
 
-  = form_with(url: "/admin/machines/delete_all", local: true, method: :delete, html: { 'data-turbo-frame': :_top }) do |f|
+  = form_with url: "/admin/machines/delete_all", local: true, method: :delete, html: { data: { turbo_frame: :_top } } do |f|
     .row
       .col-2
         .small 検索結果 : #{number_with_delimiter @machines.count} 件
@@ -44,8 +44,13 @@ h1 在庫機械一覧
       thead
         tr
           th scope="col" style="width: 90px;" colspan=2
-            = f.button class: "btn btn-danger btn-sm"
-              | #{mi(:clear)} 削除
+            = f.button(class: "btn btn-danger btn-sm",
+              data: { turbo_confirm: "在庫機械情報の一括削除を行います。よろしいですか？" }) do
+              .show-when-enabled #{mi(:clear)} 削除
+              .show-when-disabled
+                span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+                | 削除処理中
+
           th scope="col" style="width: 30px;" 同期
           th scope="col" style="width: 90px;" 管理番号
           th scope="col" 機械名

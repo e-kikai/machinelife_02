@@ -1,0 +1,39 @@
+- set_meta_tags title: "在庫機械一覧"
+
+h1.pagetitle: .title_content 在庫機械一覧
+
+h2.minititle #{mi(:settings)} 在庫検索
+
+.filters
+  .d-none.d-md-block
+    h5 #{mi(:search)} ジャンルで検索
+    .filter_area.genre_area
+      - @filtering_genres.each do |ge, count|
+        = link_to "/machines?g=#{ge[0]}" do
+          | #{ge[1].truncate(9)} (#{count})
+    h5 #{mi(:search)} メーカーで検索
+    .filter_area.maker_area
+      - @filtering_makers.each do |ma, count|
+        = link_to "/machines?ma=#{ma}" do
+          | #{ma.truncate(9)} (#{count})
+
+  .row.my-2.d-md-none
+    .col-sm-6.col-12
+      .btn-group
+        = button_tag type: :button, class: "btn btn-secondary dropdown-toggle", 'data-bs-toggle': :dropdown, 'aria-expanded': false do
+          | #{mi(:search)} ジャンルで検索
+        ul.dropdown-menu
+          - @filtering_genres.each do |ge, count|
+            li = link_to "/machines?g=#{ge[0]}", class: "dropdown-item" do
+              | #{ge[1]} (#{count})
+    .col-sm-6.col-12
+      .btn-group
+        = button_tag type: :button, class: "btn btn-secondary dropdown-toggle", 'data-bs-toggle': :dropdown, 'aria-expanded': false do
+          | #{mi(:search)} メーカーで検索
+        ul.dropdown-menu
+          - @filtering_makers.each do |ma, count|
+            li = link_to "/machines?ma=#{ma}", class: "dropdown-item" do
+              | #{ma} (#{count})
+
+.top_new_area.row.row-cols-2.row-cols-sm-3.row-cols-md-4
+  = render partial: "/daihou/machines/machine_panel", collection: @machines, as: :machine

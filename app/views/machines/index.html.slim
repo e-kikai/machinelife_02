@@ -8,31 +8,21 @@ h1 = @title
 = form_with(url: request.fullpath, local: true, method: :get, html: { 'data-turbo-frame': :machine_list, id: :filtering_from }) do |f|
   .row.g-0.my-1.p-1.border.border-success.small
     .col-2.fw-bold #{mi(:filter_alt)} ジャンル
-    - @filtering_genres.each.with_index do |(ge, count), i|
-      - if i == 10
-        .col-2 = link_to "#genre_idsCol", data: { 'bs-toggle': :collapse } do
-          | #{mi(:more_horiz)} もっと表示
-        - break
-      .col-2 = render "filtering_checkbox", { target: :genre_ids, label: ge[1], value: ge[0], count: }
-
-    #genre_idsCol.collapse.row.g-0
-      - @filtering_genres.each.with_index do |(ge, count), i|
-        - next if i < 10
-        .col-2 = render "filtering_checkbox", { target: :genre_ids, label: ge[1], value: ge[0], count: }
+    = render partial: "filtering_checkbox", collection: @fc_genres[0..9], as: :d
+    - if @fc_genres[10].present?
+      .col-2 = link_to "#genre_idsCol", data: { 'bs-toggle': :collapse } do
+        | #{mi(:more_horiz)} もっと表示
+      #genre_idsCol.collapse.row.g-0
+        = render partial: "filtering_checkbox", collection: @fc_genres[10..], as: :d
 
   .row.g-0.my-1.p-1.border.border-success.small
     .col-2.fw-bold #{mi(:filter_alt)} メーカー
-    - @filtering_makers.each.with_index(0) do |(maker, count), i|
-      - if i == 10
-        .col-2 = link_to "#makersCol", data: { 'bs-toggle': :collapse } do
-          | #{mi(:more_horiz)} もっと表示
-        - break
-      .col-2 = render "filtering_checkbox", target: :makers, label: maker, value: maker, count:
-
-    #makersCol.collapse.row.g-0
-      - @filtering_makers.each.with_index(0) do |(maker, count), i|
-        - next if i < 10
-        .col-2 = render "filtering_checkbox", target: :makers, label: maker, value: maker, count:
+    = render partial: "filtering_checkbox", collection: @fc_makers[0..9], as: :d
+    - if @fc_genres[10].present?
+      .col-2 = link_to "#maker_idsCol", data: { 'bs-toggle': :collapse } do
+        | #{mi(:more_horiz)} もっと表示
+      #maker_idsCol.collapse.row.g-0
+        = render partial: "filtering_checkbox", collection: @fc_makers[10..], as: :d
 
   .row.g-1.mb-2
     .col-3
@@ -118,3 +108,5 @@ h1 = @title
   .row
     .col-2.small 検索結果 : #{number_with_delimiter @machines.count} 件
     .col == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
+
+= render "mnok_ads", keywords: @title

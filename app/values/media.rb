@@ -1,7 +1,8 @@
 class Media
   attr_reader :file, :media_path, :name
 
-  NOTHING_URL = "machine/noimage.png".freeze
+  NOTHING_URL = "machine/noimage_02.png".freeze
+  DAIHOU_NOTHING_URL = "daihou/daihou_noimg.png".freeze
 
   def initialize(file, media_path, name = "")
     @file       = file
@@ -10,12 +11,12 @@ class Media
     freeze
   end
 
-  def thumbnail
-    @file.present? ? "#{@media_path}thumb_#{@file}" : NOTHING_URL
+  def thumbnail(noimage: NOTHING_URL)
+    @file.present? ? "#{@media_path}thumb_#{@file}" : noimage
   end
 
-  def url
-    @file.present? ? "#{@media_path}#{@file}" : NOTHING_URL
+  def url(noimage: NOTHING_URL)
+    @file.present? ? "#{@media_path}#{@file}" : noimage
   end
 
   ### ファイルの読み込み ###

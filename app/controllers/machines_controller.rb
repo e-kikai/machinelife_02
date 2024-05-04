@@ -80,5 +80,9 @@ class MachinesController < ApplicationController
     @filtering_genres = @machines.group("machines.genre_id", "genres.genre").order(count: :desc, genre_id: :asc).limit(100).count
     @filtering_makers = @machines.where.not(maker2: "").group("COALESCE(makers.maker_master, machines.maker2)").order(count: :desc).limit(100).count
     @filtering_addr1s = @machines.where.not(addr1: "").group(:addr1).order(count: :desc).count.map { |k, v| ["#{k} (#{v})", k] }
+
+    # filter check 用
+    @fc_genres = @filtering_genres.map { |k, v| { target: :genre_ids, label: k[1], value: k[0], count: v, cls: "col-2" } }
+    @fc_makers = @filtering_makers.map { |k, v| { target: :makers, label: k, value: k, count: v, cls: "col-2" } }
   end
 end

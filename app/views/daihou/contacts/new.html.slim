@@ -1,0 +1,80 @@
+- set_meta_tags title: "お問い合わせ"
+
+h1.pagetitle: .title_content お問い合わせ
+
+h2.minititle #{mi(:phone)} 電話でお問い合わせ
+
+p.contact_message
+  strong = phone_to @company.contact_tel, itemprop: :tel
+  | <br /> (受付時間 : 9:00 ～17:00)
+
+h2.minititle #{mi(:send)} フォームからお問い合わせ
+
+p.contact_message
+  | 以下のお問い合わせフォームに必要事項を明記の上、ご送信ください。<br />
+  | 担当者が確認次第、折り返しご連絡を差し上げます。
+
+= form_with model: @contact_form, url: "/contact", method: :post, class: :contact, data: { turbo: false } do |f|
+
+  = render 'layouts/error_messages', obj: f.object
+
+  - if @targets.present?
+    .row.mb-3
+      .col-4.text-end.col-form-label お問い合わせ機械
+      .col-8
+        - @targets.each do |ma|
+          .form-control-plaintext
+            | 管理番号 : #{ma.no}
+            = link_to ma.full_name, "/machines/#{ma.id}"
+
+            = hidden_field_tag "m[]", ma.id
+
+  .row.mb-3
+    .col-4.text-end = f.label :mail, class: "col-form-label required" do
+      | メールアドレス <span class='text-danger'>(必須)</span>
+    .col-8 = f.email_field :mail, class: "form-control", required: true
+
+  .row.mb-3
+    .col-4.text-end = f.label :user_company, class: "col-form-label" do
+      | 会社名 <span class='text-danger'>(必須)</span>
+    .col-8
+      = f.text_field :user_company, class: "form-control", required: true
+      .form-text <span class="text-danger">※</span> 個人の場合は個人名を記入してください
+
+  .row.mb-3
+    .col-4.text-end = f.label :user_name, "担当者名", class: "col-form-label"
+    .col-8 = f.text_field :user_name, class: "form-control"
+
+  .row.mb-3
+    .col-4.text-end = f.label :tel, "電話番号", class: "col-form-label"
+    .col-8 = f.telephone_field :tel, class: "form-control"
+
+  .row.mb-3
+    .col-4.text-end = f.label :addr1, "都道府県", class: "col-form-label"
+    .col-8 = f.select :addr1, State.selector_states, { include_blank: "▼ 選択 ▼" }, { class: "form-control" }
+
+  .row.mb-3
+    = f.label :message, class: "col-4 text-end col-form-label" do
+      | お問い合わせ内容 <span class='text-danger'>(必須)</span>
+    .col-8
+      = f.text_area :message, class: "form-control", style: "height:8rem;"
+
+  .row.mb-3
+    legend.col-4.text-end.col-form-label 希望連絡方法
+    .col-8
+      - ContactForm::RETURN_TYPES.each do |typ|
+        .form-check
+          = f.check_box :r, { multiple: true, include_hidden: false, class: "form-check-input" }, typ
+          = f.label :r, typ, class: "form-check-label", value: typ
+      = f.label :fax, "FAX番号", class: "col-form-label"
+      = f.telephone_field :fax, class: "form-control", placeholder: "FAXで連絡を希望される場合"
+
+  .row.mb-3
+    .col-auto.m-auto = recaptcha_tags
+
+  = f.button(data: { turbo_confirm: "お問い合わせメールを送信します。よろしいですか？" },
+      class: "btn btn-primary d-block mx-auto col-10 col-md-6 my-4 submit") do
+        span.show-when-enabled #{mi(:send)} お問い合わせを送信
+        span.show-when-disabled
+          span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+          | 処理中

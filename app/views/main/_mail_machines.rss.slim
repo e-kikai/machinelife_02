@@ -1,0 +1,36 @@
+h2 style="border-left: 6px solid #147543; margin: 8px;font-size: 18px;font-weight: bold;text-indent: 13px;"
+  | マシンライフ中古機械情報 新着情報
+. style="margin: 8px 0;" #{@date.strftime("%Y/%-m/%-d")}に登録された中古機械新着情報をお送りいたします。(総件数:#{@machine_count}件)
+
+ul
+  - @genres.each do |ge|
+    li
+      = link_to "#{ge.genre} (#{ge.machines.length})", "#{root_url}/machines/genre/#{ge.id}"
+      ul
+        - ge.machines.each do |ma|
+          li = link_to "#{ma.full_name} :  #{ma.company.company_remove_kabu} ", "#{root_url}/machines/#{ma.id}"
+
+- if @bidinfos.present?
+  h2 style="border-left: 6px solid #147543; margin: 8px;font-size: 18px;font-weight: bold;text-indent: 13px;"
+    | 入札会情報
+  table
+    thead
+      tr
+        th 入札会名
+        th 主催者名
+        th 会場
+        th 下見期間
+        th 入札締切日時
+
+    tbody
+      - @bidinfos.each do |bi|
+        td = bi.bid_name
+        td = bi.bid_name
+        td = bi.place
+        td #{l(bi.preview_start_date)} 〜 #{l(bi.preview_en_date)}
+        td = l(bi.bid_date)
+
+footer style="margin-top: 8px;width: 100%;height: 30px;line-height: 30px;text-align: center;background: #111;color: #fff;"
+  | Copyright © #{Time.current.strftime("%Y")}
+  = link_to "全日本機械業連合会", root_url, style: "color:#FFF;margin:8px;"
+  | All Rights Reserved.

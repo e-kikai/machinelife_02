@@ -10,7 +10,7 @@ h1 = @title
 
     .row.mb-2
       legend.col-4.text-end.col-form-label お問い合わせ先
-      .col-8: ol
+      .col-8:.form-control-plaintext: ol
         - if @targets&.klass == Machine
           - @targets.each do |ma|
             li

@@ -1,12 +1,11 @@
 # Set the host name for URL creation
-SitemapGenerator::Sitemap.default_host = "http://www.example.com"
+SitemapGenerator::Sitemap.default_host = "https://www.zenkiren.net"
 
 SitemapGenerator::Sitemap.create do
   add '/', priority: 1.0, changefreq: 'daily'
 
   ### 商品詳細 ###
-  machines = Machine.sales
-  machines.only_machines.pluck(:id).each do |id|
+  Machine.sales.only_machines.pluck(:id).each do |id|
     add "/products/#{id}", priority: 0.95, changefreq: 'daily'
   end
 
@@ -17,7 +16,6 @@ SitemapGenerator::Sitemap.create do
   ### 新着商品 ###
   add "/news/machines", priority: 0.75, changefreq: 'daily'
   add "/news/tools", priority: 0.7, changefreq: 'daily'
-
 
   ### 大ジャンル ###
   LargeGenre.where(xl_genre_id: XlGenre::MACHINE_IDS).pluck(:id).each do |id|
@@ -34,12 +32,12 @@ SitemapGenerator::Sitemap.create do
   end
 
   ### メーカー ###
-  machines.where.not(maker2: "").group("COALESCE(makers.maker_master, machines.maker2)").count.each do |maker, count|
+  Machine.sales.where.not(maker2: "").distinct.pluck(Arel.sql("COALESCE(makers.maker_master, machines.maker2) as ma")).each do |maker|
     add "/products/maker/#{maker}", priority: 0.6, changefreq: 'daily'
   end
 
   ### 出品会社 ###
-  machines.group("company_id").count.each do |id, count|
+  Machine.sales.distinct.pluck(:company_id).each do |id|
     add "/companies/#{id}", priority: 0.65, changefreq: 'daily'
     add "/products/company/#{id}", priority: 0.65, changefreq: 'daily'
   end

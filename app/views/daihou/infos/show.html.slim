@@ -1,0 +1,17 @@
+- set_meta_tags title: "お知らせ : #{@d_info.title}"
+
+h1.pagetitle: .title_content お知らせ
+
+.row.infos
+  .col-md-8.order-md-2.p-3
+    h5 #{mi(:info)} #{@d_info.info_date} #{@d_info.title}
+    / p #{raw Rinku.auto_link(h(simple_format(@d_info.contents)))}
+    p = raw Rinku.auto_link(h(simple_format(@d_info.contents)))
+
+  nav#d-docs-nav.col-md-4.order-md-1.bd-links.p-3
+    h6 #{mi(:list)} お知らせ一覧
+    - @d_infos.each do |di|
+        dt = l(di.info_date)
+        dd = link_to di.title, "/infos/#{di.id}"
+    .text-end.mt-4 = link_to "/infos" do
+      . → #{mi(:info)} 過去のお知らせはこちら

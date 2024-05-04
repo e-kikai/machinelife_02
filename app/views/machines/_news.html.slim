@@ -3,9 +3,5 @@
     = image_tag machine.top_image_thumb, alt: machine.full_name, class: "news_thumbnail float-start me-4"
 
   .text-danger #{mi(:more_time)} #{machine.elapsed}
-  = link_to "/machines/#{machine.id}" do
-    .d-inline-block> = machine.maker
-    .d-inline-block> = machine.name
-    .d-inline-block> = machine.model
-    .d-inline-block> = machine.myear
-    .d-inline-block = " : #{machine.company.company_remove_kabu}"
+  . = link_to "/machines/#{machine.id}" do
+    | #{machine.full_name} #{machine.myear} : #{machine.company.company_remove_kabu}

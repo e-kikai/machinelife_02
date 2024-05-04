@@ -1,4 +1,4 @@
-class Admin::CompaniesController < ApplicationController
+class Admin::CompaniesController < Admin::ApplicationController
   def edit
     @company_form = Admin::CompanyForm.new(company: current_company)
   end

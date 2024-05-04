@@ -1,0 +1,27 @@
+※ このメールは、自動返信メールです。
+このメールに直接返信しないようお願いします。
+
+<%= @contact.user_name %> 様
+
+<%= @contact.company.company %> ウェブサイトのお問い合せフォームから、
+お問い合わせありがとうございました。
+
+お問い合わせをましたので、
+回答をしばらくお待ちください。
+
+<%= @targets.join("\n") %>
+
+<%= @contact.message %>
+
+＜お客様情報＞
+お名前 : <%= @contact.user_name %>
+会社名 : <%= @contact.user_company %>
+都道府県 : <%= @contact.addr1 %>
+メールアドレス : <%= @contact.mail %>
+TEL : <%= @contact.tel %>
+FAX : <%= @contact.fax %>
+<%= @contact.return_time %>
+
+
+<%= @contact.company.company %>
+https://www.daihou.co.jp/

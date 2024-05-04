@@ -62,12 +62,26 @@
     = image_tag "banner/twitter.png", alt: "Twitter"
 
 /-- 新着 --/
-h2 新着中古機械
+h2
+  .row
+    .col-auto 新着中古機械
+    .col-auto.ms-auto
+      .d-inline-block.mx-2 = link_to "/feed.rss" do
+        | #{mi(:rss_feed)} 新着RSS
+      .d-inline-block.mx-2 = link_to "/news/machines" do
+        | #{mi(:keyboard_double_arrow_right)} 新着中古機械一覧
+      .d-inline-block.mx-2 = link_to "/news/tools" do
+        | #{mi(:keyboard_double_arrow_right)} 新着中古工具一覧
 
 .row.gx-0
   - @news.each_with_index do |ma, i|
     .col-6 class=((i % 4).in?([1, 2]) ? "bg-light" : "bg-white")
-      = render partial: "machines/news", locals: { machine: ma }
+      .py-1.ps-4
+        = link_to "/machines/#{ma.id}" do
+          = image_tag ma.top_image_thumb, alt: ma.full_name, class: "news_thumbnail float-start me-4"
+
+        .text-danger #{mi(:more_time)} #{ma.elapsed}
+        . = link_to "#{ma.full_name} #{ma.myear} : #{ma.company.company_remove_kabu}", "/machines/#{ma.id}"
 
 /-- 大バナー枠 --/
 .row.gx-0.my-2

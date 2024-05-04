@@ -1,0 +1,79 @@
+doctype html
+html lang="ja"
+  head
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    = display_meta_tags(zenkiren_meta_tags)
+
+    = stylesheet_link_tag 'https://fonts.googleapis.com/icon?family=Material+Icons', media: 'all'
+    = stylesheet_link_tag "application.css", 'data-turbo-track' => "reload"
+
+    = javascript_importmap_tags
+
+    /-- Google tag GA4 Turbo --/
+    - if Rails.env.production?
+      script[async src="https://www.googletagmanager.com/gtag/js?id=G-9FCEEFBV1P"]
+      javascript:
+        document.addEventListener('turbo:load', (event) => {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            window.dataLayer.push(arguments);
+          }
+
+          gtag('js', new Date());
+          gtag('config', 'G-9FCEEFBV1P', { page_location: event.detail.url });
+          gtag('event', 'page_view', {
+            page_location: event.detail.url,
+            send_to: 'G-9FCEEFBV1P',
+          });
+        });
+
+  body.bg-dark style="background-image:none;"
+    /** ヘッダ **/
+    header
+      .p-3.bg-primary
+      . = image_tag "zenkiren/zenkiren_logo.png", alt: "全日本機械業連合会(全機連)", class: "w-100"
+      .p-1.bg-primary.border-top.border-secondary
+
+    .main_container.p-0
+      .row.g-0
+        .col-3.bg-primary-subtle.p-2
+          .my-1.px-2.py-1.bg-.bg-secondary.text-white.fw-bold.rounded メニュー
+
+          .my-1.px-2.py-1.bg-white.border-bottom.border-secondary-subtle = link_to "トップ", "/", class: "text-dark w-100"
+          .my-1.px-2.py-1.bg-white.border-bottom.border-secondary-subtle = link_to "全機連とは", "/desc", class: "text-dark w-100"
+          .my-1.px-2.py-1.border-bottom.border-secondary-subtle = link_to "全機連会則", "/regulations", class: "text-dark w-100"
+          .my-1.px-2.py-1.bg-white.border-bottom.border-secondary-subtle 会員のご紹介
+          .my-1.px-2.py-1.border-bottom.border-secondary-subtle = link_to "東京機械業連合会", "/companies/tokyo", class: "text-dark w-100"
+          .my-1.px-2.py-1.border-bottom.border-secondary-subtle = link_to "大阪機械業連合会", "/companies/osaka", class: "text-dark w-100"
+          .my-1.px-2.py-1.border-bottom.border-secondary-subtle = link_to "中部機械業連合会", "/companies/chubu", class: "text-dark w-100"
+          .my-1.px-2.py-1.bg-white.border-bottom.border-secondary-subtle = link_to "問い合わせ", "#{Rails.application.credentials.site[:machinelife]}/contacts/new", class: "text-dark w-100", target: :_blank, rel: :noopener
+          .my-1.px-2.py-1.bg-white.border-bottom.border-secondary-subtle = link_to "協賛企業", "/sponsors", class: "text-dark w-100"
+
+        .col-9.p-4
+          - if notice.present?
+            .alert.alert-success.mt-2.mx-auto.col-10
+              span #{mi(:info)} #{simple_format(notice, {}, wrapper_tag: :span)}
+
+          - if alert.present?
+            .alert.alert-danger.mt-2.mx-auto.col-10
+              span #{mi(:warning)} #{simple_format(alert, {}, wrapper_tag: :span)}
+
+          = yield
+
+          hr.my-4
+
+          . = link_to "#{Rails.application.credentials.site[:machinelife]}/", target: :_blank, rel: :noopener do
+            = image_tag("header/logo_machinelife.png", alt: "マシンライフ", class: "border border-secondary")
+
+      /** フッタ **/
+      footer
+        .text-center.py-4.bg-primary.text-white
+          |> Copyright &copy; #{Time.current.year}
+          => link_to "全日本機械業連合会", "/", class: "text-white"
+          | All Rights Reserved.
+
+    /** トップリンク **/
+    = link_to "#", class: "btn btn-outline-success btn-lg position-fixed bottom-0 end-0 m-3" do
+      | #{mi(:change_history, "fw-bold")}

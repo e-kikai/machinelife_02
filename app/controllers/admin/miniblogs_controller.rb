@@ -1,4 +1,4 @@
-class Admin::MiniblogsController < ApplicationController
+class Admin::MiniblogsController < Admin::ApplicationController
   def create
     @miniblog_form = Admin::MiniblogForm.new(miniblog_params, user: current_user)
 

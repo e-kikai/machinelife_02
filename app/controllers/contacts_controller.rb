@@ -1,9 +1,11 @@
 class ContactsController < ApplicationController
   before_action :set_targets, only: %i[new create]
 
+  def index; end
+
   def new
     # デフォルト入力
-    default_params = session[:contact_info]
+    default_params = session[:contact_info] || {}
     default_params[:other_message] = params[:mes]
 
     @contact_form = ContactForm.new(default_params, targets: @targets)

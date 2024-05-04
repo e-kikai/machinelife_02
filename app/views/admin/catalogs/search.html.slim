@@ -30,31 +30,21 @@
 
   .row.g-0.my-1.p-1.border.border-success.small
     .col-2.fw-bold #{mi(:filter_alt)} ジャンル
-    - @filtering_genres.each.with_index do |(ge, count), i|
-      - if i == 10
-        .col-2 = link_to "#genre_idsCol", data: { 'bs-toggle': :collapse } do
-          | #{mi(:more_horiz)} もっと表示
-        - break
-      .col-2 = render "machines/filtering_checkbox", { target: :genre_ids, label: ge[1], value: ge[0], count: }
-
-    #genre_idsCol.collapse.row.g-0
-      - @filtering_genres.each.with_index do |(ge, count), i|
-        - next if i < 10
-        .col-2 = render "machines/filtering_checkbox", { target: :genre_ids, label: ge[1], value: ge[0], count: }
+    = render partial: "machines/filtering_checkbox", collection: @fc_genres[0..9], as: :d
+    - if @fc_genres[10].present?
+      .col-2 = link_to "#genre_idsCol", data: { 'bs-toggle': :collapse } do
+        | #{mi(:more_horiz)} もっと表示
+      #genre_idsCol.collapse.row.g-0
+        = render partial: "machines/filtering_checkbox", collection: @fc_genres[10..], as: :d
 
   .row.g-0.my-1.p-1.border.border-success.small
     .col-2.fw-bold #{mi(:filter_alt)} メーカー
-    - @filtering_makers.each.with_index(0) do |(maker, count), i|
-      - if i == 10
-        .col-2 = link_to "#makersCol", data: { 'bs-toggle': :collapse } do
-          | #{mi(:more_horiz)} もっと表示
-        - break
-      .col-2 = render "machines/filtering_checkbox", target: :makers, label: maker, value: maker, count:
-
-    #makersCol.collapse.row.g-0
-      - @filtering_makers.each.with_index(0) do |(maker, count), i|
-        - next if i < 10
-        .col-2 = render "machines/filtering_checkbox", target: :makers, label: maker, value: maker, count:
+    = render partial: "machines/filtering_checkbox", collection: @fc_makers[0..9], as: :d
+    - if @fc_genres[10].present?
+      .col-2 = link_to "#maker_idsCol", data: { 'bs-toggle': :collapse } do
+        | #{mi(:more_horiz)} もっと表示
+      #maker_idsCol.collapse.row.g-0
+        = render partial: "machines/filtering_checkbox", collection: @fc_makers[10..], as: :d
 
   .row.g-1.mb-2
     .col-3

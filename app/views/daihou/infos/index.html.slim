@@ -1,0 +1,11 @@
+- set_meta_tags title: "お知らせ一覧"
+
+h1.pagetitle: .title_content お知らせ
+
+.row.infos
+  nav#d-docs-nav.all_infos.bd-links.p-3
+    h6 #{mi(:list)} お知らせ一覧
+    - @d_infos.each do |di|
+      .
+        dt = l(di.info_date)
+        dd = link_to di.title, "/infos/#{di.id}"

@@ -1,23 +1,40 @@
 - set_meta_tags title: "サイトマップ"
-- breadcrumb  :something,   "サイトマップ"
+- breadcrumb :something, "サイトマップ"
 
-h1 =  "サイトマップ"
+h1 サイトマップ
 
 h2 ジャンル
 .row.g-2.mb-4
   - @xl_genres.each do |xg|
-    h3 = xg.xl_genre
+    h5 = xg.xl_genre
     .row
       - xg.large_genres.each do |lg|
-        .col style="min-width:16.6666%;" = link_to "/machines/large_genre/#{lg.id}" do
+        .col-auto style="min-width:16.6666%;" = link_to "/machines/large_genre/#{lg.id}" do
           | #{lg.large_genre}
           small.text-danger = " (#{number_with_delimiter(@counts_by_large_genre[lg.id])})"
 
-
-  .col-3
 h2 メーカー
 .row.g-2.mb-4
   - @makers.sort.to_h.each do |maker, count|
-    .col style="min-width:16.6666%;" = link_to "/machines/maker/#{maker}" do
+    .col-auto style="min-width:16.6666%;" = link_to "/machines/maker/#{maker}" do
       | #{maker}
+      small.text-danger = " (#{number_with_delimiter(count)})"
+
+h2 出品会社
+.row.g-2.mb-4
+  - @companies.each do |company|
+    - next if @counts_by_company[company.id].blank?
+    .col-auto style="min-width:50%;"
+      = link_to company.company, "/companies/#{company.id}"
+      = " → "
+      = link_to "/machines/company/#{company.id}" do
+        | 在庫一覧
+        small.text-danger = " (#{number_with_delimiter(@counts_by_company[company.id])})"
+
+h2 都道府県
+.row.g-2.mb-4
+  - @counts_by_state.to_h.each do |addr1, count|
+    - next if addr1.blank? || addr1.length > 5
+    .col-auto style="min-width:16.6666%;" = link_to "/machines?k=#{addr1}" do
+      | #{addr1}
       small.text-danger = " (#{number_with_delimiter(count)})"

@@ -1,1 +1,9 @@
 # See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+User-agent: *
+Disallow: /admin
+Disallow: /system
+Disallow: /toppage_logs
+Disallow: /detail_logs
+Disallow: /search_logs
+Disallow: /contacts
+Disallow: /catalogs

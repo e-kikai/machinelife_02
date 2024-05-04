@@ -180,7 +180,6 @@ h1 #{@machine.full_name}
             button.carousel-control-next type="button" data-bs-target="#nitamonosCarousel" data-bs-slide="next" style="width:6%;"
               | #{mi(:arrow_forward_ios, "text-dark fs-1 fw-bolder")}
 
-  .keywords
-    | #{@machine.hint} #{@machine.maker2} #{@machine.model2}
-    | #{@machine.maker_m.try(:maker_master)} #{@machine.maker_m.try(:maker_kana)}
-    | #{@machine.genre.genre} #{@machine.genre.genre_kana}
+  - keywords = "#{@machine.full_name} #{@machine.hint} #{@machine.maker2} #{@machine.model2} #{@machine.maker_m.try(:maker_master)} #{@machine.maker_m.try(:maker_kana)}"
+  = render "mnok_ads", keywords:
+  .keywords = keywords

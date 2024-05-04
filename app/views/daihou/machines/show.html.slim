@@ -1,0 +1,70 @@
+- set_meta_tags title: @machine.full_name
+
+h2.minititle #{mi(:settings)} #{@machine.full_name}
+
+.row
+  .images.col-12.col-md-8
+    .carousel-base
+      #imagesCarousel.carousel.carousel-dark.slide data-bs-interval="false"
+        .carousel-inner.ratio.ratio-4x3
+          .carousel-item.active
+            = image_tag @machine.top_image_url, alt: @machine.full_name, class: "d-block w-100 h-100 object-fit-contain"
+
+          - @machine.machine_images.each do |img|
+            .carousel-item
+              = image_tag img.image.url, alt: @machine.full_name, class: "d-block w-100 h-100 object-fit-contain"
+
+          - @machine.imgs_parsed.medias.each do |img|
+            .carousel-item
+              = image_tag img.url, alt: @machine.full_name, class: "d-block w-100 h-100 object-fit-contain"
+
+        button.carousel-control-prev type="button" data-bs-target="#imagesCarousel" data-bs-slide="prev"
+          | #{mi(:arrow_back_ios, "text-dark fs-1 fw-bolder")}
+          span.visually-hidden Previous
+
+        button.carousel-control-next type="button" data-bs-target="#imagesCarousel" data-bs-slide="next"
+          | #{mi(:arrow_forward_ios, "text-dark fs-1 fw-bolder")}
+          span.visually-hidden Next
+
+    /** カルーセルリスト **/
+    .imgs
+      .row
+        .col-1.p-1 style="width:20%;"
+          . data-bs-target="#imagesCarousel" data-bs-slide-to="0" class="active ratio ratio-1x1 active" aria-current="true"
+            = image_tag @machine.top_image_thumb, alt: @machine.full_name, class: "object-fit-cover"
+
+        - @machine.machine_images.each_with_index do |img, i|
+          .col.p-1 style="flex: 0 0 auto;width:20%;"
+            . data-bs-target="#imagesCarousel" data-bs-slide-to=(i + 1) class="active ratio ratio-1x1 active" aria-current="true"
+              = image_tag img.image.thumb.url, alt: @machine.full_name, class: "object-fit-cover"
+
+        - @machine.imgs_parsed.medias.each_with_index do |img, i|
+          .col.p-1 style="flex: 0 0 auto;width:20%;"
+            . data-bs-target="#imagesCarousel" data-bs-slide-to=(i + 1) class="active ratio ratio-1x1 active" aria-current="true"
+              = image_tag img.thumbnail, alt: @machine.full_name, class: "object-fit-cover"
+
+  .details.col-12.col-md-4
+    table.table.table-striped.caption-top
+      caption #{mi(:list)} 機械詳細
+      tr
+        th.col-4 管理番号
+        td.col-8 = @machine.no
+      tr
+        th.col-4 機械名
+        td.col-8 = @machine.name
+      tr
+        th.col-4 メーカー
+        td.col-8 = @machine.maker
+      tr
+        th.col-4 型式
+        td.col-8 = @machine.model
+      tr
+        th.col-4 年式
+        td.col-8 = @machine.myear
+      tr
+        td.col-12 colspan="2"
+          .fw-bold 仕様
+          . #{simple_format(@machine.spec)}
+
+    = link_to "/contact/new?m=#{@machine.id}", class: "footer_contact_link"
+      = image_tag "daihou/daihou_mc_02.png"

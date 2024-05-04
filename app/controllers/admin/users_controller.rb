@@ -1,4 +1,4 @@
-class Admin::UsersController < ApplicationController
+class Admin::UsersController < Admin::ApplicationController
   def edit
     @password_form = Admin::PasswordForm.new(user: current_user)
   end

@@ -20,7 +20,7 @@ h1 マシンライフ 管理者ページ
     h2 在庫情報
     nav.nav.flex-column
       = link_to "/system/machines/csv", class: "nav-link" do
-        . #{mi(:upload_file)} CSV一括登録(百貨店汎用)
+        . ✕ #{mi(:upload_file)} CSV一括登録(百貨店汎用)
       = link_to "/system/xl_genres", class: "nav-link" do
         . #{mi(:category)} ジャンル管理
 
@@ -28,6 +28,8 @@ h1 マシンライフ 管理者ページ
     nav.nav.flex-column
       = link_to "/system/infos", class: "nav-link" do
         . #{mi(:info)} 事務局からのお知らせ一覧
+      = link_to "/system/", class: "nav-link" do
+        . ✕ #{mi(:schedule_send)} メール一括送信
       = link_to "/system/bidinfos", class: "nav-link" do
         . #{mi(:label)} 入札会バナー一覧
 
@@ -35,7 +37,9 @@ h1 マシンライフ 管理者ページ
     h2 電子カタログ
     nav.nav.flex-column
       = link_to "/system/catalogs/csv", class: "nav-link" do
-        . #{mi(:upload_file)} 電子カタログCSV一括登録・変更
+        . ✕ #{mi(:upload_file)} 電子カタログCSV一括登録・変更
+      = link_to "/system/catalogs/sftp", class: "nav-link" do
+        . #{mi(:folder)} SFTP設定
       = link_to "/system/catalog_requests", class: "nav-link" do
         . #{mi(:schedule_send)} カタログリクエスト一覧
 
@@ -44,9 +48,18 @@ h1 マシンライフ 管理者ページ
     ul.nav.flex-column
       li.nav-item = link_to "/system/contacts", class: "nav-link" do
         . #{mi(:mark_email_unread)} 問い合わせ一覧
+      li.nav-item = link_to "/system/contacts/total?all=1", class: "nav-link" do
+        . #{mi(:list_alt)} 問い合わせログ集計
+      li.nav-item = link_to "/system/contacts/total", class: "nav-link" do
+        . #{mi(:list_alt)} 問い合わせログ集計 (今月)
+      li 行動ログ一覧
+      li 行動ログ集計
+
+      li.nav-item = link_to "/system/contacts/formula", class: "nav-link" do
+        . #{mi(:receipt_long)} 実績用データ集計
       li.nav-item = link_to("https://analytics.google.com/analytics/web/?hl=ja&pli=1#/p395460014/reports/intelligenthome",
         class: "nav-link", target: :_blank, rel: :noopener) do
-          . #{mi(:auto_graph)} Google Analytics
+          . #{mi(:analytics)} Google Analytics
       li.nav-item = link_to("https://search.google.com/search-console?hl=ja&utm_source=wmx&utm_medium=deprecation-pane&utm_content=home&resource_id=https://www.zenkiren.net/",
         class: "nav-link", target: :_blank, rel: :noopener) do
           . #{mi(:query_stats)} Google Search Console
@@ -56,14 +69,19 @@ h1 マシンライフ 管理者ページ
           class: "nav-link", target: :_blank, rel: :noopener) do
             . #{mi(:settings_system_daydream)} AWS
 
+        li.nav-item = link_to("https://us8.admin.mailchimp.com/", class: "nav-link", target: :_blank, rel: :noopener) do
+          . #{mi(:send)} Mailchimp
+
         li.nav-item
           = link_to("/system/letter_opener/", class: "nav-link", target: :_blank, rel: :noopener) do
             . #{mi(:move_to_inbox)} letter opener
 
-    h2 会員情報
+    h2 全機連マシンライフ
 
     nav.nav.flex-column
       = link_to "/", class: "nav-link" do
-        . #{mi(:home)} マシンライフ トップページへ
+        . #{mi(:home)} マシンライフ トップページ
+      = link_to "/admin", class: "nav-link" do
+        . #{mi(:business)} 会員ページ (#{current_company.company_remove_kabu})
       = link_to "/admin/logout", data: { turbo_method: :delete, turbo_confirm: "ログアウトしますか？" }, class: "nav-link" do
         . #{mi(:logout)} ログアウト

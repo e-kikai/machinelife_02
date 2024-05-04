@@ -8,6 +8,12 @@ h1 = @title
 
 - @pnews.each_with_index do |ma, i|
   .row.gx-0
-    .col class=(i.even? ? "bg-light" : "bg-white") = render "machines/news", machine: ma
+    .col class=(i.even? ? "bg-light" : "bg-white")
+      .py-1.ps-4
+        = link_to "/machines/#{ma.id}" do
+          = image_tag ma.top_image_thumb, alt: ma.full_name, class: "news_thumbnail float-start me-4"
+
+        .text-danger #{mi(:more_time)} #{ma.elapsed}
+        . = link_to "#{ma.full_name} #{ma.myear} : #{ma.company.company_remove_kabu}", "/machines/#{ma.id}"
 
 . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1

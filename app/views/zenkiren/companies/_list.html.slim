@@ -1,0 +1,28 @@
+- groups.each do |gr|
+  - next if gr.companies.size.blank?
+
+  h2 #{gr.parent&.groupname} #{gr.groupname}
+
+  table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+    thead
+      tr.small
+        th scope="col" 会社名
+        th scope="col" style="width: 200px;" 住所
+        th scope="col" style="width: 100px;" TEL
+        th scope="col" style="width: 100px;" FAX
+        th scope="col" style="width: 50px;"  サイト
+
+    tbody
+      - gr.companies.each do |co|
+        tr
+          td = co.company
+          td
+            . 〒 #{co.zip}
+            . #{co.addr}
+
+          td = co.tel
+          td = co.fax
+          td.text-center
+            - if co.website.present?
+              = link_to co.website, rel: :noopener, target: :_blank do
+                . #{mi(:exit_to_app)}

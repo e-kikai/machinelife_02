@@ -1,0 +1,16 @@
+- set_meta_tags title: "アクセス"
+
+h1.pagetitle: .title_content アクセス
+
+.my-2
+  .zip itemprop="postalCode" 〒 #{@company.zip}
+  .addr
+    span> itemprop="region" = @company.addr1
+    span> itemprop="locality" = @company.addr2
+    span itemprop="street-address" = @company.addr3
+
+iframe.w-100[src="https://maps.google.co.jp/maps?output=embed&q=#{@company.addr}+#{@company.company}"
+  style="aspect-ratio:16/9;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"]
+
+.mt-1 = link_to "https://www.google.co.jp/maps/place/#{@company.addr}", target: :_blank, rel: :noopener do
+  . #{mi(:map)} 大きな地図を表示

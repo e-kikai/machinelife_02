@@ -1,0 +1,17 @@
+.col
+  .card.machine
+    = link_to "/machines/#{machine.id}" do
+      .machine_img
+        / .ratio.ratio-1x1 = image_tag machine.top_image_url(noimage: Media::DAIHOU_NOTHING_URL), class: "card-img-top object-fit-cover"
+        .ratio.ratio-1x1 = image_tag machine.top_image_url, class: "card-img-top object-fit-cover"
+      .card-body
+        .card-text
+          - if machine.no.present?
+            .
+              span.no_label 管理番号
+              span.no = machine.no
+          .name #{mi(:play_arrow)} #{machine.name}
+
+          span.model = machine.maker
+          span.model = machine.model
+          span.model = machine.myear

@@ -1,0 +1,85 @@
+- set_meta_tags title: "会社情報"
+
+h1.pagetitle: .title_content 会社情報
+
+h2.minititle #{mi(:business_center)} 事業内容
+
+.row.justify-content-center
+  .d-none.d-md-block.col-md-3 = image_tag "daihou/company_sagyo.jpeg", alt: "中古機械登録会社 #{@company.company} #{@company.addr}", class: "w-100"
+
+  .col-md-9.px-4.fs-5
+    ul
+      li 各種新品機械販売（鍛圧・板金機械、工作機械など）
+      li 各種中古機械買取（鍛圧・板金機械、工作機械など）
+      li 各種機械修理及びプレス特定自主検査の実施
+      li 工場内移設移転
+    . などを行っております。
+
+h2.minititle #{mi(:business)} 会社概要
+
+.row
+  .col-md-6.order-md-2
+    table.table.table-striped
+      tr
+        td.col-4 商号
+        td.col-8 = @company.company
+      tr
+        td.col-4 商号(カナ)
+        td.col-8 ダイホウキカイカブシキガイシャ
+      tr
+        td.col-4 本社所在地
+        td.col-8
+          .zip itemprop="postalCode" 〒 #{@company.zip}
+          .addr
+            span> itemprop="region" = @company.addr1
+            span> itemprop="locality" = @company.addr2
+            span itemprop="street-address" = @company.addr3
+          . = link_to "/access" do
+            . #{mi(:map)} アクセス
+          .
+            | TEL :
+            = phone_to @company.contact_tel
+          .
+            | FAX :
+            = phone_to @company.contact_fax
+          . LINEWORKS :
+          .text-break = link_to "https://works.do/R/ti/p/sakai.takeapersonforgranted@daihou", "https://works.do/R/ti/p/sakai.takeapersonforgranted@daihou", target: :_blank, rel: :noopener
+      tr
+        td.col-4 代表取締役
+        td.col-8 = @company.representative
+      tr
+        td.col-4 創業
+        td.col-8 1955年
+      tr
+        td.col-4 資本金
+        td.col-8 1000万円
+      / tr
+      /   td.col-4 従業員
+      /   td.col-8 3人(2021.9.1現在)
+      / tr
+      /   td.col-4 決算月
+      /   td.col-8 9月
+      tr
+        td.col-4 取引銀行
+        td.col-8 大阪府公安委員会許可 第１４９７号
+      tr
+        td.col-4 古物免許
+        td.col-8
+          . 三菱UFJ銀行 谷町支店
+          . 紀陽銀行 鴻池新田支店
+          . 北陸銀行 今里支店
+  .col-md-6.order-md-1.px-4 = image_tag "daihou/company_01.jpeg", alt: "中古機械登録会社 #{@company.company} #{@company.addr}", class: "w-100"
+
+h2.minititle #{mi(:clear_all)} 沿革
+
+.row.justify-content-center
+  dl.col-md-8.px-4.row
+    <dt class="col-md-4">昭和33年 4月</dt>
+    <dd class="col-md-8">大阪市南区谷町にて酒井康夫、大宝機工商会を創立</dd>
+
+    <dt class="col-md-4">昭和42年 11月</dt>
+    <dd class="col-md-8">大宝機工商会より大宝機械株式会社に社名変更</dd>
+    <dt class="col-md-4">昭和48年 8月</dt>
+    <dd class="col-md-8">大阪機械卸業団地に本社移転</dd>
+    <dt class="col-md-4">平成17年 11月</dt>
+    <dd class="col-md-8">酒井克眞代表取締役に就任</dd>

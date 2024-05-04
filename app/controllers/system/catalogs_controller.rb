@@ -30,4 +30,6 @@ class System::CatalogsController < System::ApplicationController
     params.require(:system_catalog_csv_form)
       .map { |ca| ca.permit(:uid, :maker, :maker_kana, :year, :catalog_no, :models, genre_ids: []) }
   end
+
+  def sftp; end
 end

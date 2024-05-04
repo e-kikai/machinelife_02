@@ -49,6 +49,10 @@ class Admin::CatalogsController < Admin::ApplicationController
     @filtering_makers = @catalogs.group(:maker).order(count: :desc).limit(100).count
     @filtering_genres = CatalogGenre.joins(:genre).where(catalog: @catalogs).group(:genre_id, "genres.genre").order(count: :desc).limit(100).count
 
+    # filter check 用
+    @fc_genres = @filtering_genres.map { |k, v| { target: :genre_ids, label: k[1], value: k[0], count: v, cls: "col-2" } }
+    @fc_makers = @filtering_makers.map { |k, v| { target: :makers, label: k, value: k, count: v, cls: "col-2" } }
+
     # ソート
     @catalogs = @catalogs.order(:maker, :models)
   end

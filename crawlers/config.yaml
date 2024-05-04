@@ -1,0 +1,24 @@
+# get_uri: 'http://machinelife.zenkiren.net/system/ajax/crawl_get_ex.php'
+# set_uri: 'http://machinelife.zenkiren.net/system/ajax/crawl_set_data.php'
+
+get_uri: 'http://localhost:3000/system/crawler'
+set_uri: 'http://localhost:3000/system/crawler'
+sites:
+  - dainichi
+  - ibuki
+  - kowa
+  - mechany
+  - mesena
+  - okabe
+  - okabeosaka
+  - okabekanto
+  - onuma
+  - sanwa
+  - sanwakitakanto
+  - sanwafukuyama
+  - sanzen
+  - sato
+  - tachikawa
+  - teng
+  - yms
+  - yuushi

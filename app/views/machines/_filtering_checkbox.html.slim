@@ -1,9 +1,10 @@
-- id = "chk_#{target}_#{value}"
+- id = "chk_#{d[:target]}_#{d[:value]}"
 
-.form-check.overflow-x-hidden.text-nowrap.
-  = check_box_tag("#{target}[]", value,
-    { multiple: true, include_hidden: false, class: "form-check-input", id: id, onchange: "filtering_btn.click();" })
+. class=(d[:cls] if defined?(d[:cls]))
+  .form-check.overflow-x-hidden.text-nowrap
+    = check_box_tag("#{d[:target]}[]", d[:value],
+      { multiple: true, include_hidden: false, class: "form-check-input", id:, onchange: "filtering_btn.click();" })
 
-  label.form-check-label for=id
-    = label
-    span.text-danger.small = " (#{count})"
+    label.form-check-label for=id
+      = d[:label]
+      span.text-danger.small = " (#{d[:count]})"

@@ -1,0 +1,32 @@
+- set_meta_tags title: "自社サイト お知らせ一覧"
+- breadcrumb :admin_d_infos
+
+h1 自社サイト お知らせ一覧
+
+.my-2
+  = link_to "/admin/d_infos/new", class: "btn btn-primary" do
+    . #{mi(:create)} 新規書き込み
+
+. == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
+
+table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+  thead
+    tr.small
+      th scope="col" style="width: 140px;" 日付
+      th scope="col" style="width: 140px;" 売り買い
+      th scope="col" 内容
+      th scope="col" style="width: 140px;" 作成日時
+      th scope="col" style="width: 60px;"  削除
+  tbody
+    - @pd_infos.each do |di|
+      tr
+        td.text-end #{l(di.info_date)}
+        td = link_to di.title, "/admin/d_infos/#{di.id}/edit"
+        td.text-wrap.text-break = simple_format(di.contents)
+        td.text-end #{l(di.created_at)}
+        td.text-center
+          = link_to("/admin/d_infos/#{di.id}", class: "btn btn-outline-danger btn-xs",
+            data: { turbo_method: :delete, turbo_confirm: "このお知らせを情報を削除します。よろしいですか？" }) do
+              . #{mi(:clear)} 削除
+
+. == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1

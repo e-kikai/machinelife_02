@@ -103,3 +103,10 @@ h1 #{@company.company} 会社情報
       /-- MAP --/
       iframe.w-100[src="https://maps.google.co.jp/maps?output=embed&q=#{@company.addr}+#{@company.company}"
         style="aspect-ratio:3/4;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"]
+
+      .mt-1 = link_to "https://www.google.co.jp/maps/place/#{@company.addr}", target: :_blank, rel: :noopener do
+        . #{mi(:map)} 大きな地図を表示
+
+- if @company.id == 1
+  . ものづくりオークション 出品中
+  = render "machines/mnok_ads", keywords: "堀川機械"

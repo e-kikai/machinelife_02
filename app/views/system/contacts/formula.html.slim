@@ -1,0 +1,73 @@
+- set_meta_tags title: "実績用データ集計"
+- breadcrumb :system_something, "実績用データ集計"
+
+h1 実績用データ集計
+
+= form_tag "/system/contacts/formula", method: :get do
+  .row.my-2
+    .col-4
+      .input-group
+        = select_tag(:month, options_for_select(@month_select, params[:month]), { class: "form-select" })
+        = button_tag type: :submit, class: "btn btn-primary btn-sm" do
+          | #{mi(:search)} 年月選択
+
+/ = @machine_temp.to_sql
+
+.row.my-2
+  .col-10.m-auto
+    h2 #{@month.strftime('%Y年%-m月')}の集計
+
+    p
+      |
+        ・ 在庫情報について、<br />
+        登録総数は  #{number_with_delimiter(@machine_count)}件、<br />
+        うち、当月の新規登録数は #{number_with_delimiter(@machine_create_count)}件 (一日平均約 #{number_with_delimiter((@machine_create_count / @days).round(3))}件)、<br />
+        登録を行った会員会社数は #{number_with_delimiter(@machine_create_company_count)}社でした。
+
+    p 登録数上位5位のジャンルは、以下のとおりです。
+    ol
+      - @machine_create_genre_ranking.each do |k, v|
+        / li #{k.xl_genre.xl_genre} > #{k.large_genre.large_genre} > #{k.genre} の #{v}件
+        li #{k[2]} > #{k[1]} > #{k[0]} の #{v}件
+
+    hr
+
+    p
+      |
+        削除(売却)数は #{number_with_delimiter(@machine_delete_count)}件 (一日平均約 #{number_with_delimiter((@machine_delete_count / @days).round(3))}件)、<br />
+        削除(売却)を行った会員会社数は #{number_with_delimiter(@machine_delete_company_count)}社 でした。
+
+    p 削除(売却)数上位5位のジャンルは、以下のとおりです。<br />
+    ol
+      - @machine_delete_genre_ranking.each do |k, v|
+        / li #{k.xl_genre.xl_genre} > #{k.large_genre.large_genre} > #{k.genre} の #{v}件
+        li #{k[2]} > #{k[1]} > #{k[0]} の #{v}件
+
+    hr
+
+    p
+      |
+        ・ 問合せについて、<br />
+        問合せ総数は #{number_with_delimiter(@contact_count)}件 (一日平均約#{number_with_delimiter((@contact_count / @days).round(3))}件)、<br />
+        (年間累計問合せ数 #{number_with_delimiter(@contact_year_count)}件)<br />
+        問い合わせを行ったユーザ数は #{number_with_delimiter(@contact_mail_count)}人 (一人平均約 #{number_with_delimiter((@contact_mail_count / @days).round(3))}件)でした。
+
+      p
+        |
+          うち、在庫情報についての問合せは #{number_with_delimiter(@contact_machine_count)}件 (一日平均約 #{number_with_delimiter((@contact_machine_count / @days).round(3))}件)、<br />
+          問合せ数上位5位の情報は、以下のとおりです。
+      ol
+        - @contact_machine_ranking.each do |k, v|
+          li #{k[0]} > #{k[1]} > #{k[2]} の #{v}件
+
+      p
+        |
+          登録会社への問合せは #{number_with_delimiter(@contact_company_count)}件 (一日平均約 #{number_with_delimiter((@contact_company_count / @days).round(3))}件)、<br />
+          事務局への問合せは #{number_with_delimiter(@contact_system_count)}件 (一日平均約 #{number_with_delimiter((@contact_system_count / @days).round(3))}件)でした。
+
+      p 問合せ数上位5位の都道府県(無記入を除く)は、以下のとおりです。
+      ol
+        - @contact_addr1_ranking.each do |k, v|
+          li #{k} の #{v}件
+
+      p (※ 問合せ件数は、ウェブサイトの問い合わせフォームからの問合せの件数で、電話等で直接問合せした件数は含まれません)

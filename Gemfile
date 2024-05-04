@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "3.3.0"
+ruby "3.3.1"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.2"
@@ -115,6 +115,11 @@ gem 'carrierwave'
 gem 'rmagick'
 gem 'fog-aws'
 
-gem "mailchimp-api", require: "mailchimp" # mailchimp
+gem "MailchimpMarketing" # mailchimp
 
-# gem 'whenever', require: false # cron
+gem 'whenever', require: false # cron
+
+gem 'rinku'
+
+### crawlers ###
+gem 'mechanize'

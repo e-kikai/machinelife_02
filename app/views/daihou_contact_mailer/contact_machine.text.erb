@@ -1,0 +1,23 @@
+<%= @contact.company.company %> ウェブサイトのお問い合せフォームから、
+在庫機械についてのお問い合わせがありました。
+
+＜お客様情報＞
+お名前 : <%= @contact.user_name %>
+会社名 : <%= @contact.user_company %>
+都道府県 : <%= @contact.addr1 %>
+メールアドレス : <%= @contact.mail %>
+TEL : <%= @contact.tel %>
+FAX : <%= @contact.fax %>
+<%= @contact.return_time %>
+
+
+＜お問い合わせ機械＞
+管理番号 : <%= @machine.no %>
+<%= @machine.full_name %>
+https://www.daihou.co.jp/machines/<%= @machine.id %>
+
+<%= @contact.message %>
+
+
+<%= @contact.company.company %>
+https://www.daihou.co.jp/

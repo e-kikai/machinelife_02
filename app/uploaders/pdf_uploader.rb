@@ -1,5 +1,5 @@
 class PdfUploader < CarrierWave::Uploader::Base
-  storage :file
+  # storage :file
   # storage :fog
 
   def store_dir

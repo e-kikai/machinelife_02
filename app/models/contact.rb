@@ -24,6 +24,6 @@
 #  contacts_ix1             (company_id)
 #
 class Contact < ApplicationRecord
-  belongs_to :company, optional: true
-  belongs_to :machine, optional: true
+  belongs_to :company, -> { with_deleted }, optional: true
+  belongs_to :machine, -> { with_deleted }, optional: true
 end

@@ -26,14 +26,36 @@ class System::CompanyForm < FormBase
   end
 
   def persist
-    company.attributes = slice(SLICE_ATTRS).merge({ company: company_name, changed_at: Time.current })
+    company.update(slice(SLICE_ATTRS).merge({ company: company_name, changed_at: Time.current }))
 
-    company.save!
+    ### お知らせ配信 ###
+    mailchimp = Mailchimp.new(:admin)
+    mailchimp.set_list_member(
+      mail,
+      {
+        COMPANY: company_name,
+        COMPANY_K: company_name,
+        REP: representative,
+        ADDR1: addr1,
+        GROUP1: @company.parent&.groupname,
+        GROUP2: @company.group.groupname,
+        RANK: @company.rank_ja,
+        NUM: @company.machines.count,
+        ID: @company.id
+      }
+    )
+
+    true
   end
 
   # グループ選択肢
   def select_groups
     Group.order(:parent_id, :id)
+  end
+
+  # ランク選択肢
+  def select_ranks
+    Company::RANKS_JA.invert
   end
 
   private

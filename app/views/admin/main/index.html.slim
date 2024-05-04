@@ -43,33 +43,36 @@
               span.text-secondary.small = l(mb.created_at)
             = simple_format(mb.contents)
   .col-6
-    h2 在庫機械管理
-    nav.nav.flex-column
-      = link_to "/admin/machines/new", class: "nav-link", data: { turbo: false } do
-        . #{mi(:add)} 新規在庫機械登録
-      = link_to "/admin/machines/", class: "nav-link" do
-        . #{mi(:list)} 在庫機械一覧(変更・削除)
+    - if current_company&.check_rank(:a_member)
+      h2 在庫機械管理
+      nav.nav.flex-column
+        = link_to "/admin/machines/new", class: "nav-link", data: { turbo: false } do
+          . #{mi(:add)} 新規在庫機械登録
+        = link_to "/admin/machines/", class: "nav-link" do
+          . #{mi(:list)} 在庫機械一覧(変更・削除)
 
     h2 問い合わせ
     nav.nav.flex-column
       = link_to "/admin/contacts/", class: "nav-link" do
         . #{mi(:mark_email_unread)} 問い合わせ一覧
 
-    h2 電子カタログ
-    nav.nav.flex-column
-      = link_to "/admin/catalogs/", class: "nav-link" do
-        . #{mi(:menu_book)} 電子カタログ
-      = link_to "/admin/catalogs/manuals", class: "nav-link" do
-        . #{mi(:library_books)} 機械情報センター 機械取扱説明書について
+    - if current_company&.check_rank(:b_member)
+      h2 電子カタログ
+      nav.nav.flex-column
+        = link_to "/admin/catalogs/", class: "nav-link" do
+          . #{mi(:menu_book)} 電子カタログ
+        = link_to "/admin/catalogs/manuals", class: "nav-link" do
+          . #{mi(:library_books)} 機械情報センター 機械取扱説明書について
 
-    h2 売りたし買いたし
-    nav.nav.flex-column
-      = link_to "/admin/urikais/new", class: "nav-link" do
-        . #{mi(:create)} 書き込む
-      = link_to "/admin/urikais/", class: "nav-link" do
-        . #{mi(:edit_note)} 売りたし買いたし書き込み一覧
-      = link_to "/assets/admin/urikai_manual.pdf", class: "nav-link", target: :_blank, rel: :noopener do
-        . #{mi(:picture_as_pdf)} 売りたし買いたしマニュアルPDF
+    - if current_company&.check_rank(:a_member)
+      h2 売りたし買いたし
+      nav.nav.flex-column
+        = link_to "/admin/urikais/new", class: "nav-link" do
+          . #{mi(:create)} 書き込む
+        = link_to "/admin/urikais/", class: "nav-link" do
+          . #{mi(:edit_note)} 売りたし買いたし書き込み一覧
+        = link_to "/assets/admin/urikai_manual.pdf", class: "nav-link", target: :_blank, rel: :noopener do
+          . #{mi(:picture_as_pdf)} 売りたし買いたしマニュアルPDF
 
     h2 会員情報
     nav.nav.flex-column
@@ -80,10 +83,27 @@
       = link_to "/admin/user/edit", class: "nav-link" do
         . #{mi(:password)} パスワード変更
 
+    - if current_company&.id == Company::HORIKAWA_COMPANY_ID
+      h2 分析 (堀川機械)
+      nav.nav.flex-column
+        li 同型式の在庫登録履歴
+        li 機械在庫集計
+
+    - if current_company&.id == DInfo::DAIHOU_COMPANY_ID
+      h2 ◯ 自社ページ 追加情報 (大宝機械)
+      nav.nav.flex-column
+        = link_to "/admin/d_infos/", class: "nav-link" do
+          . #{mi(:info)} お知らせ一覧
+        = link_to "/daihou", class: "nav-link", target: :_blank, rel: :noopener do
+          . #{mi(:exit_to_app)} #{current_company&.company_remove_kabu}サイト (確認用)
+
     h2 全機連マシンライフ
     nav.nav.flex-column
       = link_to "/", class: "nav-link" do
-        . #{mi(:home)} トップページへ
+        . #{mi(:home)} マシンライフ トップページ
+      - if current_user&.role == "system"
+        = link_to "/system", class: "nav-link" do
+          . #{mi(:settings)} 管理者ページ
       = link_to "/admin/logout", data: { turbo_method: :delete, turbo_confirm: "ログアウトしますか？" }, class: "nav-link" do
         . #{mi(:logout)} ログアウト
 

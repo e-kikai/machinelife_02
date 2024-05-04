@@ -1,0 +1,24 @@
+.top_main
+  = image_tag "daihou/daihou_top_01.jpeg", class: "top_mainimg"
+  .catchcopy
+    . お客様のもの創りを
+    .sub_catch サポートする機械商社
+
+.top_message
+  .d-inline-block 遊休機械・廃棄予定機械の買取り
+  .d-inline-block 入替え機械や新規設備の対応しております。
+  .d-inline-block 新品中古機械売買もしておりますので
+  .d-inline-block お探しの機械、お気軽にお問い合わせください。
+
+h2.minititle <i>NEW!</i>新着情報
+.top_new_area.row.row-cols-2.row-cols-sm-3.row-cols-md-4
+  = render partial: "/daihou/machines/machine_panel", collection: @machines, as: :machine
+
+h2.minititle #{mi(:info)} お知らせ
+dl.row.info
+  - @d_infos.each do |di|
+    dt.col-md-3 = l(di.info_date)
+    dd.col-md-9 = link_to di.title, "/infos/#{di.id}"
+  .text-end.col-12
+    = link_to "/infos" do
+      . → #{mi(:info)} 過去のお知らせはこちら

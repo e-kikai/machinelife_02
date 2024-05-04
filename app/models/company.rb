@@ -45,12 +45,16 @@ class Company < ApplicationRecord
 
   MACHINE_RANK_RATIO = 200
 
+  HORIKAWA_COMPANY_ID = 1
+
   has_many   :machines
   belongs_to :group
   has_one    :parent, through: :group
   has_many   :users
   belongs_to :parent_company, class_name: "Company", optional: true
   has_many   :company_images
+  has_many   :d_infos
+  has_many   :contacts
 
   mount_uploader :top_image, CompanyImageUploader
 
@@ -92,7 +96,7 @@ class Company < ApplicationRecord
   end
 
   def check_rank(target_rank)
-    Company.ranks[rank] >= Company.ranks[target_rank]
+    (Company.ranks[rank] || 0) >= Company.ranks[target_rank]
   end
 
   def rank_ja

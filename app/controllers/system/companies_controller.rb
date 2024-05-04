@@ -4,7 +4,7 @@ class System::CompaniesController < System::ApplicationController
   before_action :set_company, only: %i[edit update destroy login]
 
   def index
-    @groups = Group.includes(:companies, :parent).where(companies: { deleted_at: nil }).order(:parent_id, :id, "companies.id")
+    @groups = Group.includes(:companies, :parent).where(companies: { deleted_at: nil }).order(:parent_id, :id, 'company_kana COLLATE "C"', "companies.id")
 
     respond_to do |format|
       format.html

@@ -4,8 +4,10 @@ class BannerImageUploader < CarrierWave::Uploader::Base
   # include CarrierWave::MiniMagick
 
   # Choose what kind of storage to use for this uploader:
-  storage :file
+  # storage :file
   # storage :fog
+
+  process :fix_exif_rotation_and_strip_exif
 
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
@@ -37,6 +39,15 @@ class BannerImageUploader < CarrierWave::Uploader::Base
   # For images you might use something like this:
   def extension_allowlist
     %w[jpg jpeg pjpeg gif png]
+  end
+
+  def fix_exif_rotation_and_strip_exif
+    manipulate! do |img|
+      img = img.auto_orient
+      img.strip!
+      img = yield(img) if block_given?
+      img
+    end
   end
 
   # Override the filename of the uploaded files:

@@ -37,7 +37,7 @@ class Admin::MachineForm < FormBase
 
   attribute :imgs_delete, default: []
 
-  attribute :machine_pdfs
+  attribute :machine_pdfs, default: []
 
   delegate :id, :persisted?, :top_img_media, :imgs_parsed, :pdfs_parsed, :top_image_url, :machine_images, :others_hash, :genre, to: :machine
 

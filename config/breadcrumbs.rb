@@ -35,6 +35,15 @@ crumb :machines_company do |company|
   parent :company, company
 end
 
+crumb :zenkiren do
+  link "全機連", "/zenkiren/"
+  parent :companies
+end
+
+crumb :zenkiren_show do |key, title|
+  link title, "/zenkiren/show/#{key}"
+  parent :zenkiren
+end
 ### その他共通 ###
 crumb :something do |title|
   link title
@@ -86,6 +95,21 @@ end
 crumb :admin_machines_edit do |machine|
   link "#{machine.full_name} 変更", "/admin/machines/#{machine.id}"
   parent :admin_machines
+end
+
+crumb :admin_d_infos do
+  link "自社サイト お知らせ一覧", "/admin/d_infos"
+  parent :admin_root
+end
+
+crumb :admin_d_infos_new do
+  link "自社サイト 新規お知らせ登録", "/admin/d_infos/new"
+  parent :admin_d_infos
+end
+
+crumb :admin_d_infos_edit do |d_info|
+  link "自社サイト お知らせ変更", "/admin/d_infos/#{d_info.id}"
+  parent :admin_d_infos
 end
 
 ### 管理者ページ ###

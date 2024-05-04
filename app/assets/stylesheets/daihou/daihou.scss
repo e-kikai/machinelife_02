@@ -1,0 +1,541 @@
+@use "bootstrap";
+
+/* colors */
+:root {
+  --dk-b: rgb(248, 248, 248);
+  --dk-m: rgb(0, 60, 100);
+  --dk-a: rgb(50, 178, 176);
+}
+
+body {
+  background-color: var(--dk-b);
+  margin: 0 auto;
+  max-width: 980px;
+  font-family: "Yu Gothic Medium", "游ゴシック Medium", YuGothic, "游ゴシック体",
+    "ヒラギノ角ゴ Pro W3", "メイリオ", sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  background-color: rgb(255, 255, 224);
+}
+
+i {
+  margin-right: 0.4rem;
+}
+
+.container-fluid {
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.filters {
+  max-width: 800px;
+  margin: auto;
+}
+
+.filters .btn-group {
+  margin: 8px;
+}
+
+.filter_all {
+  margin-top: 8px;
+}
+
+.filter_area {
+  width: auto;
+  margin: 0 auto 32px auto;
+  border: 1px dotted var(--dk-m);
+  border-width: 1px 0;
+  padding: 16px;
+  background-color: #fff;
+}
+
+.filter_area a {
+  display: inline-block;
+  width: 180px;
+  margin: 0 0 5px 0;
+}
+
+h1.pagetitle {
+  width: 100%;
+  height: 200px;
+  background: url(daihou/subtitle_01.jpeg);
+  position: relative;
+  padding-top: 48px;
+  background-position: bottom;
+  background-size: cover;
+}
+
+.title_content {
+  background: rgba(255, 255, 255, 0.75);
+  max-width: 360px;
+  height: 100px;
+  font-size: 27px;
+  text-align: center;
+  color: var(--dk-m);
+  line-height: 100px;
+  margin: auto;
+}
+
+#gmap2 {
+  width: 100%;
+  height: 480px;
+  border: 1px solid var(--dk-m);
+  margin: 0 auto 16px auto;
+}
+
+/*** ヘッダ ***/
+header.mini {
+  display: block;
+  border: #333 solid 2px;
+  width: 100%;
+  height: 70px;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.header_title {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 70px;
+
+  background: rgb(153, 214, 229);
+
+  text-align: center;
+  text-decoration: none;
+  font-size: 22px;
+  line-height: 70px;
+}
+
+.header_logo {
+  width: 100%;
+}
+
+.header_contact {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 70px;
+
+  text-align: center;
+  text-decoration: none;
+}
+
+.header-menu .nav-item a {
+  padding: 0.6rem 0;
+}
+
+.header-menu {
+  border-left: 1px dotted var(--dk-m);
+  width: 100%;
+}
+
+.header-menu .nav-item {
+  width: 100%;
+  border: 0;
+  padding-left: 1rem;
+  text-align: left;
+}
+
+@media (min-width: 576px) {
+  .header-menu .nav-item {
+    border-right: 1px dotted var(--dk-m);
+    width: 20%;
+    text-align: center;
+    padding-left: 0;
+  }
+}
+
+.footer_link_area {
+  margin: 32px auto;
+  text-align: center;
+}
+
+.footer_contact_link img {
+  max-width: 100%;
+}
+
+footer {
+  display: block;
+  background-color: var(--dk-m);
+  color: #f8f9fa;
+}
+
+footer a:hover {
+  background-color: inherit;
+  color: rgb(255, 255, 224);
+}
+
+.footer_compnies {
+  text-align: center;
+  text-decoration: none;
+}
+
+.footer_menu {
+  border-left: 1px solid #f8f9fa;
+}
+
+.footer_menu a {
+  display: block;
+  text-align: left;
+  text-decoration: none;
+  color: #f8f9fa;
+}
+
+.footer_company {
+  font-size: 25px;
+  line-height: 2;
+}
+
+.footer_logo {
+  width: 320px;
+}
+
+h2.minititle {
+  background: var(--dk-m);
+  font-weight: bold;
+  font-size: 16px;
+  max-width: 720px;
+  margin: 32px auto 16px;
+  color: #f8f9fa;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.info {
+  max-width: 800px;
+  display: flex;
+  padding: 8px 16px;
+  border: 1px dotted var(--dk-m);
+  border-width: 1px 0;
+  background-color: #fff;
+  margin: auto;
+}
+
+.info a:hover {
+  background-color: rgb(255, 255, 224);
+}
+
+img.company_dummy {
+  display: block;
+  width: 90%;
+  margin: 16px auto;
+}
+
+.contact_message {
+  width: 60%;
+  margin: 16px auto;
+}
+
+img.toppage_dummy {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+
+/*** 機械リスト ***/
+.top_new_area {
+  margin-left: -12px;
+}
+
+.top_main {
+  position: relative;
+}
+
+.top_mainimg {
+  height: 65vw;
+  width: 100%;
+  object-fit: cover;
+}
+
+.catchcopy {
+  position: absolute;
+  bottom: 3vw;
+  right: 3vw;
+  color: var(--dk-m);
+  font-size: 6vw;
+  font-style: italic;
+  text-shadow: 2px 2px 4px #333;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2vw;
+  box-shadow: 0 0 15px #fff;
+}
+.sub_catch {
+  font-size: 5vw;
+  padding-left: 1em;
+}
+
+.top_message {
+  padding: 0;
+  font-size: 3.4vw;
+  margin: 7vw 0;
+  width: 100%;
+  text-align: center;
+  color: var(--dk-m);
+  font-weight: bold;
+}
+
+@media (min-width: 980px) {
+  .top_mainimg {
+    height: 600px;
+  }
+
+  .catchcopy {
+    bottom: 3vw;
+    right: 3vw;
+    font-size: 45px;
+    padding: 1vw;
+  }
+
+  .sub_catch {
+    font-size: 45px;
+  }
+
+  .top_message {
+    font-size: 24px;
+    margin: 70px 0;
+  }
+}
+
+.machine {
+  display: block;
+  overflow: hidden;
+  border-radius: 0;
+  border-bottom: 1px solid var(--dk-m);
+  margin-bottom: 8px;
+}
+
+.machine .card-text {
+  height: 72px;
+  margin-left: -8px;
+}
+
+.machine a {
+  text-decoration: none;
+  color: #333;
+}
+
+.machine a:hover .card-body {
+  background-color: rgb(255, 255, 224);
+}
+
+.machine .name {
+  display: block;
+  margin-left: 8px;
+}
+
+.machine .name i {
+  color: var(--dk-a);
+  text-shadow: 1px 1px #333;
+}
+
+.machine .model {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.machine .no_label {
+  display: inline-block;
+  font-size: 13px;
+  color: #333;
+  margin-left: 8px;
+}
+
+.machine .no {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.machine_img {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+}
+
+.machine_img img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  object-fit: cover;
+}
+
+.machine .card-body {
+  padding: 0.25rem 0.5rem;
+  background-color: #fff;
+}
+
+.machine .machine_img img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  min-width: unset !important;
+  max-height: unset !important;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+@media (min-width: 768px) {
+  a[href^="tel:"] {
+    pointer-events: none;
+    color: #333;
+  }
+}
+
+.table-striped {
+  background-color: #fff;
+}
+
+caption i {
+  color: var(--dk-a);
+  text-shadow: 1px 1px #333;
+}
+
+.infos nav {
+  border-right: 1px dotted var(--dk-m);
+  background: #fff;
+}
+
+.infos h5 i {
+  color: var(--dk-a);
+}
+
+.infos h5 {
+  border-bottom: 1px dotted var(--dk-a);
+}
+
+form.contact {
+  max-width: 700px;
+  border: 1px dotted var(--dk-m);
+  border-width: 1px 0;
+  margin: 16px auto;
+  padding: 16px;
+}
+
+textarea.other_message {
+  height: 200px;
+}
+
+.contact_message strong {
+  font-size: 32px;
+}
+
+span.required {
+  color: rgb(192, 12, 12);
+  padding: 0 8px;
+}
+
+.images .carousel-inner img {
+  display: block;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.imgs {
+  margin: 16px 0;
+  padding: 8px;
+  border: 1px dotted var(--dk-m);
+  border-width: 1px 0;
+  background: #fff;
+}
+
+.imgs a {
+  display: inline-block;
+  margin: 4px;
+}
+
+.details dt {
+  clear: both;
+  float: left;
+  margin: 0 16px 4px 0;
+  width: 80px;
+  text-align: right;
+}
+
+.details dt::after {
+  content: " : ";
+}
+
+.details dd {
+  float: left;
+  margin: 0 16px 0 0;
+}
+
+.detail_banner {
+  display: block;
+  width: 300px;
+  margin: 32px auto;
+}
+
+.detail_banner img {
+  width: 100%;
+}
+
+.carousel-base {
+  position: relative;
+}
+.carousel-base:before {
+  content: "";
+  display: block;
+  width: 100%;
+  padding-top: 75%;
+}
+
+.carousel {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #ccc;
+}
+
+.all_infos dt {
+  display: inline-block;
+  width: 120px;
+}
+
+.all_infos dd {
+  display: inline-block;
+  width: 600px;
+}
+
+.material-icons {
+  vertical-align: -0.125rem;
+  font-size: inherit;
+}
+
+button .show-when-disabled {
+  display: none;
+}
+
+button .show-when-enabled {
+  display: initial;
+}
+
+button[disabled] .show-when-disabled {
+  display: initial;
+}
+
+button[disabled] .show-when-enabled {
+  display: none;
+}

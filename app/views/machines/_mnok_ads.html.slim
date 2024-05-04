@@ -1,0 +1,11 @@
+.mnok_area.border.border-info.mt-4.mx-auto style="width:864px;"
+  iframe.mnok_ads(src="https://www.mnok.net/products/ads?keywords=#{keywords.gsub(/[.,\s]+/, "|")}&res=machinelife" scrolling="no",
+    style="display: block; width: 862px; height: 222px;")
+
+  = link_to "https://www.mnok.net/", class: :mnok_ads_logo, target: :_blank, rel: :noopener do
+    .row
+      .col-auto = image_tag("https://www.mnok.net/assets/logo_02-c9f870dff013b8ca9af2382dd5c457613913d43aac9945c2eb4b496d4901577e.png",
+        alt: "工具・機械のものづくりオークション | ものオク", style: "height:50px;margin-left:16px;")
+      .col
+        .desc.text-black.small ものづくりの現場で活躍する機械・工具を安心安全な業者からオークションで購入！
+        .site by mnok.net

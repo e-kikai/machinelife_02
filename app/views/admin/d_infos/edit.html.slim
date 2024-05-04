@@ -1,0 +1,7 @@
+- set_meta_tags title: "自社サイト お知らせ変更"
+- breadcrumb :admin_d_infos_edit, @d_info
+
+h1 自社サイト お知らせ変更
+
+= form_with model: @d_info_form, url: "/admin/d_infos/#{@d_info_form.id}", method: :patch, data: { turbo: false } do |f|
+  = render "form", f:

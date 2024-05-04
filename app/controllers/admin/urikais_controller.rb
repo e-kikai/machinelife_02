@@ -1,4 +1,4 @@
-class Admin::UrikaisController < ApplicationController
+class Admin::UrikaisController < Admin::ApplicationController
   before_action :set_urikai, only: [:show, :update]
 
   def index
@@ -6,6 +6,8 @@ class Admin::UrikaisController < ApplicationController
 
     @pagy, @purikais = pagy(@urikais, items: 50)
   end
+
+  def show; end
 
   def new
     @urikai_form = Admin::UrikaiForm.new(company: current_company)
@@ -20,8 +22,6 @@ class Admin::UrikaisController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-
-  def show; end
 
   def update
     if @urikai.update(end_date: Time.current, changed_at: Time.current)

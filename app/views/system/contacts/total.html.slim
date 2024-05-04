@@ -1,0 +1,39 @@
+- title = @month.present? ? @month.strftime('%Y/%-m') : "全体"
+
+- set_meta_tags title: "問い合わせログ集計 (#{title})"
+- breadcrumb :system_something, "問い合わせログ集計 (#{title})"
+
+h1 問い合わせログ集計 (#{title})
+
+.my-2.col-6.m-auto
+  - if @month.present?
+    . = link_to "← 全体に戻る", "/system/contacts/total?all=1"
+
+  table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+    thead
+      tr.small
+        th scope="col" style="width: 100px;"
+        th scope="col" style="width: 100px;" 事務局
+        th scope="col" style="width: 100px;" 会社
+        th scope="col" style="width: 100px;" 在庫機械
+        th scope="col" style="width: 100px;border-left-style:double;border-left-width:3px;" 合計
+
+    tbody
+      - @rows.each do |row|
+        tr
+          td.text-end
+            - if params[:all].present?
+              = link_to row, "/system/contacts/total?month=#{row}"
+            - else
+              = l(row, format: :row)
+          td.text-end = @contacts_system_count[row]
+          td.text-end = @contacts_company_count[row]
+          td.text-end = @contacts_machine_count[row]
+          td.text-end style="border-left-style:double;border-left-width:3px;" = @contacts_sum_count[row]
+    thead
+      tr.small
+        th scope="col" style="width: 100px;"
+        th scope="col" style="width: 100px;" 事務局
+        th scope="col" style="width: 100px;" 会社
+        th scope="col" style="width: 100px;" 在庫機械
+        th scope="col" style="width: 100px;border-left-style:double;border-left-width:3px;" 合計
