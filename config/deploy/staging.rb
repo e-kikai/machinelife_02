@@ -17,6 +17,8 @@ set :rails_env, :staging
 # set :unicorn_rack_env, :staging
 # set :unicorn_options,  " -p 3000 "
 
+# append :linked_files, "config/credientials/staging.key"
+
 # role-based syntax
 # ==================
 
