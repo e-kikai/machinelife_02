@@ -28,16 +28,18 @@ h1 マシンライフ 管理者ページ
     nav.nav.flex-column
       = link_to "/system/infos", class: "nav-link" do
         . #{mi(:info)} 事務局からのお知らせ一覧
-      = link_to "/system/", class: "nav-link" do
-        . ✕ #{mi(:schedule_send)} メール一括送信
+      / = link_to "/system/", class: "nav-link" do
+      /   . (未) #{mi(:schedule_send)} メール一括送信
+      . (未) #{mi(:schedule_send)} メール一括送信
       = link_to "/system/bidinfos", class: "nav-link" do
         . #{mi(:label)} 入札会バナー一覧
 
   .col-6
     h2 電子カタログ
     nav.nav.flex-column
-      = link_to "/system/catalogs/csv", class: "nav-link" do
-        . ✕ #{mi(:upload_file)} 電子カタログCSV一括登録・変更
+      / = link_to "/system/catalogs/csv", class: "nav-link" do
+      /   . ✕ #{mi(:upload_file)} 電子カタログCSV一括登録・変更
+      . (未) #{mi(:upload_file)} 電子カタログCSV一括登録・変更
       = link_to "/system/catalogs/sftp", class: "nav-link" do
         . #{mi(:folder)} SFTP設定
       = link_to "/system/catalog_requests", class: "nav-link" do
@@ -52,8 +54,8 @@ h1 マシンライフ 管理者ページ
         . #{mi(:list_alt)} 問い合わせログ集計
       li.nav-item = link_to "/system/contacts/total", class: "nav-link" do
         . #{mi(:list_alt)} 問い合わせログ集計 (今月)
-      li 行動ログ一覧
-      li 行動ログ集計
+      li (未) 行動ログ一覧
+      li (未) 行動ログ集計
 
       li.nav-item = link_to "/system/contacts/formula", class: "nav-link" do
         . #{mi(:receipt_long)} 実績用データ集計
