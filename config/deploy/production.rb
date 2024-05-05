@@ -7,8 +7,10 @@
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
 
-server "aws_machinelife_staging_02", user: "ec2-user", roles: %w[web]
+server "aws_machinelife_production_02", user: "ec2-user", roles: %w[web]
 set :rails_env, :production
+
+append :linked_files, "config/credentials/production.key"
 
 # role-based syntax
 # ==================
