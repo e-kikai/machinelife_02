@@ -1,6 +1,9 @@
 - set_meta_tags title: "#{@company.company} 会社情報"
 - set_meta_tags description: @company.addr.to_s
 
+- set_meta_tags twitter: { image: @company.top_image_url }
+- set_meta_tags og: { image: @company.top_image_url }
+
 - breadcrumb :company, @company
 
 css:
