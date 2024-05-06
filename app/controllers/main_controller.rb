@@ -23,7 +23,7 @@ class MainController < ApplicationController
     @machines =
       if params[:mail]
         # 新着メール用
-        Machine.sales.where(created_at: Machine::NEWS_MAIL_DAY..).reorder("RANDOM()").limit(12) if params[:mail]
+        Machine.sales.where(created_at: Machine::NEWS_MAIL_DAY..).where.not(top_image: nil).reorder("RANDOM()").limit(12) if params[:mail]
       else
         Machine.sales.where(created_at: Machine::NEWS_DAY..).order(created_at: :desc).limit(300)
       end

@@ -19,8 +19,9 @@ h1 マシンライフ 管理者ページ
 
     h2 在庫情報
     nav.nav.flex-column
-      = link_to "/system/machines/csv", class: "nav-link" do
-        . ✕ #{mi(:upload_file)} CSV一括登録(百貨店汎用)
+      / = link_to "/system/machines/csv", class: "nav-link" do
+      /   . #{mi(:upload_file)} (未) CSV一括登録(百貨店汎用)
+      . #{mi(:upload_file)} (未) CSV一括登録(百貨店汎用)
       = link_to "/system/xl_genres", class: "nav-link" do
         . #{mi(:category)} ジャンル管理
 
@@ -30,7 +31,7 @@ h1 マシンライフ 管理者ページ
         . #{mi(:info)} 事務局からのお知らせ一覧
       / = link_to "/system/", class: "nav-link" do
       /   . (未) #{mi(:schedule_send)} メール一括送信
-      . (未) #{mi(:schedule_send)} メール一括送信
+      . #{mi(:schedule_send)} (未) メール一括送信
       = link_to "/system/bidinfos", class: "nav-link" do
         . #{mi(:label)} 入札会バナー一覧
 
@@ -39,7 +40,7 @@ h1 マシンライフ 管理者ページ
     nav.nav.flex-column
       / = link_to "/system/catalogs/csv", class: "nav-link" do
       /   . ✕ #{mi(:upload_file)} 電子カタログCSV一括登録・変更
-      . (未) #{mi(:upload_file)} 電子カタログCSV一括登録・変更
+      .  #{mi(:upload_file)} (未) 電子カタログCSV一括登録・変更
       = link_to "/system/catalogs/sftp", class: "nav-link" do
         . #{mi(:folder)} SFTP設定
       = link_to "/system/catalog_requests", class: "nav-link" do
@@ -54,8 +55,8 @@ h1 マシンライフ 管理者ページ
         . #{mi(:list_alt)} 問い合わせログ集計
       li.nav-item = link_to "/system/contacts/total", class: "nav-link" do
         . #{mi(:list_alt)} 問い合わせログ集計 (今月)
-      li (未) 行動ログ一覧
-      li (未) 行動ログ集計
+      li = "(未) 行動ログ一覧"
+      li = "(未) 行動ログ集計"
 
       li.nav-item = link_to "/system/contacts/formula", class: "nav-link" do
         . #{mi(:receipt_long)} 実績用データ集計

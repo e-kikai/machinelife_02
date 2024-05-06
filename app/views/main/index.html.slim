@@ -49,16 +49,16 @@
   - @bidinfos.each do |bi|
     - next if bi.banner_image.blank?
 
-    .col.text-center = link_to bi.uri, onclick: "ga('send', 'event', 'banner', 'bid', #{bi.bid_name}, 1, true);", rel: :noopener, target: :_blank do
+    .col-3.text-center = link_to bi.uri, onclick: "ga('send', 'event', 'banner', 'bid', #{bi.bid_name}, 1, true);", rel: :noopener, target: :_blank do
       = image_tag bi.banner_image.url, alt: bi.bid_name, style: "width: 240px;"
 
-  .col.text-center = link_to "https://www.magnescale.com/jp/info/drocampaign2023/", onclick: "ga('send', 'event', 'banner', 'bid', 'マグネスケール', 1, true);", rel: :noopener, target: :_blank do
+  .col-3.text-center = link_to "https://www.magnescale.com/jp/info/drocampaign2023/", onclick: "ga('send', 'event', 'banner', 'bid', 'マグネスケール', 1, true);", rel: :noopener, target: :_blank do
     = image_tag "banner/DRO_BD.gif", alt: "マグネスケール"
-  / .col.text-center = link_to "/bid/schedule", onclick: "ga('send', 'event', 'banner', 'bid', 'bid_schedule', 1, true);" do
+  / .col-3.text-center = link_to "/bid/schedule", onclick: "ga('send', 'event', 'banner', 'bid', 'bid_schedule', 1, true);" do
   /   = image_tag "banner/bid_2023.png", alt: "2023年度Web入札会スケジュール"
-  .col.text-center = link_to "/helps/banner", onclick: "ga('send', 'event', 'banner', 'bid', 'ad_rec', 1, true);" do
+  .col-3.text-center = link_to "/helps/banner", onclick: "ga('send', 'event', 'banner', 'bid', 'ad_rec', 1, true);" do
     = image_tag "banner/rec_02.gif", alt: "広告バナー募集中"
-  .col.text-center = link_to "https://twitter.com/zenkiren", onclick: "ga('send', 'event', 'banner', 'bid', 'twitter', 1, true);", rel: :noopener, target: :_blank do
+  .col-3.text-center = link_to "https://twitter.com/zenkiren", onclick: "ga('send', 'event', 'banner', 'bid', 'twitter', 1, true);", rel: :noopener, target: :_blank do
     = image_tag "banner/twitter.png", alt: "x"
 
 /-- 新着 --/
