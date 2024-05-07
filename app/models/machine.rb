@@ -69,7 +69,7 @@ class Machine < ApplicationRecord
 
   KEYWORDSEARCH_COLUMNS =
     %w[
-      machines.name machines.maker machines.model machines.year machines.addr1
+      machines.no machines.name machines.maker machines.model machines.year machines.addr1
       machines.model2 machines.maker2
       makers.maker_master genres.genre
     ].freeze
