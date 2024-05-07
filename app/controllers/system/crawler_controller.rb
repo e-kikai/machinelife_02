@@ -69,7 +69,8 @@ class System::CrawlerController < ApplicationController
       end
 
       # 保存
-      machine.update(changed_at: Time.current) if machine.changed?
+      # machine.update(changed_at: Time.current) if machine.changed?
+      machine.save if machine.changed?
 
       ### リレーション先(images, pdfs)の処理 ###
       # threads = images_res.filter_map do |im_attr|
