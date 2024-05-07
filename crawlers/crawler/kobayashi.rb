@@ -157,17 +157,24 @@ class Kobayashi < Base
 
     ### 並列クロール ###
     locks = Queue.new
-    5.times { locks.push :lock }
+    10.times { locks.push :lock }
 
     Array.new(m[1].to_i.fdiv(60).ceil) do |i|
       uri = "https://www.kkmt.co.jp/products?display_mode=table&page=#{i + 1}&pictures=no_own"
-      # sleep 3.5
+      sleep 0.5
 
       Thread.new do
         lock = locks.pop
 
-        @log.info("-> #{uri}")
-        scrape(@a.get(uri))
+        try = 0
+        begin
+          try += 1
+          @log.info("-> #{uri}")
+          scrape(@a.get(uri))
+        rescue StandardError => e
+          retry if try < 3
+          raise
+        end
 
         locks.push lock
       end
