@@ -1,6 +1,4 @@
-#! ruby -Ku
-#
-# クローラクラス(for 大沼機工)のソースファイル
+# クローラクラス(for 小林機械)のソースファイル
 # Author::    川端洋平
 # Date::      2012/5/17
 # Copyright:: Copyright (c) 2012 川端洋平
@@ -157,11 +155,11 @@ class Kobayashi < Base
 
     ### 並列クロール ###
     locks = Queue.new
-    5.times { locks.push :lock }
+    1.times { locks.push :lock }
 
     Array.new(m[1].to_i.fdiv(60).ceil) do |i|
       uri = "https://www.kkmt.co.jp/products?display_mode=table&page=#{i + 1}&pictures=no_own"
-      sleep 0.3
+      sleep 0.1
 
       Thread.new do
         lock = locks.pop
