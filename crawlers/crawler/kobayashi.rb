@@ -157,7 +157,7 @@ class Kobayashi < Base
 
     ### 並列クロール ###
     locks = Queue.new
-    6.times { locks.push :lock }
+    5.times { locks.push :lock }
 
     Array.new(m[1].to_i.fdiv(60).ceil) do |i|
       uri = "https://www.kkmt.co.jp/products?display_mode=table&page=#{i + 1}&pictures=no_own"
@@ -174,7 +174,6 @@ class Kobayashi < Base
         rescue StandardError => e
           @log.info("retry:#{try} -> #{uri}")
           retry if try <= 3
-          raise
         end
 
         locks.push lock
