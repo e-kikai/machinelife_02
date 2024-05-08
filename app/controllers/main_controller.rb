@@ -20,17 +20,35 @@ class MainController < ApplicationController
 
   def feed
     # 新着
-    @machines =
-      if params[:mail]
-        # 新着メール用
-        # Machine.sales.where(created_at: Machine::NEWS_MAIL_DAY..).where.not(top_image: nil).reorder("RANDOM()").limit(12)
-        Machine.sales.where(created_at: Time.current.ago(1.week).all_week).where.not(top_image: nil).reorder("RANDOM()").limit(12)
-      else
-        Machine.sales.where(created_at: Machine::NEWS_DAY..).order(created_at: :desc).limit(300)
-      end
+    case params[:mail]
+    when "2"
+      # 新着メール用 (会員用、日毎)
+      @date = Time.current.yesterday
+      @machine_count = Machine.sales.where(created_at: @date.all_day).count
+      @genres = Genre.includes(machines: [:company]).where(machines: { deleted_at: nil, created_at: @date.all_day }).order(:order_no)
+
+      @bidinfos = Bidinfo.where(bid_date: Time.current..).order(:bid_date)
+
+      rend = :admin_mail_feed
+    when "1"
+      # 新着メール用 (ユーザ用、 週ごと)
+      @machines = Machine.sales.where(created_at: Time.current.ago(1.week).all_week).where.not(top_image: nil).reorder("RANDOM()").limit(12)
+      rend = :feed
+    else
+      @machines = Machine.sales.where(created_at: Machine::NEWS_DAY..).order(created_at: :desc).limit(300)
+      rend = :feed
+    end
+    # @machines =
+    #   if params[:mail]
+    #     # 新着メール用
+    #     # Machine.sales.where(created_at: Machine::NEWS_MAIL_DAY..).where.not(top_image: nil).reorder("RANDOM()").limit(12)
+    #     Machine.sales.where(created_at: Time.current.ago(1.week).all_week).where.not(top_image: nil).reorder("RANDOM()").limit(12)
+    #   else
+    #     Machine.sales.where(created_at: Machine::NEWS_DAY..).order(created_at: :desc).limit(300)
+    #   end
 
     respond_to do |format|
-      format.rss
+      format.rss { render rend, format: :rss }
     end
   end
 
