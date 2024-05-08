@@ -23,7 +23,8 @@ class MainController < ApplicationController
     @machines =
       if params[:mail]
         # 新着メール用
-        Machine.sales.where(created_at: Machine::NEWS_MAIL_DAY..).where.not(top_image: nil).reorder("RANDOM()").limit(12) if params[:mail]
+        # Machine.sales.where(created_at: Machine::NEWS_MAIL_DAY..).where.not(top_image: nil).reorder("RANDOM()").limit(12)
+        Machine.sales.where(created_at: Time.current.ago(1.week).all_week).where.not(top_image: nil).reorder("RANDOM()").limit(12)
       else
         Machine.sales.where(created_at: Machine::NEWS_DAY..).order(created_at: :desc).limit(300)
       end
@@ -35,7 +36,7 @@ class MainController < ApplicationController
 
   # 会員向け新着メール用
   def admin_mail_feed
-    @date = Machine::NEWS_ADMIN_MAIL_DAY
+    @date = Time.current.yesterday
     @machine_count = Machine.sales.where(created_at: @date.all_day).count
     @genres = Genre.includes(machines: [:company]).where(machines: { deleted_at: nil, created_at: @date.all_day }).order(:order_no)
 

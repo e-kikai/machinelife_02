@@ -2,7 +2,7 @@
 / - set_meta_tags description: @machine.company.addr
 - breadcrumb :something, @title
 
-h1 = @title
+h1 #{@title} #{@view_date}
 
 . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
 

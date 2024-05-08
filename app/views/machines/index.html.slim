@@ -90,7 +90,7 @@ h1 = @title
               td.text-break = link_to ma.name, "/machines/#{ma.id}", 'data-turbo-frame': :_top
               td.text-break = ma.maker
               td.text-break = ma.model
-              td.text-break = ma.myear
+              td.text-break = ma.year
               td.text-break
                 . = ma.spec.to_s.truncate(100)
                 . = render partial: "label", locals: { machine: ma, cls: "btn-group-sm" }

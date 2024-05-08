@@ -4,7 +4,7 @@ class Admin::MachinesController < Admin::ApplicationController
 
   def index
     ### 検索・フィルタリング処理 ###
-    @machines = current_company.machines.joins(:genre).left_outer_joins(:maker_m)
+    @machines = current_company.machines.joins(:genre, :large_genre, :xl_genre).left_outer_joins(:maker_m)
       .then { |ms| params[:makers].present?     ? ms.where_maker(params[:makers])           : ms }
       .then { |ms| params[:genre_ids].present?  ? ms.where(genre_id: params[:genre_ids])    : ms }
       .then { |ms| params[:k].present?          ? ms.where_keyword(params[:k])                : ms }
@@ -16,7 +16,7 @@ class Admin::MachinesController < Admin::ApplicationController
     @filtering_makers = @machines.where.not(maker2: "").group("COALESCE(makers.maker_master, machines.maker2)").order(count: :desc).limit(100).count.map { |k, v| ["#{k} (#{v})", k] }
 
     ### ページャ ###
-    @pagy, @pmachines = pagy(@machines)
+    @pagy, @pmachines = pagy(@machines.order_by_key(:default))
   end
 
   def new

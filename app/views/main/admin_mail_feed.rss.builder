@@ -27,6 +27,8 @@ xml.rss(
     xml.item do
       xml.title "新着情報"
       xml.pubDate @date.beginning_of_day.strftime("%a, %d %b %Y %H:%M:%S %Z")
+      xml.link "https://www.zenkiren.net/news/machines/#{@date.strftime('%Y-%m-%d')}"
+      xml.guid "https://www.zenkiren.net/news/machines/#{@date.strftime('%Y-%m-%d')}", "isPermaLint" => true
       xml.description do
         xml.cdata!(render "mail_machines")
       end

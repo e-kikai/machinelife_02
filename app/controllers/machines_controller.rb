@@ -44,12 +44,30 @@ class MachinesController < ApplicationController
 
   def news
     if params[:target] == "machines"
-      @news  = Machine.sales.only_machines.where(created_at: Machine::NEWS_DAY..).order(created_at: :desc)
+      @news  = Machine.sales.only_machines.order(created_at: :desc)
       @title = "新着中古機械一覧"
     else
-      @news  = Machine.sales.only_tools.where(created_at: Machine::NEWS_DAY..).order(created_at: :desc)
+      @news  = Machine.sales.only_tools.order(created_at: :desc)
       @title = "新着中古工具一覧"
     end
+
+    @date =
+      begin
+        DateTime.parse(params[:date])
+      rescue StandardError
+        Time.current
+      end
+
+    created_at, @view_date =
+      if params[:date] && params[:week]
+        [@date.all_week, "(#{@date.beginning_of_week.strftime('%Y/%-m/%-d')} 〜 #{@date.end_of_week.strftime('%Y/%-m/%-d')})"]
+      elsif params[:date]
+        [@date.all_day, "(#{@date.strftime('%Y/%-m/%-d')})"]
+      else
+        [Machine::NEWS_DAY.., ""]
+      end
+
+    @news = @news.where(created_at: created_at)
 
     @pagy, @pnews = pagy(@news, items: 50)
   end

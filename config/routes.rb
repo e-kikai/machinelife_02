@@ -27,6 +27,8 @@ Rails.application.routes.draw do
     get "sitemap" => "helps#sitemap"
 
     get "/news/:target" => "machines#news"
+    get "/news/:target/:date" => "machines#news"
+    get "/news/:target/:date/:week" => "machines#news"
 
     resources :catalogs, only: [:show]
 

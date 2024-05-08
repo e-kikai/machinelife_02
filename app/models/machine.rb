@@ -59,12 +59,19 @@ class Machine < ApplicationRecord
   NEWS_MAIL_DAY = Time.current.ago(1.week)
   NEWS_ADMIN_MAIL_DAY = Time.current.ago(1.day)
 
+  DEFAULT_SORT =
+    [
+      "xl_genres.order_no", "large_genres.order_no", "genres.order_no",
+      :capacity, :maker2, :model2, :name, :year, :addr1, { created_at: :desc }
+    ].freeze
+
   SORTS = {
-    default: ["ジャンル・機械名順", ["large_genres.order_no", "genres.order_no", :name, { created_at: :desc }]],
-    year_desc: ["年式 : 新しい順", [{ year: :desc }, :name, { created_at: :desc }]],
-    year_asc: ["年式 : 古い順", [:year, :name, { created_at: :desc }]],
+    default: ["ジャンル・機械名順", []],
+    year_desc: ["年式 : 新しい順", [Arel.sql("coalesce(year, '') !~ '[0-9]{4}' ASC"), { year: :desc }]],
+    year_asc: ["年式 : 古い順", [Arel.sql("coalesce(year, '') !~ '[0-9]{4}' ASC"), { year: :asc }]],
     create_desc: ["登録日時 : 新しい順", [created_at: :desc]],
-    create_asc: ["登録日時 : 古い順", [:created_at]]
+    create_asc: ["登録日時 : 古い順", [created_at: :asc]],
+    # no: ["管理番号", [Arel.sql("coalesce(no, '') = '' ASC"), { no: :asc }]]
   }.freeze
 
   KEYWORDSEARCH_COLUMNS =
@@ -100,7 +107,7 @@ class Machine < ApplicationRecord
   scope :only_tools, -> { where.not(large_genre: { xl_genre_id: XlGenre::MACHINE_IDS }) }
 
   scope :news, ->(limit = NEWS_LIMIT_DEFAULT) { order(created_at: :desc).limit(limit) }
-  scope :order_by_key, ->(key) { order((SORTS[key.to_s.to_sym] || SORTS[:default])[1]) }
+  scope :order_by_key, ->(key) { order((SORTS[key.to_s.to_sym] || SORTS[:default])[1].concat(DEFAULT_SORT)) }
   scope :where_maker, ->(makers) { merge(Machine.where(maker2: makers).or(Maker.where(maker_master: makers))) }
   scope :where_model2, ->(model) { where("machines.model2 ~* ?", to_model2(model)) }
 
@@ -119,7 +126,7 @@ class Machine < ApplicationRecord
   end
 
   def myear
-    year =~ /^([0-9]+)/ ? "#{::Regexp.last_match(1)}年式" : ""
+    year =~ /^([0-9]{4})/ ? "#{::Regexp.last_match(1)}年式" : year
   end
 
   def elapsed
