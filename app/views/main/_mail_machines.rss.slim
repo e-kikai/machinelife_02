@@ -8,7 +8,7 @@ ul
       = link_to "#{ge.genre} (#{ge.machines.length})", "#{root_url}machines/genre/#{ge.id}"
       ul
         - ge.machines.each do |ma|
-          li = link_to "#{ma.full_name} :  #{ma.company.company_remove_kabu} ", "#{root_url}/machines/#{ma.id}"
+          li = link_to "#{ma.full_name} :  #{ma.company.company_remove_kabu} ", "#{root_url}machines/#{ma.id}"
 
 - if @bidinfos.present?
   h2 style="border-left: 6px solid #147543; margin: 8px;font-size: 18px;font-weight: bold;text-indent: 13px;"
@@ -24,9 +24,9 @@ ul
 
     tbody
       - @bidinfos.each do |bi|
-        td = bi.bid_name
-        td = bi.bid_name
-        td = bi.place
+        td = link_to bi.bid_name, bi.uri
+        td = bi.organizer
+        td #{simple_format(bi.place, {}, wrapper_tag: :span)}
         td #{l(bi.preview_start_date)} 〜 #{l(bi.preview_en_date)}
         td = l(bi.bid_date)
 
