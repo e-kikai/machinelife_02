@@ -123,3 +123,5 @@ gem 'rinku'
 
 ### crawlers ###
 gem 'mechanize'
+
+gem 'csv'
