@@ -15,7 +15,7 @@ xml.rss(
     xml.link "https://www.zenkiren.net/"
     xml.language "ja-ja"
     xml.ttl "40"
-    xml.pubDate @date.beginning_of_day.strftime("%a, %d %b %Y %H:%M:%S %Z")
+    xml.pubDate @date.end_of_day.strftime("%a, %d %b %Y %H:%M:%S %Z")
     xml.copyright "Copyright (c) #{Time.current.year} 全日本機械業連合会 All Rights Reserved."
     xml.atom :link, "href" => "https://www.zenkiren.net/feed.rss", "rel" => "self", "type" => "application/rss+xml"
     xml.image do
@@ -26,7 +26,7 @@ xml.rss(
 
     xml.item do
       xml.title "新着情報"
-      xml.pubDate @date.beginning_of_day.strftime("%a, %d %b %Y %H:%M:%S %Z")
+      xml.pubDate @date.end_of_day.strftime("%a, %d %b %Y %H:%M:%S %Z")
       xml.link "https://www.zenkiren.net/news/machines/#{@date.strftime('%Y-%m-%d')}"
       xml.guid "https://www.zenkiren.net/news/machines/#{@date.strftime('%Y-%m-%d')}", "isPermaLint" => true
       xml.description do
