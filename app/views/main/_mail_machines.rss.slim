@@ -4,7 +4,7 @@ h2 style="border-left: 6px solid #147543; margin: 8px;font-size: 18px;font-weigh
 
 ul
   - @genres.each do |ge|
-    li
+    li style="margin-top:4px;"
       = link_to "#{ge.genre} (#{ge.machines.length})", "#{root_url}machines/genre/#{ge.id}"
       ul
         - ge.machines.each do |ma|
