@@ -40,7 +40,7 @@ h1 = @title
     .col-3
       .input-group.input-group-sm
         = f.label :sort, class: "input-group-text fw-bold" do
-          | #{mi(:sort)} 並び替え
+          | #{mi(:swap_vert)} 並び替え
         = f.select :sort, Machine.selector_sorts, {}, { class: "form-select form-select-sm", onchange: "filtering_btn.click();" }
 
     .col-3.ms-auto.text-end = link_to request.fullpath, class: "btn btn-secondary btn-sm" do

@@ -16,7 +16,7 @@ class Admin::MachinesController < Admin::ApplicationController
     @filtering_makers = @machines.where.not(maker2: "").group("COALESCE(makers.maker_master, machines.maker2)").order(count: :desc).limit(100).count.map { |k, v| ["#{k} (#{v})", k] }
 
     ### ページャ ###
-    @pagy, @pmachines = pagy(@machines.order_by_key(:default))
+    @pagy, @pmachines = pagy(@machines.order_by_key(params[:sort]))
   end
 
   def new

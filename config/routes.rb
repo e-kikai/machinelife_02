@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     root "main#index"
 
     get "feed" => "main#feed"
-    get "admin_mail_feed" => "main#admin_mail_feed"
+    # get "admin_mail_feed" => "main#admin_mail_feed"
 
     ### machine ###
     resources :companies, only: [:index, :show]

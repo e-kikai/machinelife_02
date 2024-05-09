@@ -71,7 +71,8 @@ class Machine < ApplicationRecord
     year_asc: ["年式 : 古い順", [Arel.sql("coalesce(year, '') !~ '[0-9]{4}' ASC"), { year: :asc }]],
     create_desc: ["登録日時 : 新しい順", [created_at: :desc]],
     create_asc: ["登録日時 : 古い順", [created_at: :asc]],
-    # no: ["管理番号", [Arel.sql("coalesce(no, '') = '' ASC"), { no: :asc }]]
+    no_asc: ["管理番号 : 昇順", [Arel.sql("coalesce(no, '') = '' ASC"), { no: :asc }]],
+    no_desc: ["管理番号 : 降順", [Arel.sql("coalesce(no, '') = '' ASC"), { no: :desc }]]
   }.freeze
 
   KEYWORDSEARCH_COLUMNS =
@@ -101,7 +102,7 @@ class Machine < ApplicationRecord
 
   ### scope ###
   scope :includes_all, -> { includes(:company, :genre, :large_genre, :xl_genre, :maker_m, :machine_pdfs) }
-  scope :sales, -> { includes_all.where(deleted_at: nil, companies: { deleted_at: nil, rank: Company::MACHINE_RANK_RATIO.. }, view_option: [nil, 2]) }
+  scope :sales, -> { includes_all.where(deleted_at: nil, companies: { deleted_at: nil, rank: Company::MACHINE_RANK_RATIO.. }, view_option: [nil, :negotiation]) }
 
   scope :only_machines, -> { where(large_genre: { xl_genre_id: XlGenre::MACHINE_IDS }) }
   scope :only_tools, -> { where.not(large_genre: { xl_genre_id: XlGenre::MACHINE_IDS }) }

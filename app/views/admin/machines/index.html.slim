@@ -5,24 +5,34 @@ h1 在庫機械一覧
 
 /* 検索枠 */
 .row
-  .col-8.m-auto
+  .col-10.m-auto
     .card.mb-2
       .card-body.p-1
-        .card-title 検索
+        .card-title.small 検索・ソート
 
         = form_with(url: "/admin/machines/", local: true, method: :get, html: { 'data-turbo-frame': :machine_list }) do |f|
           .row.g-1
-            .col-4 = f.select :genre_ids, @filtering_genres, { include_blank: "▼ ジャンル ▼" }, { class: "form-select" }
-            .col-4 = f.select :makers, @filtering_makers, { include_blank: "▼ メーカー ▼" }, { class: "form-select" }
-            .col-4 = f.text_field :k, class: "form-control", placehodler: "キーワード検索"
+            .col-4 = f.select :genre_ids, @filtering_genres, { include_blank: "▼ ジャンル ▼" }, { class: "form-select form-select-sm" }
+            .col-4 = f.select :makers, @filtering_makers, { include_blank: "▼ メーカー ▼" }, { class: "form-select form-select-sm" }
+            .col-4 = f.text_field :k, class: "form-control form-control-sm", placeholder: "キーワード検索"
           .row.g-1.mt-1
-            .col-auto: .form-control-plaintext  登録日
-            .col-auto = f.date_field :start_date, class: "form-control"
-            .col-auto: .form-control-plaintext  〜
-            .col-auto = f.date_field :end_date, class: "form-control"
-            .col-auto = f.button class: "btn btn-primary" do
+            .col-auto
+              .input-group.input-group-sm
+                = f.label :start_date, class: "input-group-text" do
+                  . 登録日
+                = f.date_field :start_date, class: "form-control form-control-sm"
+                = f.label :end_date, class: "input-group-text" do
+                  . 〜
+                = f.date_field :end_date, class: "form-control form-control-sm"
+            .col-auto
+              .input-group.input-group-sm
+                = f.label :sort, class: "input-group-text" do
+                  . #{mi(:swap_vert)}
+                = f.select :sort, Machine.selector_sorts, {}, { class: "form-select form-select-sm" }
+
+            .col-auto = f.button class: "btn btn-primary btn-sm" do
               . #{mi(:search)} 検索
-            .col-auto.m-2: .form-control-plaintext = link_to "/admin/machines" do
+            .col-auto.ms-auto: .form-control-plaintext.small = link_to "/admin/machines" do
               . #{mi(:clear)} 条件リセット
 
 .row
@@ -69,7 +79,7 @@ h1 在庫機械一覧
               td.text-center
                 = check_box_tag 'm[]', ma.id, { class: "form-check-input", multiple: true, include_hidden: false }
 
-              td.p-0 = image_tag ma.top_image_thumb, alt: ma.full_name, class: "news_thumbnail", style: "width:60px;height:60px;"
+              td.p-0 = image_tag ma.top_image_thumb, alt: "", class: "news_thumbnail", style: "width:60px;height:60px;"
               td.text-center
                 - if ma.used_id.present?
                   - if ma.changed_at.present?
