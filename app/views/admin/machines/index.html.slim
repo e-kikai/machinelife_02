@@ -100,7 +100,7 @@ h1 在庫機械一覧
                   = "✕"
               td.text-break = l(ma.created_at, format: :date)
 
-              td.text-break
+              td.text-end = number_with_delimiter(@detail_logs_count[ma.id])
 
   .row
     .col-2.small 検索結果 : #{number_with_delimiter @machines.count} 件

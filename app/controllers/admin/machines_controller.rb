@@ -17,6 +17,8 @@ class Admin::MachinesController < Admin::ApplicationController
 
     ### ページャ ###
     @pagy, @pmachines = pagy(@machines.order_by_key(params[:sort]))
+
+    @detail_logs_count = DetailLog.group(:machine_id).where(machine: @pmachines).count
   end
 
   def new

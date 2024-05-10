@@ -44,7 +44,7 @@ class MachinesController < ApplicationController
     @nitamonos = @machine.nitamonos.sales.order("machine_nitamonos.norm").limit(15)
 
     browser = Browser.new(request.user_agent)
-    if !browser.bot? && params[:id] != session[:before_machine_id]
+    if !browser.bot? && current_user&.role != "system" && params[:id] != session[:before_machine_id]
       DetailLog.create(
         machine_id: params[:id],
         user_id: current_user_id,
