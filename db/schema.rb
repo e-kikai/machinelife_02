@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_04_061626) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_09_085605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -324,6 +324,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_04_061626) do
     t.datetime "created_at", precision: nil, default: -> { "now()" }
     t.datetime "changed_at", precision: nil, default: -> { "now()" }
     t.datetime "deleted_at", precision: nil
+  end
+
+  create_table "detail_logs", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "machine_id"
+    t.string "utag", default: ""
+    t.string "ip", default: ""
+    t.string "host", default: ""
+    t.string "ua", default: ""
+    t.string "referer", default: ""
+    t.string "r", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["machine_id"], name: "index_detail_logs_on_machine_id"
+    t.index ["user_id"], name: "index_detail_logs_on_user_id"
   end
 
   create_table "eipses", id: { type: :serial, comment: "EIPS ID" }, comment: "EIPS", force: :cascade do |t|

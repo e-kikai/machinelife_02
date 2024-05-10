@@ -1,9 +1,4 @@
 Rails.application.routes.draw do
-  namespace :zenkiren do
-    get 'companies/tokyo'
-    get 'companies/osaka'
-    get 'companies/chubu'
-  end
   constraints ->(req) { req.host.exclude?("daihou") && req.host.exclude?("org") } do
     ### health check ###
     get "up" => "rails/health#show", as: :rails_health_check
@@ -31,9 +26,6 @@ Rails.application.routes.draw do
     get "/news/:target/:date/:week" => "machines#news"
 
     resources :catalogs, only: [:show]
-
-    # get "/zenkiren" => "zenkiren#index"
-    # get "/zenkiren/:page" => "zenkiren#show"
 
     ### admin ###
     namespace :admin do
@@ -90,6 +82,7 @@ Rails.application.routes.draw do
       resources :xl_genres, only: [:index, :new, :show, :create, :edit, :update, :destroy]
       resources :large_genres, only: [:new, :show, :create, :edit, :update, :destroy]
       resources :genres, only: [:new, :create, :edit, :update, :destroy]
+      resources :detail_logs, only: [:index]
 
       namespace :catalogs do
         get   :csv

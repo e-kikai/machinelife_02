@@ -1,5 +1,7 @@
 class MachinesController < ApplicationController
   require 'nkf'
+  include Hosts
+
   before_action :search_filtering, only: [:index, :large_genre, :genre, :maker, :company]
 
   def index; end
@@ -40,6 +42,22 @@ class MachinesController < ApplicationController
 
     @sames     = @machine.sames.sales.order(created_at: :desc)
     @nitamonos = @machine.nitamonos.sales.order("machine_nitamonos.norm").limit(15)
+
+    browser = Browser.new(request.user_agent)
+    if !browser.bot? && params[:id] != session[:before_machine_id]
+      DetailLog.create(
+        machine_id: params[:id],
+        user_id: current_user_id,
+        r: params[:r] || "",
+        ip:,
+        host:,
+        referer: request.referer,
+        ua: request.user_agent,
+        utag: session[:utag]
+      )
+
+      session[:before_machine_id] = params[:id]
+    end
 
     render status: @machine.deleted_at.present? ? 410 : 200
   end

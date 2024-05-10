@@ -13,20 +13,24 @@ h1 問い合わせログ集計 (#{title})
     thead
       tr.small
         th scope="col" style="width: 100px;"
-        th scope="col" style="width: 100px;" 事務局
+        th scope="col" style="width: 130px;" 在庫アクセス
+        th scope="col" style="width: 100px;border-left-style:double;border-left-width:3px;" 事務局
         th scope="col" style="width: 100px;" 会社
         th scope="col" style="width: 100px;" 在庫機械
         th scope="col" style="width: 100px;border-left-style:double;border-left-width:3px;" 合計
 
     tbody
       - @rows.each do |row|
+
         tr
           td.text-end
             - if params[:all].present?
               = link_to row, "/system/contacts/total?month=#{row}"
             - else
-              = l(row, format: :row)
-          td.text-end = @contacts_system_count[row]
+              . class="#{case row.wday when 6; "text-primary" when 0; "text-danger" end }" = l(row, format: :row)
+
+          td.text-end = number_with_delimiter @detail_logs_count[row]
+          td.text-end style="border-left-style:double;border-left-width:3px;" = @contacts_system_count[row]
           td.text-end = @contacts_company_count[row]
           td.text-end = @contacts_machine_count[row]
           td.text-end style="border-left-style:double;border-left-width:3px;" = @contacts_sum_count[row]

@@ -12,22 +12,22 @@ html lang="ja"
     = javascript_importmap_tags
 
     /-- Google tag GA4 Turbo --/
-    - if Rails.env.production?
-      script[async src="https://www.googletagmanager.com/gtag/js?id=G-9FCEEFBV1P"]
-      javascript:
-        document.addEventListener('turbo:load', (event) => {
-          window.dataLayer = window.dataLayer || [];
-          function gtag() {
-            window.dataLayer.push(arguments);
-          }
+    / - if Rails.env.production?
+    /   script[async src="https://www.googletagmanager.com/gtag/js?id=G-9FCEEFBV1P"]
+    /   javascript:
+    /     document.addEventListener('turbo:load', (event) => {
+    /       window.dataLayer = window.dataLayer || [];
+    /       function gtag() {
+    /         window.dataLayer.push(arguments);
+    /       }
 
-          gtag('js', new Date());
-          gtag('config', 'G-9FCEEFBV1P', { page_location: event.detail.url });
-          gtag('event', 'page_view', {
-            page_location: event.detail.url,
-            send_to: 'G-9FCEEFBV1P',
-          });
-        });
+    /       gtag('js', new Date());
+    /       gtag('config', 'G-9FCEEFBV1P', { page_location: event.detail.url });
+    /       gtag('event', 'page_view', {
+    /         page_location: event.detail.url,
+    /         send_to: 'G-9FCEEFBV1P',
+    /       });
+    /     });
 
   body.bg-dark style="background-image:none;"
     /** ヘッダ **/

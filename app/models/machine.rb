@@ -149,7 +149,7 @@ class Machine < ApplicationRecord
   end
 
   def self.to_keywords(keyword)
-    NKF.nkf('-wXZ', keyword).gsub(%r{[\ -/\:-\@\[-\~]}, " ").upcase.split(/[[:space:]]/).compact_blank
+    NKF.nkf('-wXZ', keyword).upcase.gsub(%r{[ -/:-@\[-~]}, " ").split(/[[:space:]]/).compact_blank
   end
 
   def self.to_model2(model)

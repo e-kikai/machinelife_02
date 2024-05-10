@@ -23,10 +23,13 @@ class System::ContactsController < System::ApplicationController
     if params[:all].present?
       @rows = (Date.new(2013, 4, 1)..today).select { |date| date.day == 1 }.map { |d| d.strftime('%Y/%m') }.reverse
       @contacts = @contacts.group("to_char(created_at, 'YYYY/MM')")
+      @detail_logs_count = DetailLog.group("to_char(created_at, 'YYYY/MM')").count
     else
       @month = params[:month] ? params[:month].to_date : today
 
       @contacts = @contacts.group("DATE(contacts.created_at)").where(created_at: @month.in_time_zone.all_month)
+      @detail_logs_count = DetailLog.group("DATE(detail_logs.created_at)").where(created_at: @month.in_time_zone.all_month).count
+
       @rows = @month.all_month.to_a
     end
 

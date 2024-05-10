@@ -125,3 +125,5 @@ gem 'rinku'
 gem 'mechanize'
 
 gem 'csv'
+
+gem "browser"

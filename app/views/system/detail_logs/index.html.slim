@@ -1,0 +1,76 @@
+- set_meta_tags title: "在庫詳細アクセスログ"
+- breadcrumb :system_something, "在庫詳細アクセスログ"
+
+h1 在庫詳細アクセスログ
+
+/* 検索枠 */
+.row
+  .col-10.m-auto
+    = form_with(url: "/system/detail_logs/", local: true, method: :get, html: { 'data-turbo-frame': :detail_log_list }) do |f|
+      .row.g-1.mt-1
+        .col-auto
+          .input-group.input-group-sm
+            = f.label :start_date, class: "input-group-text" do
+              . 登録日
+            = f.date_field :start_date, class: "form-control form-control-sm"
+            = f.label :end_date, class: "input-group-text" do
+              . 〜
+            = f.date_field :end_date, class: "form-control form-control-sm"
+
+        .col-auto = f.button class: "btn btn-primary btn-sm" do
+          . #{mi(:search)} 検索
+        .col-auto.ms-auto: .form-control-plaintext.small = link_to "/system/detail_logs" do
+          . #{mi(:clear)} 条件リセット
+
+/* 検索結果 */
+= turbo_frame_tag :detail_log_list do
+  / . = @pdetail_logs.to_sql
+
+  . style=" margin: 0 calc(50% - 49vw);width: 98vw;"
+    . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
+
+    table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+      thead
+        tr
+          th scope="col" アクセス日時
+          th scope="col" style="border-left-style:double;border-left-width:3px;" IP/ホスト名
+          th scope="col" utag
+          th scope="col" 会社・ユーザID : ユーザ名
+          th scope="col" ブラウザ
+          th scope="col" デバイス・OS
+          th scope="col" style="border-left-style:double;border-left-width:3px;" 機械ID
+          th scope="col" 商品名 メーカー 型式
+          th scope="col" 出品会社
+          th scope="col" リンク元
+
+      tbody
+        - @pdetail_logs.each do |dl|
+            - browser = Browser.new(dl.ua)
+
+            tr
+              td = l(dl.created_at)
+              td style="border-left-style:double;border-left-width:3px;"
+                . = dl.ip
+                . = dl.host
+              td = dl.utag
+              td
+                - if dl.user_id
+                  . = link_to dl.company&.company_remove_kabu, "/companies/#{dl.user&.company_id}", target: :_blank, rel: :noopener
+                  . #{dl.user_id}:#{dl.user&.user_name}
+                - else
+                  | -
+              td title="#{dl.ua}"
+                - unless browser.unknown?
+                  | #{browser.name} #{browser.version}
+                / = browser.device.name unless browser.device.unknown?
+              td
+                = browser.device.name unless browser.device.unknown?
+                - unless browser.platform.unknown?
+                  | #{browser.platform.name} #{browser.platform.version}
+              td.text-end style="border-left-style:double;border-left-width:3px;" = dl.machine_id
+              td = link_to dl.machine.full_name, "/machines/#{dl.machine_id}", target: :_blank, rel: :noopener
+              td = link_to dl.machine&.company&.company_remove_kabu, "/companies/#{dl.machine.company_id}", target: :_blank, rel: :noopener
+              / td = dl.referer
+              td.text-break title="#{CGI.unescape(dl.referer)}" = dl.link_source
+
+    . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1

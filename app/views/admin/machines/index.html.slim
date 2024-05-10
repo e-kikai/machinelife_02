@@ -94,9 +94,9 @@ h1 在庫機械一覧
               td.text-break = ma.location
               td.text-center = "◯" if ma.commission == 1
               td.text-center
-                - if ma.view_option == :negotiation
+                - if ma.view_option == "negotiation"
                   = "商"
-                - elsif ma.view_option == :hide
+                - elsif ma.view_option == "hide"
                   = "✕"
               td.text-break = l(ma.created_at, format: :date)
 

@@ -6,85 +6,102 @@ h1 マシンライフ 管理者ページ
 .row
   .col-6
     h2 会員情報
-    nav.nav.flex-column
-      = link_to "/system/companies", class: "nav-link" do
-        . #{mi(:business)} 会員会社一覧(変更・削除・代理ログイン)
-      / nav.nav.flex-column
-      /   = link_to "/system/companies.csv", class: "nav-link" do
+    .
+      .px-3.py-2
+        = link_to "/system/companies" do
+          | #{mi(:business)} 会員会社一覧(変更・削除・代理ログイン)
+        |<> |
+        = link_to "/system/companies/new" do
+          | #{mi(:add)} 新規登録
+      / .
+      /   = link_to "/system/companies.csv" do
       /     . #{mi(:file_download)} CSV出力
-      = link_to "/system/companies/pdf", class: "nav-link" do
+      .px-3.py-2 = link_to "/system/companies/pdf" do
         . #{mi(:picture_as_pdf)} 請求書PDF出力フォーム
-      = link_to "/system/users", class: "nav-link" do
-        . #{mi(:people)} ユーザ一覧(変更・削除)
-
+      .px-3.py-2
+        = link_to "/system/users" do
+          | #{mi(:people)} ユーザ一覧(変更・削除)
+        |<> |
+        = link_to "/system/users/new" do
+          | #{mi(:person_add)} 新規登録
     h2 在庫情報
-    nav.nav.flex-column
-      / = link_to "/system/machines/csv", class: "nav-link" do
+    .
+      / = link_to "/system/machines/csv" do
       /   . #{mi(:upload_file)} (未) CSV一括登録(百貨店汎用)
-      . #{mi(:upload_file)} (未) CSV一括登録(百貨店汎用)
-      = link_to "/system/xl_genres", class: "nav-link" do
+      .px-3.py-2  #{mi(:upload_file)} (未) CSV一括登録(百貨店汎用)
+      .px-3.py-2 = link_to "/system/xl_genres" do
         . #{mi(:category)} ジャンル管理
 
     h2 情報発信
-    nav.nav.flex-column
-      = link_to "/system/infos", class: "nav-link" do
+    .
+      .px-3.py-2 = link_to "/system/infos" do
         . #{mi(:info)} 事務局からのお知らせ一覧
-      / = link_to "/system/", class: "nav-link" do
+      / = link_to "/system/" do
       /   . (未) #{mi(:schedule_send)} メール一括送信
-      . #{mi(:schedule_send)} (未) メール一括送信
-      = link_to "/system/bidinfos", class: "nav-link" do
-        . #{mi(:label)} 入札会バナー一覧
-
-  .col-6
+      .px-3.py-2  #{mi(:schedule_send)} (未) メール一括送信
+      .px-3.py-2
+        = link_to "/system/bidinfos" do
+          | #{mi(:label)} 入札会バナー一覧
+        |<> |
+        = link_to "/system/bidinfos/new" do
+          | #{mi(:add)} 新規登録
     h2 電子カタログ
-    nav.nav.flex-column
-      / = link_to "/system/catalogs/csv", class: "nav-link" do
+    .
+      / = link_to "/system/catalogs/csv" do
       /   . ✕ #{mi(:upload_file)} 電子カタログCSV一括登録・変更
-      .  #{mi(:upload_file)} (未) 電子カタログCSV一括登録・変更
-      = link_to "/system/catalogs/sftp", class: "nav-link" do
+      .px-3.py-2 #{mi(:upload_file)} (未) 電子カタログCSV一括登録・変更
+      .px-3.py-2 = link_to "/system/catalogs/sftp" do
         . #{mi(:folder)} SFTP設定
-      = link_to "/system/catalog_requests", class: "nav-link" do
+      .px-3.py-2 = link_to "/system/catalog_requests" do
         . #{mi(:schedule_send)} カタログリクエスト一覧
-
+      .px-3.py-2 = link_to "/admin/catalogs/" do
+        . #{mi(:menu_book)} 電子カタログ
+  .col-6
     h2 ログ
-
-    ul.nav.flex-column
-      li.nav-item = link_to "/system/contacts", class: "nav-link" do
+    .
+      .px-3.py-2 = link_to "/system/contacts" do
         . #{mi(:mark_email_unread)} 問い合わせ一覧
-      li.nav-item = link_to "/system/contacts/total?all=1", class: "nav-link" do
-        . #{mi(:list_alt)} 問い合わせログ集計
-      li.nav-item = link_to "/system/contacts/total", class: "nav-link" do
-        . #{mi(:list_alt)} 問い合わせログ集計 (今月)
-      li = "(未) 行動ログ一覧"
-      li = "(未) 行動ログ集計"
+      .px-3.py-2
+        = link_to "/system/contacts/total?all=1" do
+          | #{mi(:list_alt)} 問い合わせログ集計
+        |<> |
+        = link_to "/system/contacts/total" do
+          | #{mi(:calendar_month)} 今月分
 
-      li.nav-item = link_to "/system/contacts/formula", class: "nav-link" do
+
+      .px-3.py-2 = link_to "/system/detail_logs" do
+        . #{mi(:format_list_numbered_rtl)} 在庫詳細アクセスログ
+      .px-3.py-2 = "(未) 行動ログ集計"
+
+      .px-3.py-2 = link_to "/system/contacts/formula" do
         . #{mi(:receipt_long)} 実績用データ集計
-      li.nav-item = link_to("https://analytics.google.com/analytics/web/?hl=ja&pli=1#/p395460014/reports/intelligenthome",
-        class: "nav-link", target: :_blank, rel: :noopener) do
+
+    h2 外部システム
+    .
+      .px-3.py-2 = link_to("https://analytics.google.com/analytics/web/?hl=ja&pli=1#/p395460014/reports/intelligenthome",
+        target: :_blank, rel: :noopener) do
           . #{mi(:analytics)} Google Analytics
-      li.nav-item = link_to("https://search.google.com/search-console?hl=ja&utm_source=wmx&utm_medium=deprecation-pane&utm_content=home&resource_id=https://www.zenkiren.net/",
-        class: "nav-link", target: :_blank, rel: :noopener) do
+      .px-3.py-2 = link_to("https://search.google.com/search-console?hl=ja&utm_source=wmx&utm_medium=deprecation-pane&utm_content=home&resource_id=https://www.zenkiren.net/",
+        target: :_blank, rel: :noopener) do
           . #{mi(:query_stats)} Google Search Console
 
+      .px-3.py-2 = link_to("https://us8.admin.mailchimp.com/", target: :_blank, rel: :noopener) do
+        . #{mi(:send)} Mailchimp
+
+      .px-3.py-2 = link_to("https://ap-northeast-1.console.aws.amazon.com/console/home?region=ap-northeast-1",
+        target: :_blank, rel: :noopener) do
+          . #{mi(:settings_system_daydream)} AWS
+
       - if Rails.env.development?
-        li.nav-item = link_to("https://ap-northeast-1.console.aws.amazon.com/console/home?region=ap-northeast-1",
-          class: "nav-link", target: :_blank, rel: :noopener) do
-            . #{mi(:settings_system_daydream)} AWS
-
-        li.nav-item = link_to("https://us8.admin.mailchimp.com/", class: "nav-link", target: :_blank, rel: :noopener) do
-          . #{mi(:send)} Mailchimp
-
-        li.nav-item
-          = link_to("/system/letter_opener/", class: "nav-link", target: :_blank, rel: :noopener) do
+        .px-3.py-2
+          = link_to("/system/letter_opener/", target: :_blank, rel: :noopener) do
             . #{mi(:move_to_inbox)} letter opener
 
     h2 全機連マシンライフ
-
-    nav.nav.flex-column
-      = link_to "/", class: "nav-link" do
+    .
+      .px-3.py-2 = link_to "/" do
         . #{mi(:home)} マシンライフ トップページ
-      = link_to "/admin", class: "nav-link" do
+      .px-3.py-2 = link_to "/admin" do
         . #{mi(:business)} 会員ページ (#{current_company.company_remove_kabu})
-      = link_to "/admin/logout", data: { turbo_method: :delete, turbo_confirm: "ログアウトしますか？" }, class: "nav-link" do
+      .px-3.py-2 = link_to "/admin/logout", data: { turbo_method: :delete, turbo_confirm: "ログアウトしますか？" } do
         . #{mi(:logout)} ログアウト

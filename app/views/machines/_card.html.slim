@@ -1,4 +1,4 @@
-.card = link_to "/machines/#{machine.id}" do
+.card = link_to "/machines/#{machine.id}?r=crd_#{r}" do
   .ratio.ratio-1x1 = image_tag machine.top_image_url, class: "card-img-top object-fit-cover"
   .card-body.p-1.bg-light.overflow-y-hidden style="height:5rem;"
     - titles.each do |t|

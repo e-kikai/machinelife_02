@@ -7,7 +7,28 @@
 
 - breadcrumb :machine, @machine
 
+/ javascript:
+/   document.addEventListener('turbo:load', (event) => {
+/     let url = "/detail_logs";
+/     let data = {
+
+/     }
+
+/     fetch(url, {
+/       method: "POST",
+/       headers: {
+/         "Content-Type": "application/json"
+/       },
+/       body: JSON.stringify({
+/         "id": "01",
+/         "title": "テスト01",
+/       })
+/     })
+/   });
+
 h1 #{@machine.full_name}
+
+= session[:before_machine_id]
 
 .contents
   .row.gx-2
@@ -159,7 +180,7 @@ h1 #{@machine.full_name}
                   .row.gx-2
                     - mas.each do |ma|
                       .col-1.p-1 style="width:20%;"
-                        = render partial: "card", locals: { machine: ma, titles: [ma.myear, ma.addr1, ma.company.company_remove_kabu] }
+                        = render partial: "card", locals: { machine: ma, titles: [ma.myear, ma.addr1, ma.company.company_remove_kabu], r: :smd }
 
             button.carousel-control-prev type="button" data-bs-target="#samesCarousel" data-bs-slide="prev" style="width:6%;"
               | #{mi(:arrow_back_ios, "text-dark fs-1 fw-bolder")}
@@ -183,7 +204,7 @@ h1 #{@machine.full_name}
                   .row.gx-2
                     - mas.each do |ma|
                       .col-1.p-1 style="width:20%;"
-                        = render partial: "card", locals: { machine: ma, titles: [ma.maker, ma.name, ma.model, ma.myear, ma.addr1] }
+                        = render partial: "card", locals: { machine: ma, titles: [ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :nmr }
 
             button.carousel-control-prev type="button" data-bs-target="#nitamonosCarousel" data-bs-slide="prev" style="width:6%;"
               | #{mi(:arrow_back_ios, "text-dark fs-1 fw-bolder")}
