@@ -71,6 +71,6 @@ h1 在庫詳細アクセスログ
               td = link_to dl.machine.full_name, "/machines/#{dl.machine_id}", target: :_blank, rel: :noopener
               td = link_to dl.machine&.company&.company_remove_kabu, "/companies/#{dl.machine.company_id}", target: :_blank, rel: :noopener
               / td = dl.referer
-              td.text-break title="#{CGI.unescape(dl.referer)}" = dl.link_source
+              td.text-break title="#{CGI.unescape(dl.referer)}" = CGI.unescape(dl.link_source)
 
     . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1

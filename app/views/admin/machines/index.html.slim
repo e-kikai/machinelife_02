@@ -90,7 +90,7 @@ h1 在庫機械一覧
               td.text-break = link_to ma.name, "/admin/machines/#{ma.id}/edit", 'data-turbo-frame': :_top
               td.text-break = ma.maker
               td.text-break = ma.model
-              td.text-break = ma.myear
+              td.text-break = ma.year
               td.text-break = ma.location
               td.text-center = "◯" if ma.commission == 1
               td.text-center
