@@ -81,7 +81,7 @@ module LinkSource
         end
 
       # rel から取得
-      res.concat(ref.split("_").filter_map { |kwd| KWDS[kwd] || kwd } || []).join(' | ')
+      res.concat(ref.split("_").filter_map { |kwd| KWDS[kwd] || kwd } || []).join(' | ').to_s
     end
 
     def check_robot_base(host, ip)
