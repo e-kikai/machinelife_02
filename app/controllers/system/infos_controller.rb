@@ -1,4 +1,4 @@
-class System::InfosController < ApplicationController
+class System::InfosController < System::ApplicationController
   before_action :set_info, only: %w[edit update destroy]
 
   def index

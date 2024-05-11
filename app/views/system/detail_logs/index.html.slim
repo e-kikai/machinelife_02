@@ -10,25 +10,30 @@ h1 在庫詳細アクセスログ
       .row.g-1.mt-1
         .col-auto
           .input-group.input-group-sm
+            = f.label :k, class: "input-group-text" do
+              . #{mi(:person)}
+            = f.text_field :k, class: "form-control form-control-sm", placeholder: "IP, host, utagで検索"
+
+        .col-auto
+          .input-group.input-group-sm
             = f.label :start_date, class: "input-group-text" do
-              . 登録日
-            = f.date_field :start_date, class: "form-control form-control-sm"
+              . 日時
+            = f.datetime_field :start_date, class: "form-control form-control-sm"
             = f.label :end_date, class: "input-group-text" do
               . 〜
-            = f.date_field :end_date, class: "form-control form-control-sm"
+            = f.datetime_field :end_date, class: "form-control form-control-sm"
 
         .col-auto = f.button class: "btn btn-primary btn-sm" do
           . #{mi(:search)} 検索
         .col-auto.ms-auto: .form-control-plaintext.small = link_to "/system/detail_logs" do
-          . #{mi(:clear)} 条件リセット
+          . #{mi(:clear)} リセット
 
 /* 検索結果 */
 = turbo_frame_tag :detail_log_list do
   / . = @pdetail_logs.to_sql
+  . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
 
   . style=" margin: 0 calc(50% - 49vw);width: 98vw;"
-    . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
-
     table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
       thead
         tr
@@ -73,4 +78,4 @@ h1 在庫詳細アクセスログ
               / td = dl.referer
               td.text-break title="#{CGI.unescape(dl.referer.to_s)}" = CGI.unescape(dl.link_source)
 
-    . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
+  . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1

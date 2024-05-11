@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
-    User.find(current_user_id)
+    User.find_by(id: current_user_id)
   end
 
   def current_company_id
@@ -32,5 +32,9 @@ class ApplicationController < ActionController::Base
 
   def current_company
     current_company_id.present? ? Company.find(current_company_id) : nil
+  end
+
+  def system_user?
+    current_user&.role == "system"
   end
 end

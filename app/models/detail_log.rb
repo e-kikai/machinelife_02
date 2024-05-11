@@ -30,4 +30,13 @@ class DetailLog < ApplicationRecord
   has_one    :xl_genre, through: :large_genre
 
   before_save :check_robot
+
+  KEYWORDSEARCH_COLUMNS = %w[ip host utag].freeze
+  KEYWORDSEARCH_SQL = KEYWORDSEARCH_COLUMNS.map { |c| "coalesce(#{c}, '')" }.join(" || ' ' || ") << " ~* ALL(ARRAY[?])"
+
+  scope :where_keyword, ->(keyword) { where(KEYWORDSEARCH_SQL, to_keywords(keyword)) }
+
+  def self.to_keywords(keyword)
+    NKF.nkf('-wXZ', keyword).upcase.gsub(%r{[ -/:-@\[-~]}, " ").split(/[[:space:]]/).compact_blank
+  end
 end
