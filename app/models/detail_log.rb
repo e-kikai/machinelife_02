@@ -24,7 +24,7 @@ class DetailLog < ApplicationRecord
   belongs_to :user, optional: true
   has_one    :company, through: :user
 
-  belongs_to :machine
+  belongs_to :machine, -> { with_deleted }, class_name: 'Machine'
   has_one    :genre, through: :machine
   has_one    :large_genre, through: :genre
   has_one    :xl_genre, through: :large_genre

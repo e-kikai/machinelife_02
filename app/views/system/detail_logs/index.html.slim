@@ -77,7 +77,7 @@ h1 在庫詳細アクセスログ
                   | #{browser.name} #{browser.version}
 
               td.text-end style="border-left-style:double;border-left-width:3px;" = dl.machine_id
-              td = link_to dl.machine.full_name, "/machines/#{dl.machine_id}", target: :_blank, rel: :noopener
+              td = link_to dl.machine&.full_name, "/machines/#{dl.machine_id}", target: :_blank, rel: :noopener
               td = link_to dl.machine&.company&.company_remove_kabu, "/companies/#{dl.machine.company_id}", target: :_blank, rel: :noopener
               / td = dl.referer
               td.text-break title="#{CGI.unescape(dl.referer.to_s)}" = CGI.unescape(dl.link_source)
