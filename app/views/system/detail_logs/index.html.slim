@@ -4,32 +4,38 @@
 h1 在庫詳細アクセスログ
 
 /* 検索枠 */
-.row
-  .col-10.m-auto
-    = form_with(url: "/system/detail_logs/", local: true, method: :get, html: { 'data-turbo-frame': :detail_log_list }) do |f|
-      .row.g-1.mt-1
-        .col-auto
-          .input-group.input-group-sm
-            = f.label :k, class: "input-group-text" do
-              . #{mi(:person)}
-            = f.text_field :k, class: "form-control form-control-sm", placeholder: "IP, host, utagで検索"
-
-        .col-auto
-          .input-group.input-group-sm
-            = f.label :start_date, class: "input-group-text" do
-              . 日時
-            = f.datetime_field :start_date, class: "form-control form-control-sm"
-            = f.label :end_date, class: "input-group-text" do
-              . 〜
-            = f.datetime_field :end_date, class: "form-control form-control-sm"
-
-        .col-auto = f.button class: "btn btn-primary btn-sm" do
-          . #{mi(:search)} 検索
-        .col-auto.ms-auto: .form-control-plaintext.small = link_to "/system/detail_logs" do
-          . #{mi(:clear)} リセット
-
-/* 検索結果 */
 = turbo_frame_tag :detail_log_list do
+  .row
+    .col-12.m-auto
+      = form_with(url: "/system/detail_logs/", local: true, method: :get, html: { 'data-turbo-frame': :detail_log_list }) do |f|
+        .row.g-1.mt-1
+          .col-auto
+            .input-group.input-group-sm
+              = f.label :k, class: "input-group-text" do
+                . #{mi(:person)}
+              = f.text_field :k, value: params[:k], class: "form-control form-control-sm", placeholder: "IP, host, utagで検索"
+
+          .col-1
+            .input-group.input-group-sm
+              = f.label :user_id, class: "input-group-text" do
+                . #{mi(:account_circle)}
+              = f.number_field :user_id, value: params[:user_id], class: "form-control form-control-sm", placeholder: "user ID"
+
+          .col-auto
+            .input-group.input-group-sm
+              = f.label :start_date, class: "input-group-text" do
+                . 日時
+              = f.datetime_field :start_date, class: "form-control form-control-sm"
+              = f.label :end_date, class: "input-group-text" do
+                . 〜
+              = f.datetime_field :end_date, class: "form-control form-control-sm"
+
+          .col-auto = f.button class: "btn btn-primary btn-sm" do
+            . #{mi(:search)} 検索
+          .col-auto.ms-auto: .form-control-plaintext.small = link_to "/system/detail_logs" do
+            . #{mi(:clear)} リセット
+
+  /* 検索結果 */
   / . = @pdetail_logs.to_sql
   . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
 
@@ -41,8 +47,7 @@ h1 在庫詳細アクセスログ
           th scope="col" style="border-left-style:double;border-left-width:3px;" IP/ホスト名
           th scope="col" utag
           th scope="col" 会社・ユーザID : ユーザ名
-          th scope="col" ブラウザ
-          th scope="col" デバイス・OS
+          th scope="col" デバイス・OS・ブラウザ
           th scope="col" style="border-left-style:double;border-left-width:3px;" 機械ID
           th scope="col" 商品名 メーカー 型式
           th scope="col" 出品会社
@@ -55,23 +60,22 @@ h1 在庫詳細アクセスログ
             tr
               td = l(dl.created_at)
               td style="border-left-style:double;border-left-width:3px;"
-                . = dl.ip
+                . = link_to dl.ip, "/system/detail_logs/?k=#{dl.ip}"
                 . = dl.host
-              td = dl.utag
+              td = link_to dl.utag, "/system/detail_logs/?k=#{dl.utag}"
               td
                 - if dl.user_id
-                  . = link_to dl.company&.company_remove_kabu, "/companies/#{dl.user&.company_id}", target: :_blank, rel: :noopener
-                  . #{dl.user_id}:#{dl.user&.user_name}
+                  . = dl.company&.company_remove_kabu
+                  . = link_to "#{dl.user_id}:#{dl.user&.user_name}", "/system/detail_logs/?user_id=#{dl.user_id}"
                 - else
                   | -
               td title="#{dl.ua}"
-                - unless browser.unknown?
-                  | #{browser.name} #{browser.version}
-                / = browser.device.name unless browser.device.unknown?
-              td
                 = browser.device.name unless browser.device.unknown?
                 - unless browser.platform.unknown?
                   | #{browser.platform.name} #{browser.platform.version}
+                - unless browser.unknown?
+                  | #{browser.name} #{browser.version}
+
               td.text-end style="border-left-style:double;border-left-width:3px;" = dl.machine_id
               td = link_to dl.machine.full_name, "/machines/#{dl.machine_id}", target: :_blank, rel: :noopener
               td = link_to dl.machine&.company&.company_remove_kabu, "/companies/#{dl.machine.company_id}", target: :_blank, rel: :noopener
