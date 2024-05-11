@@ -17,7 +17,8 @@ module LinkSource
       "reload" => "リロード", "back" => "履歴",
 
       # 一括配信メール
-      "mail" => "メール", "cmp" => "Mailchimp",
+      "mail" => "メール", "cmp" => "Mailchimp", "rss" => "RSS",
+      "cnu" => "ユーザ新着", "cna" => "会員新着",
 
       # 外部サイト
       "omdc" => "電子入札システム", "ekikai" => "e-kikai", "mnok" => "ものオク",

@@ -5,10 +5,10 @@ h2 style="border-left: 6px solid #147543; margin: 8px;font-size: 18px;font-weigh
 ul
   - @genres.each do |ge|
     li style="margin-top:4px;"
-      = link_to "#{ge.genre} (#{ge.machines.length})", "#{root_url}machines/genre/#{ge.id}"
+      = link_to "#{ge.genre} (#{ge.machines.length})", "#{root_url}machines/genre/#{ge.id}?r=cmp_cna"
       ul
         - ge.machines.each do |ma|
-          li = link_to "#{ma.full_name} :  #{ma.company.company_remove_kabu} ", "#{root_url}machines/#{ma.id}"
+          li = link_to "#{ma.full_name} :  #{ma.company.company_remove_kabu} ", "#{root_url}machines/#{ma.id}?r=cmp_cna"
 
 - if @bidinfos.present?
   h2 style="border-left: 6px solid #147543; margin: 8px;font-size: 18px;font-weight: bold;text-indent: 13px;"

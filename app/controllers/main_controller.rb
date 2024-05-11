@@ -34,10 +34,12 @@ class MainController < ApplicationController
       # 新着メール用 (ユーザ用、 週ごと)
       @date = Time.current.ago(1.week).end_of_week
       @machines = Machine.sales.where(created_at: @date.all_week).where.not(top_image: nil).reorder("RANDOM()").limit(12)
+      @r = :cmp_cnu
       rend = :feed
     else
       @date = Time.current
       @machines = Machine.sales.where(created_at: Machine::NEWS_DAY..).order(created_at: :desc).limit(300)
+      @r = :rss
       rend = :feed
     end
     # @machines =

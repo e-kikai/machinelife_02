@@ -29,7 +29,7 @@ xml.rss(
         xml.title ma.full_name
         xml.description "#{ma.company.company_remove_kabu} (#{ma.addr1})"
         xml.pubDate ma.created_at
-        xml.link "https://www.zenkiren.net/machines/#{ma.id}"
+        xml.link "https://www.zenkiren.net/machines/#{ma.id}?r=#{@r}"
         xml.guid "https://www.zenkiren.net/machines/#{ma.id}", "isPermaLint" => true
         xml.enclosure "", "url" => ma.top_image_url, "length" => "100000", "type" => "image/jpeg"
         xml.media(:content, "url" => ma.top_image_url, "medium" => "image", "type" => "image/jpeg")
