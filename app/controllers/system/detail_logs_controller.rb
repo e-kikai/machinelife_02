@@ -1,7 +1,7 @@
 class System::DetailLogsController < System::ApplicationController
   def index
     ### 検索・フィルタリング処理 ###
-    @detail_logs = DetailLog.includes({ machine: [:company] }, :user, :company).order(id: :desc)
+    @detail_logs = DetailLog.includes({ machine: [:company] }, :user, :company).order(id: :desc).merge(Machine.with_deleted)
       .then { |ds| params[:start_date].present? ? ds.where(created_at: params[:start_date]..) : ds }
       .then { |ds| params[:end_date].present?   ? ds.where(created_at: ..params[:end_date]) : ds }
       .then { |ds| params[:user_id].present?    ? ds.where(user_id: params[:user_id]) : ds }

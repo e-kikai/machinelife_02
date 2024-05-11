@@ -36,7 +36,7 @@ h1 在庫詳細アクセスログ
             . #{mi(:clear)} リセット
 
   /* 検索結果 */
-  / . = @pdetail_logs.to_sql
+  . = @pdetail_logs.to_sql
   . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
 
   . style=" margin: 0 calc(50% - 49vw);width: 98vw;"
