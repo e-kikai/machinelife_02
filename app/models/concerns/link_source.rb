@@ -68,6 +68,7 @@ module LinkSource
           when %r{^/machines/large_genre/([\d]+)}; "中ジャンル : #{Regexp.last_match(1)}"
           when %r{^/machines/genre/([\d]+)};       "ジャンル : #{Regexp.last_match(1)}"
           when %r{^/machines/maker/([\d]+)};       "メーカー : #{Regexp.last_match(1)}"
+          when %r{^/machines/addr1/(.+)};          "都道府県 : #{Regexp.last_match(1)}"
           when %r{^/machines/company/([\d]+)};     "出品会社 : #{Regexp.last_match(1)}"
           when %r{^/machines\?k=(.*)};             "キーワード : #{Regexp.last_match(1)}"
           when %r{^/helps};                        "ヘルプ"
@@ -78,11 +79,11 @@ module LinkSource
           end
 
         when %r{/(.*?)(/|$)}; Regexp.last_match(1)
-        else; "(不明)"
+        # else; "(不明)"
         end
 
       # rel から取得
-      res.concat(ref.split("_").filter_map { |kwd| KWDS[kwd] || kwd } || []).join(' | ').to_s
+      res.concat(ref.split("_").map { |kwd| KWDS[kwd] || kwd } || []).compact.join(' | ').to_s
     end
 
     def check_robot_base(host, ip)

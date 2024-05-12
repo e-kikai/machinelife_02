@@ -44,7 +44,6 @@ SitemapGenerator::Sitemap.create do
 
   ### 都道府県 ###
   State.order(:order_no).each do |addr1|
-
+    add "/machines/addr1/#{addr1}", priority: 0.65, changefreq: 'daily'
   end
-
 end
