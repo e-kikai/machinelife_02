@@ -2,7 +2,7 @@ class MachinesController < ApplicationController
   require 'nkf'
   include Hosts
 
-  before_action :search_filtering, only: [:index, :large_genre, :genre, :maker, :company]
+  before_action :search_filtering, only: %i[index large_genre genre maker company addr1]
 
   def index; end
 
@@ -33,6 +33,13 @@ class MachinesController < ApplicationController
   def maker
     @bread = [:something, params[:maker]]
     @title = "メーカー:#{params[:maker]} 検索結果"
+
+    render :index
+  end
+
+  def addr1
+    @bread = [:something, params[:addr1]]
+    @title = "在庫場所:#{params[:addr1]} 検索結果"
 
     render :index
   end

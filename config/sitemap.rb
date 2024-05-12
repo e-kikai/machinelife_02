@@ -41,4 +41,10 @@ SitemapGenerator::Sitemap.create do
     add "/companies/#{id}", priority: 0.65, changefreq: 'daily'
     add "/machines/company/#{id}", priority: 0.65, changefreq: 'daily'
   end
+
+  ### 都道府県 ###
+  State.order(:order_no).each do |addr1|
+
+  end
+
 end

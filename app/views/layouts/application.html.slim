@@ -75,7 +75,7 @@ html lang="ja"
       /-- パンくず --/
       nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb"
         = breadcrumbs style: :bootstrap5, semantic: true, autoroot: false,
-          class: 'breadcrumb bg-success-subtle py-1 px-2'
+          class: 'breadcrumb bg-success-subtle py-1 px-2 border-0'
 
       - if notice.present?
         .alert.alert-success.mt-2.mx-auto.col-10
@@ -90,7 +90,7 @@ html lang="ja"
     /-- フッタ --/
     footer
       .footer_menu = render "/layouts/header_menu"
-      .text-center.py-1.bg-dark.text-white Copyright &copy; #{Time.current.year} 全日本機械業連合会 All Rights Reserved.
+      .text-center.py-1.bg-dark.text-white style="min-width:992px;" Copyright &copy; #{Time.current.year} 全日本機械業連合会 All Rights Reserved.
 
     /-- トップリンク --/
     = link_to "#", class: "btn btn-outline-success btn-lg position-fixed bottom-0 end-0 m-3" do

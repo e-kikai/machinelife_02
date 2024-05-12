@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       get "genre/:genre_id"             => "machines#genre",       on: :collection
       get "company/:company_id"         => "machines#company",     on: :collection
       get "maker/:maker"                => "machines#maker",       on: :collection
+      get "addr1/:addr1"                => "machines#addr1",       on: :collection
     end
     resources :contacts, only: [:new, :create, :index, :edit, :update]
     resources :helps, only: [:index, :show]

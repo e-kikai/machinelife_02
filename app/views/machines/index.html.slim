@@ -1,5 +1,7 @@
 - set_meta_tags title: @title
-/ - set_meta_tags description: @machine.company.addr
+- set_meta_tags description: "マシンライフに登録されている、#{@title}です。"
+- set_meta_tags canonical: request.path
+
 - breadcrumb @bread[0], @bread[1]
 
 h1 = @title

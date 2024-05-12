@@ -18,10 +18,10 @@ class HelpsController < ApplicationController
     @makers = machines.where.not(maker2: "")
       .group("COALESCE(makers.maker_master, machines.maker2)").count
 
-    @xl_genres             = XlGenre.order(:order_no).includes(:large_genres)
+    @xl_genres             = XlGenre.order(:order_no).includes(:large_genres, :genres)
     @counts_by_xl_genre    = machines.joins(:xl_genre).group("xl_genres.id").count
     @counts_by_large_genre = machines.joins(:large_genre).group("large_genres.id").count
-    # @counts_by_genre       = machines.group("genre_id").count
+    @counts_by_genre       = machines.joins(:genre).group("genre_id").count
 
     @companies         = Company.includes(:group, :parent).order(:company_kana)
     @counts_by_company = machines.group(:company_id).count

@@ -6,12 +6,20 @@ h1 サイトマップ
 h2 ジャンル
 .row.g-2.mb-4
   - @xl_genres.each do |xg|
-    h5 = xg.xl_genre
-    .row
+    h5.mt-2.mb-0 ◆ #{xg.xl_genre}
+    .mt-0
       - xg.large_genres.each do |lg|
-        .col-auto style="min-width:16.6666%;" = link_to "/machines/large_genre/#{lg.id}" do
-          | #{lg.large_genre}
-          small.text-danger = " (#{number_with_delimiter(@counts_by_large_genre[lg.id])})"
+        .px-3.py-2
+          .
+            = "● "
+            = link_to "/machines/large_genre/#{lg.id}" do
+              | #{lg.large_genre}
+              small.text-danger = " (#{number_with_delimiter(@counts_by_large_genre[lg.id])})"
+          .row.px-4
+            - lg.genres.each do |ge|
+              .col-auto style="min-width:16.6666%;" = link_to "/machines/genre/#{ge.id}" do
+                | #{ge.genre}
+                small.text-danger = " (#{number_with_delimiter(@counts_by_genre[ge.id])})"
 
 h2 メーカー
 .row.g-2.mb-4
@@ -35,6 +43,7 @@ h2 都道府県
 .row.g-2.mb-4
   - @counts_by_state.to_h.each do |addr1, count|
     - next if addr1.blank? || addr1.length > 5
-    .col-auto style="min-width:16.6666%;" = link_to "/machines?k=#{addr1}" do
+    / .col-auto style="min-width:16.6666%;" = link_to "/machines?k=#{addr1}" do
+    .col-auto style="min-width:16.6666%;" = link_to "/machines/addr1/#{addr1}" do
       | #{addr1}
       small.text-danger = " (#{number_with_delimiter(count)})"
