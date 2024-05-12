@@ -10,6 +10,9 @@ module LinkSource
     {
       "smd" => "同じ型式", "nmr" => "似た機械", "sge" => "同ジャンル", "hst" => "閲覧履歴",
 
+      # トップページキーワード検索
+      "kma" => "メーカー", "kmo" => "型式",
+
       # 表示形式
       "crd" => "カード表示", "lst" => "リスト表示",
 
@@ -70,7 +73,7 @@ module LinkSource
           when %r{^/machines/maker/([\d]+)};       "メーカー : #{Regexp.last_match(1)}"
           when %r{^/machines/addr1/(.+)};          "都道府県 : #{Regexp.last_match(1)}"
           when %r{^/machines/company/([\d]+)};     "出品会社 : #{Regexp.last_match(1)}"
-          when %r{^/machines\?k=(.*)};             "キーワード : #{Regexp.last_match(1)}"
+          when %r{^/machines\?k=(.*?)(&|$)};       "キーワード : #{Regexp.last_match(1)}"
           when %r{^/helps};                        "ヘルプ"
           when %r{^/admin};                        "組合員ページ"
           when %r{^/system};                       "管理者ページ"

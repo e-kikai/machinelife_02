@@ -36,14 +36,16 @@
       label.small for="k_mo" 型式から検索
       .input-group
         = text_field_tag :k, "", placeholder: "例 : 2SP-150H", class: "form-control form-control-sm", id: :k_mo, required: true
-        = button_tag type: :submit, class: "btn btn-primary btn-sm" do
+        = hidden_field_tag :r, :kmo
+        = button_tag type: :button, class: "btn btn-primary btn-sm" do
           | #{mi(:search)} 検索
 
     .my-1 = form_tag "/machines", method: :get do
       label.small for="k_ma" メーカーから検索
       .input-group
         = text_field_tag :k, "", placeholder: "例 : オークマ", class: "form-control form-control-sm", id: :k_ma, required: true
-        = button_tag type: :submit, class: "btn btn-primary btn-sm" do
+        = hidden_field_tag :r, :kma
+        = button_tag type: :button, class: "btn btn-primary btn-sm" do
           | #{mi(:search)} 検索
 
 /-- 入札会バナー枠 --/

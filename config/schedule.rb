@@ -11,7 +11,7 @@ set :environment, rails_env
 set :output, Rails.root.join("log/cron.log").to_s
 # set :output, nil
 
-if rails_env == "production" # テスト用に
+if rails_env == "production"
   # sitemap
   every 1.day, at: '5:00 am' do
     rake '-s sitemap:refresh'

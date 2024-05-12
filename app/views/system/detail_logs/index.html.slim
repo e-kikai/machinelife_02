@@ -82,7 +82,8 @@ h1 在庫詳細アクセスログ
               td = link_to dl.machine&.company&.company_remove_kabu, "/companies/#{dl.machine&.company_id}", target: :_blank, rel: :noopener
               td.text-center
                 - if dl.machine&.deleted_at.present?
-                  = dl.machine.deleted_at < dl.created_at ? "売" : "済"
+                  = dl.machine.deleted_at < dl.created_at ? "済" : "売"
+                = dl.r
               td.text-break title="#{CGI.unescape(dl.referer.to_s)}" = CGI.unescape(dl.link_source)
 
   . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
