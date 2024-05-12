@@ -17,9 +17,7 @@ html lang="ja"
       javascript:
         document.addEventListener('turbo:load', (event) => {
           window.dataLayer = window.dataLayer || [];
-          function gtag() {
-            window.dataLayer.push(arguments);
-          }
+          function gtag() { window.dataLayer.push(arguments); }
 
           gtag('js', new Date());
           gtag('config', 'G-9FCEEFBV1P', { page_location: event.detail.url });
