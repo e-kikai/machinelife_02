@@ -48,7 +48,7 @@ class System::CrawlerController < ApplicationController
       # location
       if da[:location] == "本社"
         machine.assign_attributes({ addr1: @company.addr1, addr2: @company.addr2, addr3: @company.addr3 })
-      elsif office = @company.offices_parsed.datas.find { |_, v| v&[:name] == da[:location] }
+      elsif office = @company.offices_parsed.datas.to_a.find { |v| v&.dig(:name) == da[:location] }
         machine.assign_attributes({ addr1: office[:addr1], addr2: office[:addr2], addr3: office[:addr3] })
       end
 
