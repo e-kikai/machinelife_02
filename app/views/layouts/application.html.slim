@@ -11,6 +11,8 @@ html lang="ja"
 
     = javascript_importmap_tags
 
+    = render partial: '/layouts/breadcrumbs_json_ld', breadcrumbs: breadcrumbs
+
     /-- Google tag GA4 Turbo --/
     - if Rails.env.production?
       script[async src="https://www.googletagmanager.com/gtag/js?id=G-9FCEEFBV1P"]

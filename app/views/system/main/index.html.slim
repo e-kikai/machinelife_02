@@ -61,16 +61,16 @@ h1 マシンライフ 管理者ページ
     .
       .px-3.py-2 = link_to "/system/contacts" do
         . #{mi(:mark_email_unread)} 問い合わせ一覧
-      .px-3.py-2
-        = link_to "/system/contacts/total?all=1" do
-          | #{mi(:list_alt)} 問い合わせログ集計
-        |<> |
-        = link_to "/system/contacts/total" do
-          | #{mi(:calendar_month)} 今月分
 
       .px-3.py-2 = link_to "/system/detail_logs" do
         . #{mi(:format_list_numbered_rtl)} 在庫詳細アクセスログ
-      .px-3.py-2 = "(未) 行動ログ集計"
+
+      .px-3.py-2
+        = link_to "/system/contacts/total?all=1" do
+          | #{mi(:list_alt)} ログ集計
+        |<> |
+        = link_to "/system/contacts/total" do
+          | #{mi(:date_range)} 今月分
 
       .px-3.py-2 = link_to "/system/contacts/formula" do
         . #{mi(:receipt_long)} 実績用データ集計

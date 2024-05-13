@@ -21,7 +21,7 @@
     h2 #{mi(:pin_drop)} 在庫地域検索
     = form_tag "/machines", method: :get do
       .input-group.my-2
-        select.form-control.form-select-sm name="k" require="require" onchange="location.href = '/machines/addr1/' + this.value;"
+        select.form-select.form-select-sm name="k" require="require" onchange="location.href = '/machines/addr1/' + this.value;"
           option ▼ 都道府県を選択 ▼
           - @states.each do |st|
             - if @counts_by_state[st.state].present?

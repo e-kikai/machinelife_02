@@ -11,6 +11,12 @@ Rails.application.routes.draw do
 
     ### machine ###
     resources :companies, only: [:index, :show]
+    get  "/products/:id" => redirect("/machines/%{id}")
+    get  "/products/large_genre/:id" => redirect("/machines/large_genre/%{id}")
+    get  "/products/genre/:id" => redirect("/machines/genre/%{id}")
+    get  "/products/company/:id" => redirect("/machines/company/%{id}")
+    get  "/products/maker/:id" => redirect("/machines/maker/%{id}")
+
     resources :machines do
       get "large_genre/:large_genre_id" => "machines#large_genre", on: :collection
       get "genre/:genre_id"             => "machines#genre",       on: :collection

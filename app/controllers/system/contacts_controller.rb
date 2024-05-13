@@ -17,18 +17,23 @@ class System::ContactsController < System::ApplicationController
   end
 
   def total
-    @contacts = Contact.all
     today = Time.zone.today
 
     if params[:all].present?
       @rows = (Date.new(2013, 4, 1)..today).select { |date| date.day == 1 }.map { |d| d.strftime('%Y/%m') }.reverse
-      @contacts = @contacts.group("to_char(created_at, 'YYYY/MM')")
-      @detail_logs_count = DetailLog.group("to_char(created_at, 'YYYY/MM')").count
+      @contacts = Contact.group("to_char(created_at, 'YYYY/MM')")
+      @detail_logs = DetailLog.group("to_char(created_at, 'YYYY/MM')")
+
+      @machines_create_count = Machine.with_deleted.group("to_char(created_at, 'YYYY/MM')").count
+      @machines_delete_count = Machine.with_deleted.group("to_char(deleted_at, 'YYYY/MM')").count
     else
       @month = params[:month] ? params[:month].to_date : today
 
-      @contacts = @contacts.group("DATE(contacts.created_at)").where(created_at: @month.in_time_zone.all_month)
-      @detail_logs_count = DetailLog.group("DATE(detail_logs.created_at)").where(created_at: @month.in_time_zone.all_month).count
+      @contacts = Contact.group("DATE(contacts.created_at)").where(created_at: @month.in_time_zone.all_month)
+      @detail_logs = DetailLog.group("DATE(detail_logs.created_at)").where(created_at: @month.in_time_zone.all_month)
+
+      @machines_create_count = Machine.with_deleted.group("DATE(machines.created_at)").where(created_at: @month.in_time_zone.all_month).count
+      @machines_delete_count = Machine.with_deleted.group("DATE(machines.deleted_at)").where(deleted_at: @month.in_time_zone.all_month).count
 
       @rows = @month.all_month.to_a
     end
@@ -37,6 +42,9 @@ class System::ContactsController < System::ApplicationController
     @contacts_company_count = @contacts.where(machine_id: nil).where.not(company_id: nil).count
     @contacts_machine_count = @contacts.where.not(machine_id: nil).where.not(company_id: nil).count
     @contacts_sum_count     = @contacts.count
+
+    @detail_logs_count = @detail_logs.count
+    @detail_logs_utag_count = @detail_logs.distinct.count(:utag)
   end
 
   def formula

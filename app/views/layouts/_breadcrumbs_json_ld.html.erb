@@ -1,0 +1,26 @@
+<script type="application/ld+json">
+{
+<% breadcrumbs.tap do |links| %>
+  <% if links.any? %>
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    <% links.each_with_index do |link, i| %>
+    {
+      "@type": "ListItem",
+      "position": "<%= i + 1 %>",
+      "item": {
+        "@id":  "<%= URI.join(root_url, link.url) %>",
+        "name": "<%= link.text %>"
+      }
+      <% if i == links.length - 1 %>
+    }
+      <% else %>
+    },
+      <% end %>
+    <% end %>
+  ]
+  <% end %>
+<% end %>
+}
+</script>
