@@ -76,7 +76,7 @@ html lang="ja"
 
       /-- パンくず --/
       nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb"
-        = breadcrumbs style: :bootstrap5, semantic: true, autoroot: false,
+        = breadcrumbs style: :bootstrap5, semantic: false, autoroot: false,
           class: 'breadcrumb bg-success-subtle py-1 px-2 border-0'
 
       - if notice.present?
