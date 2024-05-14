@@ -157,7 +157,7 @@ class Kobayashi < Base
 
     ### 並列クロール ###
     locks = Queue.new
-    20.times { locks.push :lock }
+    6.times { locks.push :lock }
 
     Array.new(m[1].to_i.fdiv(60).ceil) do |i|
       uri = "https://www.kkmt.co.jp/products?display_mode=table&page=#{i + 1}&pictures=no_own"

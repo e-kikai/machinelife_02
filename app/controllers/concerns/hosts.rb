@@ -8,15 +8,11 @@ module Hosts
   end
 
   def host
-    if session[:host].nil?
-      session[:host] =
-        begin
-          Resolv.getname(ip)
-        rescue StandardError
-          ""
-        end
-    end
-
-    session[:host]
+    session[:host] ||=
+      begin
+        Resolv.getname(ip)
+      rescue StandardError
+        ""
+      end
   end
 end
