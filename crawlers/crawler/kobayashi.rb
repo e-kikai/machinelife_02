@@ -143,8 +143,8 @@ class Kobayashi < Base
       @d << temp
       @log.debug(temp)
     rescue StandardError => e
-      error_report("", e)
-      raise
+      error_report("machine error", e)
+      # raise
     end
 
     self
@@ -156,7 +156,7 @@ class Kobayashi < Base
 
     ### 並列クロール ###
     locks = Queue.new
-    5.times { locks.push :lock }
+    10.times { locks.push :lock }
 
     Array.new(m[1].to_i.fdiv(60).ceil) do |i|
       uri = "https://www.kkmt.co.jp/products?display_mode=table&page=#{i + 1}&pictures=no_own"
