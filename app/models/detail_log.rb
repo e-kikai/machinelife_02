@@ -31,8 +31,7 @@ class DetailLog < ApplicationRecord
 
   before_save :check_robot
 
-  KEYWORDSEARCH_COLUMNS = %w[ip host utag].freeze
-  KEYWORDSEARCH_SQL = KEYWORDSEARCH_COLUMNS.map { |c| "coalesce(#{c}, '')" }.join(" || ' ' || ") << " ~* ALL(ARRAY[?])"
+  KEYWORDSEARCH_SQL = %w[ip host utag].map { |c| "coalesce(#{c}, '')" }.join(" || ' ' || ") << " ~* ALL(ARRAY[?])"
 
-  scope :where_keyword, ->(keyword) { where(KEYWORDSEARCH_SQL, Machine.to_keywords(keyword)) }
+  # scope :where_keyword, ->(keyword) { where(KEYWORDSEARCH_SQL, Machine.to_keywords(keyword)) }
 end

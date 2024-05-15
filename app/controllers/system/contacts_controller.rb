@@ -22,8 +22,8 @@ class System::ContactsController < System::ApplicationController
     if params[:all].present?
       @rows = (Date.new(2013, 4, 1)..today).select { |date| date.day == 1 }.map { |d| d.strftime('%Y/%m') }.reverse
       @contacts = Contact.group("to_char(created_at, 'YYYY/MM')")
-      @detail_logs = DetailLog.group("to_char(created_at, 'YYYY/MM')")
-      @catalog_logs = CatalogLog.group("to_char(created_at, 'YYYY/MM')")
+      @detail_logs = DetailLog.ignore_hosts.group("to_char(created_at, 'YYYY/MM')")
+      @catalog_logs = CatalogLog.ignore_hosts.group("to_char(created_at, 'YYYY/MM')")
 
       @machines_create_count = Machine.with_deleted.group("to_char(created_at, 'YYYY/MM')").count
       @machines_delete_count = Machine.with_deleted.group("to_char(deleted_at, 'YYYY/MM')").count
@@ -31,8 +31,8 @@ class System::ContactsController < System::ApplicationController
       @month = params[:month] ? params[:month].to_date : today
 
       @contacts = Contact.group("DATE(contacts.created_at)").where(created_at: @month.in_time_zone.all_month)
-      @detail_logs = DetailLog.group("DATE(detail_logs.created_at)").where(created_at: @month.in_time_zone.all_month)
-      @catalog_logs = CatalogLog.group("DATE(catalog_logs.created_at)").where(created_at: @month.in_time_zone.all_month)
+      @detail_logs = DetailLog.ignore_hosts.group("DATE(detail_logs.created_at)").where(created_at: @month.in_time_zone.all_month)
+      @catalog_logs = CatalogLog.ignore_hosts.group("DATE(catalog_logs.created_at)").where(created_at: @month.in_time_zone.all_month)
 
       @machines_create_count = Machine.with_deleted.group("DATE(machines.created_at)").where(created_at: @month.in_time_zone.all_month).count
       @machines_delete_count = Machine.with_deleted.group("DATE(machines.deleted_at)").where(deleted_at: @month.in_time_zone.all_month).count

@@ -3,6 +3,9 @@ module LinkSource
 
   included do
     before_save :check_robot
+
+    scope :where_keyword, ->(keyword) { where(KEYWORDSEARCH_SQL, Machine.to_keywords(keyword)) }
+    scope :ignore_hosts, -> { where.not(host: IGNORE_HOSTS) }
   end
 
   ROBOTS = /(goo|google|yahoo|naver|ahrefs|msnbot|bot|crawl|amazonaws|rate-limited-proxy)/i
@@ -29,6 +32,7 @@ module LinkSource
       # モバイル
       "pc" => "PC", "mb" => "モバイル"
     }.freeze
+  IGNORE_HOSTS = %w[mcnam.rsglab.com].freeze
 
   ### リンク元の生成 ###
   def link_source
@@ -89,10 +93,6 @@ module LinkSource
       # rel から取得
       res.concat(ref.split("_").map { |kwd| KWDS[kwd] || kwd } || []).compact.join(' | ').to_s
     end
-
-    def check_robot_base(host, ip)
-      host !~ ROBOTS && ip.present?
-    end
   end
 
   def browse_info
@@ -109,6 +109,6 @@ module LinkSource
   private
 
   def check_robot
-    throw(:abort) unless host !~ ROBOTS && ip.present?
+    throw(:abort) unless ip.present? && host !~ ROBOTS && IGNORE_HOSTS.exclude?(host)
   end
 end
