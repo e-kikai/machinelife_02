@@ -127,7 +127,7 @@ class System::CrawlerController < ApplicationController
       when "auction_machine"
         machine = machines.find(params[:id])
 
-        images = [machine.top_img_media&.url, machine.top_image&.url]
+        images = [machine.top_image.url, machine.top_img_media.file.present? ? machine.top_img_media.url : nil]
           .concat(machine.machine_images.map { |img| img.image.url })
           .concat(machine.imgs_parsed.medias.map(&:url))
           .compact.join(' ')
