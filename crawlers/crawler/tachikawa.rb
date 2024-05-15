@@ -166,7 +166,7 @@ class Tachikawa < Base
               end
             elsif /プレス/ =~ temp[:name]
               temp[:capacity] = Regexp.last_match(1).gsub(/[^0-9.]/, '').to_f if /([0-9\,.]+)T/i =~ temp[:spec]
-            elsif /ベンダ|ボール盤/ =~ temp[:name] && temp[:name].exclude?('NC')
+            elsif /ベンダ|ボール盤/ =~ temp[:name] && !temp[:name].include?('NC')
               temp[:capacity] = Regexp.last_match(1).gsub(/[^0-9.]/, '').to_f if /([0-9\,.]+)mm/i =~ temp[:spec]
             elsif temp[:name].include?("コンプレッサ")
               if /([0-9\,.]+)KW(.*)$/i =~ temp[:name]
