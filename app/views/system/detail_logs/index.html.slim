@@ -56,8 +56,6 @@ h1 在庫詳細アクセスログ
 
       tbody
         - @pdetail_logs.each do |dl|
-            - browser = Browser.new(dl.ua)
-
             tr
               td.text-end = dl.created_at.strftime("%y/%m/%d %H:%M:%S")
               td style="border-left-style:double;border-left-width:3px;"
@@ -70,13 +68,7 @@ h1 在庫詳細アクセスログ
                   . = link_to "#{dl.user_id}:#{dl.user&.user_name}", "/system/detail_logs/?user_id=#{dl.user_id}"
                 - else
                   | -
-              td title="#{dl.ua}"
-                = browser.device.name unless browser.device.unknown?
-                - unless browser.platform.unknown?
-                  | #{browser.platform.name} #{browser.platform.version}
-                - unless browser.unknown?
-                  | #{browser.name} #{browser.version}
-
+              td title="#{dl.ua}" = dl.browse_info
               td.text-end style="border-left-style:double;border-left-width:3px;" = dl.machine_id
               td = link_to dl.machine&.full_name, "/machines/#{dl.machine_id}", target: :_blank, rel: :noopener
               td = link_to dl.machine&.company&.company_remove_kabu, "/companies/#{dl.machine&.company_id}", target: :_blank, rel: :noopener

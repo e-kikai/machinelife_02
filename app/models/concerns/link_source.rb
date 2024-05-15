@@ -75,6 +75,7 @@ module LinkSource
           when %r{^/machines/company/([\d]+)};     "出品会社 : #{Regexp.last_match(1)}"
           when %r{^/machines\?k=(.*?)(&|$)};       "キーワード : #{Regexp.last_match(1)}"
           when %r{^/helps};                        "ヘルプ"
+          when %r{^/admin/catalogs/search\?(.*)};  "電子カタログ検索 : #{Regexp.last_match(1)}"
           when %r{^/admin};                        "組合員ページ"
           when %r{^/system};                       "管理者ページ"
           when %r{^(\?|$|/$)};                     "トップページ"
@@ -92,6 +93,17 @@ module LinkSource
     def check_robot_base(host, ip)
       host !~ ROBOTS && ip.present?
     end
+  end
+
+  def browse_info
+    browser = Browser.new(ua)
+
+    res = []
+    res << browser.device.name unless browser.device.unknown?
+    res << browser.platform.name << browser.platform.version unless browser.platform.unknown?
+    res << browser.name << browser.version unless browser.unknown?
+
+    res.join(' ')
   end
 
   private

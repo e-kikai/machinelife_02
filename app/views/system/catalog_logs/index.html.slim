@@ -54,8 +54,6 @@ h1 電子カタログアクセスログ
 
       tbody
         - @pcatalog_logs.each do |cl|
-            - browser = Browser.new(cl.ua)
-
             tr
               td.text-end = cl.created_at.strftime("%y/%m/%d %H:%M:%S")
               td style="border-left-style:double;border-left-width:3px;"
@@ -68,15 +66,10 @@ h1 電子カタログアクセスログ
                   . = link_to "#{cl.user_id}:#{cl.user&.user_name}", "/system/catalog_logs/?user_id=#{cl.user_id}"
                 - else
                   | -
-              td title="#{cl.ua}"
-                = browser.device.name unless browser.device.unknown?
-                - unless browser.platform.unknown?
-                  | #{browser.platform.name} #{browser.platform.version}
-                - unless browser.unknown?
-                  | #{browser.name} #{browser.version}
-
+              td title="#{cl.ua}" = cl.browse_info
               td.text-end style="border-left-style:double;border-left-width:3px;" = cl.catalog_id
-              td = link_to "#{cl.catalog&.genres.map(&:genre).join(" ")} #{cl.catalog&.maker} #{cl.catalog&.models}", "/catalogs/#{cl.catalog_id}.pdf", target: :_blank, rel: :noopener
+              td = link_to "/catalogs/#{cl.catalog_id}.pdf", target: :_blank, rel: :noopener do
+                = "#{cl.catalog&.genres&.map(&:genre)&.join(' ')} #{cl.catalog&.maker} #{cl.catalog&.models}".truncate(100)
               td.text-break title="#{CGI.unescape(cl.referer.to_s)}" = CGI.unescape(cl.link_source)
 
   . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
