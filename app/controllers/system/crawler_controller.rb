@@ -115,7 +115,7 @@ class System::CrawlerController < ApplicationController
         machines.order(id: :desc)
           .then { |ms| params[:start_date].present? ? ms.where(created_at: params[:start_date]..) : ms }
           .then { |ms| params[:end_date].present?   ? ms.where(created_at: ..params[:end_date]) : ms }
-          .then { |ms| params[:large_genre_id].present? ? ms.where(large_genre_id: params[:large_genre_id]) : ms }
+          .then { |ms| params[:large_genre_id].present? ? ms.where("genres.large_genre_id": params[:large_genre_id]) : ms }
           .map do |ma|
             ma.slice(%i[id no created_at]).merge(
               {
