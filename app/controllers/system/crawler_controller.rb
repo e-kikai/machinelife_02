@@ -106,6 +106,49 @@ class System::CrawlerController < ApplicationController
     render plain: "#{delete_count} machines delete. / #{update_count} machines update / #{create_count} machines insert success."
   end
 
+  def auction_show
+    machines = current_company.machines.joins(:genre, :large_genre, :xl_genre).left_outer_joins(:maker_m).order(id: :desc)
+
+    res =
+      case params[:t]
+      when "auction_machines"
+        machines
+          .then { |ms| params[:start_date].present? ? ms.where(created_at: params[:start_date]..) : ms }
+          .then { |ms| params[:end_date].present?   ? ms.where(created_at: ..params[:end_date]) : ms }
+          .then { |ms| params[:large_genre_id].present? ? ms.where(large_genre_id: params[:large_genre_id]) : ms }
+          .map do |ma|
+            ma.slice(%i[id no created_at]).merge(
+              {
+                top_img: ma.top_image_url,
+                name: "#{ma.full_name} #{ma.myear}".strip
+              }
+            )
+          end
+      when "auction_machine"
+        machine = machines.find(params[:id])
+
+        images = [machine.top_img_media&.url, machine.top_image&.url]
+          .concat(machine.machine_images.map { |img| img.image.url })
+          .concat(machine.imgs_parsed.medias.map(&:url))
+          .compact
+
+        machine.slice(%i[id no created_at youtube]).merge(
+          {
+            top_img: machine.top_image_url,
+            start_price: machine.ekikai_price,
+            name: "#{machine.full_name} #{machine.myear}".strip,
+            spec: "#{machine.spec}\n\n#{machine.accessory}\n\n#{machine.comment}".strip,
+            images:
+          }
+        )
+      when "auction_genres"
+        machines.group("large_genres.id", "large_genres.large_genre").order("large_genres.id").count
+          .map { |k, v| { id: k[0], large_genre: k[1], count: v } }
+      end
+
+    render json: res
+  end
+
   private
 
   def set_company

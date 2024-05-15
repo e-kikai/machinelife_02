@@ -107,6 +107,7 @@ Rails.application.routes.draw do
       namespace :crawler do
         get ":id/:company" => :edit
         patch ":id/:company" => :update
+        get "auction_show"
       end
     end
   end
