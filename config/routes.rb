@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  namespace :system do
+    get 'catalog_logs/index'
+  end
   constraints ->(req) { req.host.exclude?("daihou") && req.host.exclude?("org") } do
     ### health check ###
     get "up" => "rails/health#show", as: :rails_health_check
@@ -90,6 +93,7 @@ Rails.application.routes.draw do
       resources :large_genres, only: [:new, :show, :create, :edit, :update, :destroy]
       resources :genres, only: [:new, :create, :edit, :update, :destroy]
       resources :detail_logs, only: [:index]
+      resources :catalog_logs, only: [:index]
 
       namespace :catalogs do
         get   :csv

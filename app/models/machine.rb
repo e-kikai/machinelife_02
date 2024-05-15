@@ -93,6 +93,7 @@ class Machine < ApplicationRecord
   belongs_to :state,           foreign_key: :addr1, optional: true
   has_many   :machine_images
   has_many   :machine_pdfs
+  has_many   :catalogs
 
   mount_uploader :top_image, MachineImageUploader
 

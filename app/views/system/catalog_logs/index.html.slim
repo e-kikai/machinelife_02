@@ -1,13 +1,13 @@
-- set_meta_tags title: "在庫詳細アクセスログ"
-- breadcrumb :system_something, "在庫詳細アクセスログ"
+- set_meta_tags title: "電子カタログアクセスログ"
+- breadcrumb :system_something, "電子カタログアクセスログ"
 
-h1 在庫詳細アクセスログ
+h1 電子カタログアクセスログ
 
 /* 検索枠 */
 = turbo_frame_tag :detail_log_list do
   .row
     .col-11.mx-auto.my-2
-      = form_with(url: "/system/detail_logs/", local: true, method: :get, html: { 'data-turbo-frame': :detail_log_list }) do |f|
+      = form_with(url: "/system/catalog_logs/", local: true, method: :get, html: { 'data-turbo-frame': :detail_log_list }) do |f|
         .row.g-1.mt-1
           .col-auto
             .input-group.input-group-sm
@@ -32,11 +32,11 @@ h1 在庫詳細アクセスログ
 
           .col-auto = f.button class: "btn btn-primary btn-sm" do
             . #{mi(:search)} 検索
-          .col-auto.ms-auto = link_to "/system/detail_logs", class: "btn btn-sm btn-secondary" do
+          .col-auto.ms-auto = link_to "/system/catalog_logs", class: "btn btn-sm btn-secondary" do
             . #{mi(:filter_alt_off)} リセット
 
   /* 検索結果 */
-  / . = @pdetail_logs.to_sql
+  / . = @pcatalog_logs.to_sql
   . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
 
   . style=" margin: 0 calc(50% - 49.5vw);width: 99vw;"
@@ -48,41 +48,35 @@ h1 在庫詳細アクセスログ
           th scope="col" utag
           th scope="col" 会社・ユーザ名
           th scope="col" デバイス・OS・ブラウザ
-          th scope="col" style="border-left-style:double;border-left-width:3px;" 機械ID
+          th scope="col" style="border-left-style:double;border-left-width:3px;" カタログID
           th scope="col" メーカー 商品名 型式
-          th scope="col" 出品会社
-          th scope="col" style="width:35px;" 削除
           th scope="col" リンク元
 
       tbody
-        - @pdetail_logs.each do |dl|
-            - browser = Browser.new(dl.ua)
+        - @pcatalog_logs.each do |cl|
+            - browser = Browser.new(cl.ua)
 
             tr
-              td.text-end = dl.created_at.strftime("%y/%m/%d %H:%M:%S")
+              td.text-end = cl.created_at.strftime("%y/%m/%d %H:%M:%S")
               td style="border-left-style:double;border-left-width:3px;"
-                . = link_to dl.ip, "/system/detail_logs/?k=#{dl.ip}"
-                . = dl.host
-              td = link_to dl.utag, "/system/detail_logs/?k=#{dl.utag}"
+                . = link_to cl.ip, "/system/catalog_logs/?k=#{cl.ip}"
+                . = cl.host
+              td = link_to cl.utag, "/system/catalog_logs/?k=#{cl.utag}"
               td
-                - if dl.user_id
-                  . = dl.company&.company_remove_kabu
-                  . = link_to "#{dl.user_id}:#{dl.user&.user_name}", "/system/detail_logs/?user_id=#{dl.user_id}"
+                - if cl.user_id
+                  . = cl.company&.company_remove_kabu
+                  . = link_to "#{cl.user_id}:#{cl.user&.user_name}", "/system/catalog_logs/?user_id=#{cl.user_id}"
                 - else
                   | -
-              td title="#{dl.ua}"
+              td title="#{cl.ua}"
                 = browser.device.name unless browser.device.unknown?
                 - unless browser.platform.unknown?
                   | #{browser.platform.name} #{browser.platform.version}
                 - unless browser.unknown?
                   | #{browser.name} #{browser.version}
 
-              td.text-end style="border-left-style:double;border-left-width:3px;" = dl.machine_id
-              td = link_to dl.machine&.full_name, "/machines/#{dl.machine_id}", target: :_blank, rel: :noopener
-              td = link_to dl.machine&.company&.company_remove_kabu, "/companies/#{dl.machine&.company_id}", target: :_blank, rel: :noopener
-              td.text-center
-                - if dl.machine&.deleted_at.present?
-                  = dl.machine.deleted_at < dl.created_at ? "済" : "売"
-              td.text-break title="#{CGI.unescape(dl.referer.to_s)}" = CGI.unescape(dl.link_source)
+              td.text-end style="border-left-style:double;border-left-width:3px;" = cl.catalog_id
+              td = link_to "#{cl.catalog&.genres.map(&:genre).join(" ")} #{cl.catalog&.maker} #{cl.catalog&.models}", "/catalogs/#{cl.catalog_id}.pdf", target: :_blank, rel: :noopener
+              td.text-break title="#{CGI.unescape(cl.referer.to_s)}" = CGI.unescape(cl.link_source)
 
   . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1

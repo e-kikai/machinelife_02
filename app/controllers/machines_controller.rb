@@ -50,18 +50,9 @@ class MachinesController < ApplicationController
     @sames     = @machine.sames.sales.order(created_at: :desc)
     @nitamonos = @machine.nitamonos.sales.order("machine_nitamonos.norm").limit(15)
 
-    browser = Browser.new(request.user_agent)
-    if !browser.bot? && !(Rails.env.production? && system_user?) && params[:id] != session[:before_machine_id]
-      DetailLog.create(
-        machine_id: params[:id],
-        user_id: current_user_id,
-        r: params[:r] || "",
-        ip:,
-        host:,
-        referer: request.referer,
-        ua: request.user_agent,
-        utag: session[:utag]
-      )
+    # ロギング
+    if logging? && params[:id] != session[:before_machine_id]
+      DetailLog.create(log_data({ machine_id: params[:id] }))
 
       session[:before_machine_id] = params[:id]
     end

@@ -15,15 +15,18 @@ h1 ログ集計 (#{title})
         th rowspan="2"
         th colspan="2" 在庫
         th colspan="2" style="border-left-style:double;border-left-width:3px;" 在庫詳細ログ
+        th colspan="2" style="border-left-style:double;border-left-width:3px;" カタログログ
         th colspan="4" style="border-left-style:double;border-left-width:3px;" 問い合わせ
       tr.small
         th scope="col" style="width: 100px;" 登録
         th scope="col" style="width: 100px;" 削除
         th scope="col" style="width: 100px;border-left-style:double;border-left-width:3px;" utag
-        th scope="col" style="width: 100px;" アクセス
+        th scope="col" style="width: 100px;" 件数
+        th scope="col" style="width: 100px;border-left-style:double;border-left-width:3px;" utag
+        th scope="col" style="width: 100px;" 件数
         th scope="col" style="width: 100px;border-left-style:double;border-left-width:3px;" 事務局
         th scope="col" style="width: 100px;" 会社
-        th scope="col" style="width: 100px;" 在庫機械
+        th scope="col" style="width: 100px;" 機械
         th scope="col" style="width: 100px;border-left-style:solid;border-left-width:2px;" 合計
 
     tbody
@@ -40,6 +43,8 @@ h1 ログ集計 (#{title})
           td.text-end = number_with_delimiter @machines_delete_count[row]
           td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @detail_logs_utag_count[row]
           td.text-end = number_with_delimiter @detail_logs_count[row]
+          td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @catalog_logs_utag_count[row]
+          td.text-end = number_with_delimiter @catalog_logs_count[row]
           td.text-end style="border-left-style:double;border-left-width:3px;" = @contacts_system_count[row]
           td.text-end = @contacts_company_count[row]
           td.text-end = @contacts_machine_count[row]
@@ -50,12 +55,15 @@ h1 ログ集計 (#{title})
         th scope="col" style="width: 100px;" 登録
         th scope="col" style="width: 100px;" 削除
         th scope="col" style="width: 100px;border-left-style:double;border-left-width:3px;" utag
-        th scope="col" style="width: 100px;" アクセス
+        th scope="col" style="width: 100px;" 件数
+        th scope="col" style="width: 100px;border-left-style:double;border-left-width:3px;" utag
+        th scope="col" style="width: 100px;" 件数
         th scope="col" style="width: 100px;border-left-style:double;border-left-width:3px;" 事務局
         th scope="col" style="width: 100px;" 会社
-        th scope="col" style="width: 100px;" 在庫機械
+        th scope="col" style="width: 100px;" 機械
         th scope="col" style="width: 100px;border-left-style:solid;border-left-width:2px;" 合計
       tr.small
         th colspan="2" 在庫
         th colspan="2" style="border-left-style:double;border-left-width:3px;" 在庫詳細ログ
+        th colspan="2" style="border-left-style:double;border-left-width:3px;" カタログログ
         th colspan="4" style="border-left-style:double;border-left-width:3px;" 問い合わせ

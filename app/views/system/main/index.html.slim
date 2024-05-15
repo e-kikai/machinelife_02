@@ -65,6 +65,9 @@ h1 マシンライフ 管理者ページ
       .px-3.py-2 = link_to "/system/detail_logs" do
         . #{mi(:format_list_numbered_rtl)} 在庫詳細アクセスログ
 
+      .px-3.py-2 = link_to "/system/catalog_logs" do
+        . #{mi(:format_list_numbered_rtl)} 電子カタログアクセスログ
+
       .px-3.py-2
         = link_to "/system/contacts/total?all=1" do
           | #{mi(:list_alt)} ログ集計

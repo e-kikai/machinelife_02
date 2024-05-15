@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_09_085605) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_15_072917) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -169,6 +169,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_09_085605) do
     t.index ["catalog_id", "genre_id"], name: "catalog_genre_ix3", unique: true
     t.index ["catalog_id"], name: "catalog_genre_ix1"
     t.index ["genre_id"], name: "catalog_genre_ix2"
+  end
+
+  create_table "catalog_logs", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "catalog_id"
+    t.string "utag", default: ""
+    t.string "ip", default: ""
+    t.string "host", default: ""
+    t.string "ua", default: ""
+    t.string "referer", default: ""
+    t.string "r", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["catalog_id"], name: "index_catalog_logs_on_catalog_id"
+    t.index ["user_id"], name: "index_catalog_logs_on_user_id"
   end
 
   create_table "catalog_requests", primary_key: "request_id", id: { type: :serial, comment: "リクエストID" }, comment: "カタログリクエスト", force: :cascade do |t|
