@@ -107,7 +107,7 @@ class System::CrawlerController < ApplicationController
   end
 
   def auction_show
-    machines = current_company.machines.joins(:genre, :large_genre, :xl_genre).left_outer_joins(:maker_m)
+    machines = Company.find(params[:c]).machines.joins(:genre, :large_genre, :xl_genre).left_outer_joins(:maker_m)
 
     res =
       case params[:t]
