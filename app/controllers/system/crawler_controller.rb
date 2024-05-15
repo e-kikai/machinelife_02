@@ -130,7 +130,7 @@ class System::CrawlerController < ApplicationController
         images = [machine.top_img_media&.url, machine.top_image&.url]
           .concat(machine.machine_images.map { |img| img.image.url })
           .concat(machine.imgs_parsed.medias.map(&:url))
-          .compact
+          .compact.join(' ')
 
         machine.slice(%i[id no created_at youtube]).merge(
           {
