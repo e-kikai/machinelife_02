@@ -8,8 +8,8 @@ rails_env = ENV['RAILS_ENV'] || "development"
 set :environment, rails_env
 
 # 出力先のログファイルの指定
-set :output, Rails.root.join("log/cron.log").to_s
-# set :output, nil
+# set :output, Rails.root.join("log/cron.log").to_s
+set :output, nil
 
 if rails_env == "production"
   # sitemap
@@ -20,7 +20,12 @@ end
 
 unless rails_env == "staging" # stagingではクローラは廻さない
   # 同期
-  craler_path = "/usr/local/bin/ruby #{Rails.root.join('crawlers')}"
+  craler_path =
+    if rails_env == "development"
+      "/usr/local/bin/ruby #{Rails.root.join('crawlers')}"
+    else
+      "/usr/local/bin/ruby /var/www/machinelife_02/apps/current/crawlers"
+    end
 
   every 1.day, at: ['10:00 am', '6:00 pm'] do
     command "#{craler_path}/crawler_main.rb"
