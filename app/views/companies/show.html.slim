@@ -89,13 +89,13 @@ h1 #{@company.company} 会社情報
         dt.col-3 ウェブサイト
         dd.col-9
           - if @company.website.present?
-            = link_to @company.website, rel: :noopener, target: "_blank" do
+            = link_to @company.website, class: :website, rel: :noopener, target: "_blank" do
               | #{mi(:exit_to_app)} #{@company.website}
-        - if @company.ekikai_subdomain.present?
-          dt.col-3 e-kikai<br />ウェブサイト
-          dd.col-9
-            = link_to "https://#{@company.ekikai_subdomain}.e-kikai.com/", rel: :noopener, target: "_blank" do
-              | #{mi(:exit_to_app)} https://#{@company.ekikai_subdomain}.e-kikai.com/
+        / - if @company.ekikai_subdomain.present?
+        /   dt.col-3 e-kikai<br />ウェブサイト
+        /   dd.col-9
+        /     = link_to "https://#{@company.ekikai_subdomain}.e-kikai.com/", rel: :noopener, target: "_blank" do
+        /       | #{mi(:exit_to_app)} https://#{@company.ekikai_subdomain}.e-kikai.com/
 
         dt.col-3 古物免許
         dd.col-9 = @company.infos_parsed.datas[:license]
