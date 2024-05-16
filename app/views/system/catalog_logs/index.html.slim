@@ -25,10 +25,10 @@ h1 電子カタログアクセスログ
             .input-group.input-group-sm
               = f.label :start_date, class: "input-group-text" do
                 . 日時
-              = f.datetime_field :start_date, class: "form-control form-control-sm"
+              = f.datetime_field :start_date, value: params[:start_date], class: "form-control form-control-sm"
               = f.label :end_date, class: "input-group-text" do
                 . 〜
-              = f.datetime_field :end_date, class: "form-control form-control-sm"
+              = f.datetime_field :end_date, value: params[:end_date], class: "form-control form-control-sm"
 
           .col-auto = f.button class: "btn btn-primary btn-sm" do
             . #{mi(:search)} 検索

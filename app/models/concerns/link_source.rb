@@ -4,7 +4,6 @@ module LinkSource
   included do
     before_save :check_robot
 
-    scope :where_keyword, ->(keyword) { where(KEYWORDSEARCH_SQL, Machine.to_keywords(keyword)) }
     scope :ignore_hosts, -> { where.not(host: IGNORE_HOSTS) }
   end
 
