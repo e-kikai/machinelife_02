@@ -52,26 +52,26 @@ h1 在庫機械一覧
 
     table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
       thead
-        tr
+        tr.small
           th scope="col" style="width: 90px;" colspan=2
             = f.button(class: "btn btn-danger btn-sm",
-              data: { turbo_confirm: "在庫機械情報の一括削除を行います。よろしいですか？" }) do
+              data: { turbo_confirm: "チェックを入れた在庫機械情報の一括削除を行います。\nよろしいですか？" }) do
               .show-when-enabled #{mi(:clear)} 削除
               .show-when-disabled
                 span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
                 | 削除処理中
 
-          th scope="col" style="width: 30px;" 同期
+          th scope="col" style="width: 40px;" 同期
           th scope="col" style="width: 90px;" 管理番号
           th scope="col" 機械名
           th scope="col" style="width: 100px;" メーカー
           th scope="col" style="width: 100px;" 型式
           th scope="col" style="width: 80px;" 年式
           th scope="col" style="width: 80px;" 在庫場所
-          th scope="col" style="width: 30px;" 試運
-          th scope="col" style="width: 30px;" 表示
+          th scope="col" style="width: 40px;" 試運
+          th scope="col" style="width: 40px;" 表示
           th scope="col" style="width: 100px;" 登録日時
-          th scope="col" style="width: 30px;" 閲覧
+          th scope="col" style="width: 40px;line-height:1.1" 閲覧回数
 
       tbody
         - @pmachines.each do |ma|

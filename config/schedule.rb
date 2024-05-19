@@ -8,8 +8,12 @@ rails_env = ENV['RAILS_ENV'] || "development"
 set :environment, rails_env
 
 # 出力先のログファイルの指定
-# set :output, Rails.root.join("log/cron.log").to_s
-set :output, nil
+set :output, Rails.root.join("log/cron.log").to_s
+# set :output, nil
+
+# env :PATH, ENV['PATH']
+ENV.each { |k, v| env(k, v) }
+env :CRON_TZ, "Asia/Tokyo"
 
 if rails_env == "production"
   # sitemap
