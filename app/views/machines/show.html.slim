@@ -85,7 +85,7 @@ h1 #{@machine.full_name}
           - if @machine.genre.capacity_label.present?
             dt.col-3 = @machine.genre.capacity_label
             dd.col-9
-              | #{ActiveSupport::NumberHelper.number_to_rounded(@machine.capacity, strip_insignificant_zeros: true)}#{@machine.genre.capacity_unit}
+              | #{number_with_precision(@machine.capacity, strip_insignificant_zeros: true)}#{@machine.genre.capacity_unit}
 
           / その他能力
           - @machine.others_hash.each_value do |other|
