@@ -85,9 +85,17 @@ class MachinesController < ApplicationController
         [Machine::NEWS_DAY.., ""]
       end
 
-    @news = @news.where(created_at: created_at)
+    @news = @news.where(created_at:)
 
     @pagy, @pnews = pagy(@news, items: 50)
+
+    # ロギング
+    search_path = request.fullpath
+    if logging? && search_path != session[:before_search_path]
+      SearchLog.create(log_data({ path: search_path, page: params[:page] || 1, count: @news.count }))
+
+      session[:before_search_path] = search_path
+    end
   end
 
   private
@@ -120,5 +128,15 @@ class MachinesController < ApplicationController
     # filter check 用
     @fc_genres = @filtering_genres.map { |k, v| { target: :genre_ids, label: k[1], value: k[0], count: v, cls: "col-2" } }
     @fc_makers = @filtering_makers.map { |k, v| { target: :makers, label: k, value: k, count: v, cls: "col-2" } }
+
+    @count = @machines.count
+
+    # ロギング
+    search_path = request.fullpath
+    if logging? && search_path != session[:before_search_path]
+      SearchLog.create(log_data({ path: search_path, page: params[:page] || 1, count: @count }))
+
+      session[:before_search_path] = search_path
+    end
   end
 end

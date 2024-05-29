@@ -42,7 +42,7 @@ html lang="ja"
             = form_tag("/machines", method: :get) do
               .input-group
                 = text_field_tag :k, params[:k], placeholder: "キーワード検索 例 : 2SP-150H", class: "form-control form-control-sm", required: true
-                = button_tag type: :button, class: "btn btn-primary btn-sm" do
+                = button_tag type: :submit, value: :top, class: "btn btn-primary btn-sm" do
                     | #{mi(:search)} 検索
 
           .col.text-end = link_to "#{Rails.application.credentials.site[:zenkiren]}/", target: :_blank, rel: :noopener do
@@ -60,7 +60,7 @@ html lang="ja"
                     | #{mi(:search)} 検索
 
           .col.text-end
-            = button_tag type: :button, onclick: "window.print(); return false;", class: "btn btn-secondary" do
+            = button_tag type: :button, value: :header, onclick: "window.print(); return false;", class: "btn btn-secondary" do
               | #{mi(:print)} ページ印刷
 
       = render "/layouts/header_menu"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_27_102853) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_29_184541) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -705,6 +705,22 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_27_102853) do
     t.decimal "lat", precision: 10, scale: 7, comment: "緯度"
     t.decimal "lng", precision: 10, scale: 7, comment: "経度"
     t.integer "order_no", comment: "並び順"
+  end
+
+  create_table "search_logs", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "path", default: ""
+    t.integer "page", default: 1
+    t.integer "count", default: 0
+    t.string "utag", default: ""
+    t.string "ip", default: ""
+    t.string "host", default: ""
+    t.string "ua", default: ""
+    t.string "referer", default: ""
+    t.string "r", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_search_logs_on_user_id"
   end
 
   create_table "seri_bids", id: :serial, force: :cascade do |t|

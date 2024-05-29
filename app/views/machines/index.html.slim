@@ -48,7 +48,7 @@ h1 = @title
     .col-3.ms-auto.text-end = link_to request.fullpath, class: "btn btn-secondary btn-sm" do
       | #{mi(:filter_alt_off)} フィルタリング解除
 
-  = f.button "フィルタリング", class: "d-none", id: :filtering_btn
+  = f.button "フィルタリング", type: :submit, value: :filterling, class: "d-none", id: :filtering_btn
 
 /-- 検索結果 --/
 = turbo_frame_tag :machine_list do
@@ -57,7 +57,7 @@ h1 = @title
   = form_with(url: "/contacts/new", local: true, method: :get, html: { 'data-turbo-frame': :_top }) do |f|
     .row
       .col-2
-        .small 検索結果 : #{number_with_delimiter @machines.count} 件
+        .small 検索結果 : #{number_with_delimiter @count} 件
         . = f.button class: "btn btn-warning btn-sm"
           | #{mi(:mark_email_read)} まとめて問合せ
       .col == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
@@ -108,7 +108,7 @@ h1 = @title
                   | #{mi(:forward_to_inbox)} 問合せ
 
   .row
-    .col-2.small 検索結果 : #{number_with_delimiter @machines.count} 件
+    .col-2.small 検索結果 : #{number_with_delimiter @count} 件
     .col == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
 
 = render "mnok_ads", keywords: @title

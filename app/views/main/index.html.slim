@@ -37,7 +37,7 @@
       .input-group
         = text_field_tag :k, "", placeholder: "例 : 2SP-150H", class: "form-control form-control-sm", id: :k_mo, required: true
         = hidden_field_tag :r, :kmo
-        = button_tag type: :button, class: "btn btn-primary btn-sm" do
+        = button_tag type: :submit, value: :model, class: "btn btn-primary btn-sm" do
           | #{mi(:search)} 検索
 
     .my-1 = form_tag "/machines", method: :get do
@@ -45,7 +45,7 @@
       .input-group
         = text_field_tag :k, "", placeholder: "例 : オークマ", class: "form-control form-control-sm", id: :k_ma, required: true
         = hidden_field_tag :r, :kma
-        = button_tag type: :button, class: "btn btn-primary btn-sm" do
+        = button_tag type: :submit, value: :maker, class: "btn btn-primary btn-sm" do
           | #{mi(:search)} 検索
 
 /-- 入札会バナー枠 --/

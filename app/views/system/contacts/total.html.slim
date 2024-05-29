@@ -46,8 +46,8 @@ h1 ログ集計 (#{title})
           td.text-end = number_with_delimiter @machines_delete_count[row]
           td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @detail_logs_utag_count[row]
           td.text-end = number_with_delimiter @detail_logs_count[row]
-          td style="border-left-style:double;border-left-width:3px;"
-          td
+          td style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @search_logs_utag_count[row]
+          td = number_with_delimiter @search_logs_count[row]
           td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @catalog_logs_utag_count[row]
           td.text-end = number_with_delimiter @catalog_logs_count[row]
           td.text-end style="border-left-style:double;border-left-width:3px;" = @contacts_system_count[row]

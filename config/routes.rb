@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   namespace :system do
+    get 'search_logs/index'
     get 'mails/index'
     get 'mails/new'
     get 'catalog_logs/index'
