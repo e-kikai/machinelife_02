@@ -127,3 +127,5 @@ gem 'mechanize'
 gem 'csv'
 
 gem "browser"
+
+gem 'activerecord-session_store'

@@ -24,7 +24,7 @@ end
 
 unless rails_env == "staging" # stagingではクローラは廻さない
   # 同期
-  craler_path =
+  crawler_path =
     if rails_env == "development"
       "/usr/local/bin/ruby #{Rails.root.join('crawlers')}"
     else
@@ -32,15 +32,15 @@ unless rails_env == "staging" # stagingではクローラは廻さない
     end
 
   every 1.day, at: ['10:00 am', '6:00 pm'] do
-    command "#{craler_path}/crawler_main.rb"
+    command "#{crawler_path}/crawler_main.rb"
   end
 
   every :day, at: '1:00 am' do
-    command "#{craler_path}/crawler_main.rb -u"
+    command "#{crawler_path}/crawler_main.rb -u"
   end
 
   every :day, at: '4:00 am' do
-    command "#{craler_path}/crawler_main.rb -skobayashi"
+    command "#{crawler_path}/crawler_main.rb -skobayashi"
   end
 
   # every 1.minute do

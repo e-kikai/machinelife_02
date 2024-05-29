@@ -1,0 +1,52 @@
+- set_meta_tags title: "電子カタログCSV確認"
+- breadcrumb :system_something, "電子カタログCSV確認"
+
+h1 電子カタログCSV確認
+
+.my-2
+  .col-6.mx-auto.small 再アップロード
+  = render "form", catalog_csv_form: @catalog_csv_form
+
+.py-2.row
+  .alert.alert-info.mx-auto.col-10
+    . ・ 新規登録の場合、PDFファイルがない場合(PDFが<span style="color:red;">×</span>のもの)は登録されません
+    . (変更の場合は、情報のみ更新されます)
+    . ・ ジャンルが表示されない場合は、ジャンル名が間違っている可能性がありますので、再度確認してください。
+
+  .mx-auto.col-10.my-2
+    | 新規登録 : #{@catalog_csv_form.catalogs.count { |ca| ca[:present].blank? }}件 |
+    | 変更 : #{@catalog_csv_form.catalogs.count { |ca| ca[:present].present? }}件 |
+
+    = form_with model: @used_csv_form, url: "/system/machines/csv_import", method: :patch, multipart: true do |f|
+      = f.button(class: "btn btn-success d-block mx-auto my-4",
+        data: { turbo_confirm: "電子カタログ一括登録・変更を開始します。\nよろしいですか？" }) do
+        .show-when-enabled #{mi(:save)} 一括登録を反映する
+        .show-when-disabled
+          span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+          | 一括登録処理中
+
+. style=" margin: 0 calc(50% - 49.5vw);width: 99vw;"
+  table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+    thead
+      tr.small
+        th scope="col" style="width: 40px;" ID
+        th scope="col" style="width: 50px;" UID
+        th scope="col" style="width: 100px;" PDF
+        th scope="col" style="width: 120px;" ジャンル
+        th scope="col" style="width: 120px;" メーカー
+        th scope="col" style="width: 100px;" 型式
+        th scope="col" style="width: 80px;" 年式
+        th scope="col" style="width: auto;" カタログNo.
+
+    tbody
+      - @catalog_csv_form.catalogs.each do |ca|
+        tr
+          td.text-end = ca[:id].presence || "登録"
+          td.text-end = ca[:uid]
+          td = ca[:exsist] ? "◯" : "✗"
+          td  #{@genre_list[ca[:genre_id]]}
+          td = ca[:maker]
+          td = ca[:model]
+          td = ca[:year]
+          td = ca[:catalog_no]
+        / .my-2 #{ma}

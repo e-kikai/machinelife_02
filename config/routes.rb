@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   namespace :system do
+    get 'mails/index'
+    get 'mails/new'
     get 'catalog_logs/index'
   end
   constraints ->(req) { req.host.exclude?("daihou") && req.host.exclude?("org") } do
@@ -92,8 +94,15 @@ Rails.application.routes.draw do
       resources :xl_genres, only: [:index, :new, :show, :create, :edit, :update, :destroy]
       resources :large_genres, only: [:new, :show, :create, :edit, :update, :destroy]
       resources :genres, only: [:new, :create, :edit, :update, :destroy]
+      resources :mails, only: [:index, :new, :create] do
+        collection do
+          get   :ignore
+          patch "ignore" => :ignore_update
+        end
+      end
       resources :detail_logs, only: [:index]
       resources :catalog_logs, only: [:index]
+      resources :search_logs, only: [:index]
 
       namespace :catalogs do
         get   :csv
@@ -104,8 +113,9 @@ Rails.application.routes.draw do
 
       namespace :machines do
         get   :csv
-        post  "csv" => :csv_upload
-        patch "csv" => :csv_import
+        post  :csv_upload
+        get   :csv_confirm
+        patch :csv_import
       end
 
       namespace :crawler do

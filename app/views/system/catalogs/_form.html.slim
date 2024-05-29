@@ -1,0 +1,11 @@
+= form_with model: catalog_csv_form, url: "/system/catalogs/csv_upload", method: :post, multipart: true do |f|
+  .col-md-6.mx-auto.my-2
+    .row.mb-2
+      .col-4.text-end = f.label :csv_file, "CSVファイル", class: "col-form-label required"
+      .col-8 = f.file_field :csv_file, class: "form-control", accept: ".csv", required: "required"
+
+    = f.button(class: "btn btn-success d-block mx-auto my-4") do
+      .show-when-enabled #{mi(:upload_file)} アップロード
+      .show-when-disabled
+        span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+        | アップロード処理中

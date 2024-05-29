@@ -1,0 +1,34 @@
+- set_meta_tags title: "メール一括送信"
+- breadcrumb :system_something, "メール一括送信"
+
+h1 メール一括送信
+
+= form_with model: @mail_form, url: "/system/mails", method: :post do |f|
+  .row: .col-10.m-auto.my-4
+    = render 'layouts/error_messages', obj: f.object
+
+    .row.mb-2
+      .col-2.text-end = f.label :subject, "タイトル", class: "col-form-label required"
+      .col-10 = f.text_field :subject, class: "form-control", required: true
+
+    .row.mb-2
+      .col-2.text-end = f.label :message, "内容", class: 'col-form-label required'
+      .col-10
+        | [[会社名]] 様<br /><br />
+        = f.text_area :message, class: "form-control", style: "height:24rem;", required: true
+        | <br />全機連事務局
+
+    .row.mb-2
+      .col-2.text-end = f.label :val, "送信対象 (件数)", class: "col-form-label"
+      .col-8 = f.select(:val, f.object.select_vals, {}, { class: 'form-select' })
+
+    .row.mb-2
+      .col-2.text-end = f.label :group_id, "添付ファイル", class: "col-form-label"
+      .col-8 = f.file_field :file, class: "form-control"
+
+    = f.button(data: { turbo_confirm: "メール一括送信をします。よろしいですか？\nこの処理はキャンセルできません。" },
+      class: "btn btn-success d-block mx-auto my-4") do
+      .show-when-enabled #{mi(:save_alt)} メール一括送信
+      .show-when-disabled
+        span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+        | メール一括送信処理中

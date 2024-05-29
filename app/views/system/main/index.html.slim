@@ -26,37 +26,45 @@ h1 マシンライフ 管理者ページ
           | #{mi(:person_add)} 新規登録
     h2 在庫情報
     .
-      / = link_to "/system/machines/csv" do
-      /   . #{mi(:upload_file)} (未) CSV一括登録(百貨店汎用)
-      .px-3.py-2  #{mi(:upload_file)} (未) CSV一括登録(百貨店汎用)
+      .px-3.py-2 = link_to "/system/machines/csv" do
+        . #{mi(:upload_file)} CSV一括登録(百貨店汎用)
       .px-3.py-2 = link_to "/system/xl_genres" do
         . #{mi(:category)} ジャンル管理
 
     h2 情報発信
     .
-      .px-3.py-2 = link_to "/system/infos" do
-        . #{mi(:info)} 事務局からのお知らせ一覧
-      = link_to "/system/mails/new" do
-        . (未) #{mi(:schedule_send)} メール一括送信
-      = link_to "/system/mails/" do
-        . (未) #{mi(:playlist_add_check)} メールログ
+      .px-3.py-2
+        = link_to "/system/infos" do
+          | #{mi(:info)} 事務局からのお知らせ一覧
+        |<> |
+        = link_to "/system/infos/new" do
+          | #{mi(:add)} 新規登録
+      .px-3.py-2
+        = link_to "/system/mails/new" do
+          | #{mi(:schedule_send)} メール一括送信
+        |<> |
+        = link_to "/system/mails/ignore" do
+          | #{mi(:playlist_remove)} 非送信メールアドレス編集
+      .px-3.py-2 = link_to "/system/mails/" do
+        . (未) #{mi(:playlist_add_check)} 一括送信メールログ
       .px-3.py-2
         = link_to "/system/bidinfos" do
           | #{mi(:label)} 入札会バナー一覧
         |<> |
         = link_to "/system/bidinfos/new" do
           | #{mi(:add)} 新規登録
+
     h2 電子カタログ
     .
-      / = link_to "/system/catalogs/csv" do
-      /   . ✕ #{mi(:upload_file)} 電子カタログCSV一括登録・変更
-      .px-3.py-2 #{mi(:upload_file)} (未) 電子カタログCSV一括登録・変更
+      .px-3.py-2 = link_to "/system/catalogs/csv" do
+        . #{mi(:upload_file)} (未) 電子カタログCSV一括登録・変更
       .px-3.py-2 = link_to "/system/catalogs/sftp" do
-        . #{mi(:folder)} SFTP設定
+        . #{mi(:folder)} 電子カタログ登録用 SFTP設定方法
       .px-3.py-2 = link_to "/system/catalog_requests" do
         . #{mi(:schedule_send)} カタログリクエスト一覧
       .px-3.py-2 = link_to "/admin/catalogs/" do
         . #{mi(:menu_book)} 電子カタログ
+
   .col-6
     h2 ログ
     .
@@ -65,6 +73,9 @@ h1 マシンライフ 管理者ページ
 
       .px-3.py-2 = link_to "/system/detail_logs" do
         . #{mi(:format_list_numbered_rtl)} 在庫詳細アクセスログ
+
+      .px-3.py-2 = link_to "/system/search_logs" do
+        . #{mi(:format_list_numbered_rtl)} (未) 在庫検索ログ
 
       .px-3.py-2 = link_to "/system/catalog_logs" do
         . #{mi(:format_list_numbered_rtl)} 電子カタログアクセスログ

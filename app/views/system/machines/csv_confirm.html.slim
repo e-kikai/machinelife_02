@@ -1,0 +1,66 @@
+- set_meta_tags title: "CSV一括登録確認"
+- breadcrumb :system_something, "CSV一括登録確認"
+
+h1 CSV一括登録確認
+
+.my-2
+  .col-6.mx-auto.small 再アップロード
+  = render "form", used_csv_form: @used_csv_form
+
+.py-2.row
+  .alert.alert-info.mx-auto.col-10
+    . ・ 「在庫場所」は、新規登録の場合は全て「本社」になります。
+    . ・ 既に登録された機械(IDが表示されているもの)は、変更されません。
+    . ・ リストにない機械が登録されていた場合、削除されます。
+    . ・ 「能力」「表示オプション」は登録されませんので、一括登録後各自変更してください。
+
+  .mx-auto.col-10.my-2
+    | #{@company.company_remove_kabu} |
+    | 百貨店での会社ID : #{@used_csv_form.used_company_id} |
+    | 現在の百貨店からの在庫数 : #{@current_machine_count} 件 |
+    | 新規登録 : #{@used_csv_form.machines.count { |ma| ma[:present].blank? }}件 |
+    | 変更なし : #{@used_csv_form.machines.count { |ma| ma[:present].present? }}件 |
+
+    = form_with model: @used_csv_form, url: "/system/machines/csv_import", method: :patch, multipart: true do |f|
+      = f.button(class: "btn btn-success d-block mx-auto my-4",
+        data: { turbo_confirm: "以下の「登録」商品の一括登録を行います。\nよろしいですか？" }) do
+        .show-when-enabled #{mi(:save)} 一括登録を反映する
+        .show-when-disabled
+          span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+          | 一括登録処理中
+
+. style=" margin: 0 calc(50% - 49.5vw);width: 99vw;"
+  table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+    thead
+      tr.small
+        th scope="col" style="width: 40px;" ID
+        th scope="col" style="width: 50px;" 管番
+        th scope="col" style="width: 100px;" ジャンル
+        th scope="col" style="width: 120px;" 機械名
+        th scope="col" style="width: 120px;" メーカー
+        th scope="col" style="width: 100px;" 型式
+        th scope="col" style="width: 80px;" 年式
+        th scope="col" style="width: auto;" 仕様
+        th scope="col" style="width: 80px;" 価格
+        th scope="col" style="width: 60px;" 画像
+
+    tbody
+      - @used_csv_form.machines.each do |ma|
+        tr
+          td.text-end = ma[:present].presence || "登録"
+          td.text-end = ma[:no]
+          td  #{@genre_list[ma[:genre_id]]}
+          td = ma[:name]
+          td = ma[:maker]
+          td = ma[:model]
+          td = ma[:year]
+          td = ma[:spec]
+          td.text-end = number_to_currency ma[:price] if ma[:price].present?
+          td
+            - ma[:images].each do |im|
+              = link_to "◎ ", @used_csv_form.filepath(ma[:used_id], im), target: :_blank, rel: :noopener
+            - if ma[:pdf].present?
+              = link_to "□ ", @used_csv_form.filepath(ma[:used_id], ma[:pdf]), target: :_blank, rel: :noopener
+            - if ma[:youtube].present?
+              = link_to "◆ ", ma[:youtube], target: :_blank, rel: :noopener
+        / .my-2 #{ma}

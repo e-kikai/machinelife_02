@@ -1,0 +1,20 @@
+- set_meta_tags title: "非送信メールアドレス編集"
+- breadcrumb :system_something, "非送信メールアドレス編集"
+
+h1 非送信メールアドレス編集
+
+= form_with url: "/system/mails/ignore", method: :patch do |f|
+  .row: .col-8.m-auto.my-4
+    .row.mb-2
+      .col-4.text-end
+        . = label_tag :ignores, "非送信メールアドレス", class: 'col-form-label required'
+        .mt-2.form-text ※ 改行区切りで入力
+
+      .col-8 = text_area_tag :ignores, @ignores, class: "form-control", style: "height:30rem;", required: true
+
+    = f.button(data: { turbo_confirm: "非送信メールアドレス一覧を保存します。\よろしいですか。" },
+      class: "btn btn-success d-block mx-auto my-4") do
+      .show-when-enabled #{mi(:save_alt)} 非送信メールアドレス一覧を保存
+      .show-when-disabled
+        span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+        | 非送信メールアドレス保存処理中

@@ -1,0 +1,16 @@
+= form_with model: used_csv_form, url: "/system/machines/csv_upload", method: :post, multipart: true do |f|
+  .col-md-6.mx-auto.my-2
+    .row.mb-2
+      .col-4.text-end = f.label :csv_file, "CSVファイル", class: "col-form-label required"
+      .col-8 = f.file_field :csv_file, class: "form-control", accept: ".csv", required: "required"
+
+    .row.mb-2
+      .col-4.text-end = f.label :company_id, "会社名", class: "col-form-label required"
+      .col-8 = f.grouped_collection_select(:company_id, f.object.select_companies, :companies, :groupname, :id, :company_remove_kabu,
+        { include_blank: false }, { class: 'form-select' })
+
+    = f.button(class: "btn btn-success d-block mx-auto my-4") do
+      .show-when-enabled #{mi(:upload_file)} アップロード
+      .show-when-disabled
+        span.spinner-border.spinner-border-sm role="status" aria-hidden="true"
+        | アップロード処理中
