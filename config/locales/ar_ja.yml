@@ -10,6 +10,8 @@ ja:
       company:
         company: 会社名
         rank: ランク
+      catalog:
+        pdf: PDF
     enum:
       company:
         rank:
