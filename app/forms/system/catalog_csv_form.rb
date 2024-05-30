@@ -52,7 +52,7 @@ class System::CatalogCsvForm < FormBase
       catalog.assign_attributes(ca.except(:catalog_id, :exsist))
 
       # カタログファイルを格納
-      File.open(filepath(ca[:uid])) { |file| catalog.pdf = file }
+      File.open(filepath(ca[:uid])) { |file| catalog.pdf = file } if ca[:exsist]
 
       catalog.update(changed_at: Time.current)
     end
