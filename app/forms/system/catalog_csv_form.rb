@@ -44,16 +44,15 @@ class System::CatalogCsvForm < FormBase
   end
 
   def persist
-    # 保存トランザクション
     catalogs.each do |ca|
-      next unless ca[:exsist]
-
       catalog = Catalog.where.not(id: nil).find_or_initialize_by(id: ca[:catalog_id])
+
+      next if catalog.new_record? && ca[:exsist].blank?
 
       catalog.assign_attributes(ca.except(:catalog_id, :exsist))
 
       # カタログファイルを格納
-      File.open(filepath(ca[:uid])) { |file| catalog.pdf = file }
+      # File.open(filepath(ca[:uid])) { |file| catalog.pdf = file }
 
       catalog.update(changed_at: Time.current)
     end
