@@ -44,10 +44,6 @@ class System::MachinesController < System::ApplicationController
 
   private
 
-  def csv_machines_params
-    params.require(:machines).map { |ma| ma.permit(:app_no, :name, :maker, :model, :year, :spec, :condition, :comment, :min_price, :genre_id, :youtube, :display, :hitoyama, :soft_destroyed_at) }
-  end
-
   def used_csv_params
     params.require(:system_used_csv_form).permit(:company_id, :csv_file)
   end

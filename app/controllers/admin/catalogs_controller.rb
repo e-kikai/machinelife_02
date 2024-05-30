@@ -7,13 +7,14 @@ class Admin::CatalogsController < Admin::ApplicationController
     @miniblogs = Miniblog.includes(:user).where(target: :catalog).order(created_at: :desc).limit(20)
     @catalog_count = Catalog.count
 
-    @miniblog_form = Admin::MiniblogForm.new({target: :catalog})
+    @miniblog_form = Admin::MiniblogForm.new({ target: :catalog })
   end
 
   def search
     search_filtering
 
     @title = "#{params[:ma]} #{params[:mo]}".strip
+
     @catalog_request_form = Admin::CatalogRequestForm.new
   end
 
@@ -35,7 +36,7 @@ class Admin::CatalogsController < Admin::ApplicationController
 
   def search_filtering
     ### 検索・フィルタリング処理 ###
-    @catalogs = Catalog.joins(:catalog_genres).includes(:genres)
+    @catalogs = Catalog.includes(:catalog_genres).includes(:genres)
       .then { |cs| params[:ma].present? ? cs.where(maker: params[:ma]) : cs }
       .then { |cs| params[:mo].present? ? cs.where_keyword(params[:mo]) : cs }
       .then { |cs| params[:makers].present? ? cs.where(maker: params[:makers]) : cs }

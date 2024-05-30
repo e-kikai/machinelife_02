@@ -8,46 +8,35 @@ class System::CatalogsController < System::ApplicationController
 
     @catalog_csv_form.upload
 
-    redirect_to "/system/catalogs/csv", alert: @csv_form.errors.full_messages.join(", ") if @csv_form.errors.any?
+    redirect_to "/system/catalogs/csv", alert: 'カタログ情報がありませんでした2' if @catalog_csv_form.catalogs.empty?
 
-    session[:system_used_csv_form_attributes] =
-      {
-        company_id: @used_csv_form.company_id,
-        machines: @used_csv_form.machines,
-        used_company_id: @used_csv_form.used_company_id
-      }
+    session[:system_catalog_csv_form_attributes] = { catalogs: @catalog_csv_form.catalogs }
 
-    redirect_to "/system/machines/csv_confirm"
+    redirect_to "/system/catalogs/csv_confirm"
   end
 
   def csv_confirm
     @genre_list = Genre.pluck(:id, :genre).to_h
-    @catalog_csv_form = System::UsedCsvForm.new(session[:system_used_csv_form_attributes])
+    @catalog_csv_form = System::CatalogCsvForm.new(session[:system_catalog_csv_form_attributes])
 
-    redirect_to "/system/machines/csv", alert: '在庫機械情報がありませんでした3' if @used_csv_form.machines.empty?
+    redirect_to "/system/catalogs/csv", alert: 'カタログ情報がありませんでした3' if @catalog_csv_form.catalogs.empty?
   end
 
   def csv_import
-    @catalog_csv_form = System::CatalogCsvForm.new(catalogs_params)
+    @catalog_csv_form = System::CatalogCsvForm.new(session[:system_catalog_csv_form_attributes])
 
-    num = csv_catalogs_params.length
-
-    redirect_to "/system/catalogs/csv", alert: '一括登録するカタログがありません' if csv_catalogs_params.empty?
-
-    Catalog.import(csv_products_params)
-    redirect_to("/system/catalogs/", notice: "#{num}件のカタログを一括登録しました")
+    if @catalog_csv_form.save
+      redirect_to "/system/", notice: "カタログ登録が完了しました。"
+    else
+      render :csv, status: :unprocessable_entity
+    end
   end
+
+  def sftp; end
 
   private
 
   def catalog_csv_params
     params.require(:system_catalog_csv_form).permit(:csv_file)
   end
-
-  def catalogs_params
-    params.require(:system_catalog_csv_form)
-      .map { |ca| ca.permit(:uid, :maker, :maker_kana, :year, :catalog_no, :models, genre_ids: []) }
-  end
-
-  def sftp; end
 end

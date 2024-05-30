@@ -66,6 +66,7 @@
 
 /** 検索結果 **/
 = turbo_frame_tag :catalog_list do
+  / . = @catalogs.to_sql
   .nav.nav-tabs
     .nav-item = link_to "リストで表示", "#list", class: "nav-link active me-1", data: { bs_toggle: :tab, bs_target: "#list", role: :tab }
     .nav-item = link_to "写真で表示", "#image", class: "nav-link", data: { bs_toggle: :tab, bs_target: "#image", role: :tab }
@@ -87,7 +88,7 @@
                 tr
                   td.text-center
                     . = link_to "/catalogs/#{ca.id}.pdf", 'data-turbo-frame': :_top, target: :_blank, rel: :noopener do
-                      = image_tag ca.thumbnail_media.url, alt: ca.uid, style: "max-width:120px;max-height:120px;"
+                      = image_tag ca.thumbnail_url, alt: ca.uid, style: "max-width:120px;max-height:120px;"
                     . = link_to "/catalogs/#{ca.id}.pdf?dl=1", 'data-turbo-frame': :_top, class: "btn btn-primary mt-1", target: :_blank, rel: :noopener do
                       . #{mi(:file_download)} Download
                   td.text-break
@@ -106,6 +107,6 @@
             .col-auto
               .border.border-primary.p-1.text-center.w-auto.bg-light
                 . = link_to "/catalogs/#{ca.id}.pdf", 'data-turbo-frame': :_top, target: :_blank, rel: :noopener do
-                  = image_tag ca.thumbnail_media.url, alt: ca.uid, style: "height:320px;"
+                  = image_tag ca.thumbnail_url, alt: ca.uid, style: "height:320px;"
                 . = link_to "/catalogs/#{ca.id}.pdf?dl=1", 'data-turbo-frame': :_top, class: "btn btn-primary mt-1", target: :_blank, rel: :noopener do
                   . #{mi(:file_download)} Download

@@ -471,6 +471,7 @@ DEPENDENCIES
   letter_opener_web
   mechanize
   meta-tags
+  mini_magick
   pagy
   pg (~> 1.1)
   prawn

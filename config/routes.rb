@@ -107,8 +107,9 @@ Rails.application.routes.draw do
 
       namespace :catalogs do
         get   :csv
-        post  "csv" => :csv_upload
-        patch "csv" => :csv_import
+        post  :csv_upload
+        get   :csv_confirm
+        patch :csv_import
         get   :sftp
       end
 

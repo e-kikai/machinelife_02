@@ -13,7 +13,8 @@ class CatalogsController < ApplicationController
     end
 
     respond_to do |format|
-      format.pdf { send_data(catalog.file_media.read, filename: "catalog_#{catalog.file}", type: 'application/pdf', disposition:, stream: true) }
+      # format.pdf { send_data(catalog.file_media.read, filename: "catalog_#{catalog.file}", type: 'application/pdf', disposition:, stream: true) }
+      format.pdf { send_data(URI.parse(catalog.pdf_url).read, filename: "catalog_#{catalog.file}", type: 'application/pdf', disposition:, stream: true) }
     end
   end
 end

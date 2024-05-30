@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_29_184541) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_30_064815) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -211,6 +211,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_29_184541) do
     t.datetime "changed_at", precision: nil, comment: "変更日時"
     t.datetime "deleted_at", precision: nil, comment: "削除日時"
     t.text "catalog_no"
+    t.string "pdf"
     t.index ["maker"], name: "catalogs_ix2"
     t.index ["models"], name: "catalogs_ix1"
   end

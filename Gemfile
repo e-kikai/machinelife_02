@@ -113,6 +113,7 @@ gem 'prawn-qrcode'
 ### file upload ###
 gem 'carrierwave'
 gem 'rmagick'
+gem 'mini_magick'
 gem 'fog-aws'
 
 gem "MailchimpMarketing" # mailchimp

@@ -11,6 +11,7 @@
 #  maker(メーカー)                         :text
 #  maker_kana(メーカー(カナ)	 テキスト用)  :text
 #  models(型式群)                          :text
+#  pdf                                     :string
 #  thumbnail(サムネイル画像ファイル名)     :text
 #  uid(ユニークキー)                       :text             not null
 #  year(年代)                              :text

@@ -29,7 +29,7 @@ h1 電子カタログ
     = form_tag "/admin/catalogs/search", method: :get do
       .input-group
         = text_field_tag :mo, "", placeholder: "例 : 2SP-150H", class: "form-control form-control-sm", id: :k_mo, required: true
-        = button_tag type: :button, class: "btn btn-primary btn-sm" do
+        = button_tag type: :submit, class: "btn btn-primary btn-sm" do
           | #{mi(:search)} 検索
 
   - dir = "https://s3-ap-northeast-1.amazonaws.com/machinelife/catalog/public/media/banner/"

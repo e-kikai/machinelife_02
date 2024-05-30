@@ -8,29 +8,34 @@ class System::CatalogCsvForm < FormBase
 
   ### カタログCSVアップロード＆インポート確認 ###
   def upload
-    raise ActiveRecord::ActiveRecordError 'CSVファイルを選択してください' if csv_file.blank?
+    raise "CSVファイルを選択してください" if csv_file.blank?
 
     ### ジャンル一覧の取得 ###
     genre_list = Genre.pluck(:genre, :id).to_h
 
-    CSV.foreach(csv_file.path, { headers: true, encoding: Encoding::SJIS }) do |row|
+    catalogs = CSV.open(csv_file.path, headers: true, encoding: Encoding::SJIS).map do |row|
       uid = row[0]
       next if uid.empty? || uid == "uid"
 
-      attrs = {
+      models = row[6..].compact.join(', ').strip
+
+      {
         uid:,
         maker: row[1],
         maker_kana: row[2],
-        genre_ids: row[3].split("\n").filter_map { |g| genre_list[g] },
+        genre_ids: row[3].split("\n").filter_map { |gname| genre_list[gname] },
         year: row[4],
         catalog_no: row[5],
-        models: row[6..].compact.join(', ').strip
+        models:,
+        keywords: Machine.to_model2(models),
+        catalog_id: Catalog.find_by(uid:)&.id,
+        exsist: File.exist?(filepath(uid)) # ファイルの有無
       }
-
-      catalogs << CatalogForm.new(attrs)
     end
 
-    raise ActiveRecord::ActiveRecordError 'カタログ情報がありませんでした' if catalogs.blank?
+    raise 'カタログ情報がありませんでした' if catalogs.blank?
+
+    assign_attributes(catalogs:)
   rescue ActiveRecord::ActiveRecordError => e
     Rails.logger.error([e.message, *e.backtrace].join($RS))
     errors.add(:base, e.message)
@@ -40,10 +45,23 @@ class System::CatalogCsvForm < FormBase
 
   def persist
     # 保存トランザクション
-    ActiveRecord::Base.transaction do
-      catalogs.each do |ca|
-        CatalogForm.new(ca).save
-      end
+    catalogs.each do |ca|
+      next unless ca[:exsist]
+
+      catalog = Catalog.where.not(id: nil).find_or_initialize_by(id: ca[:catalog_id])
+
+      catalog.assign_attributes(ca.except(:catalog_id, :exsist))
+
+      # カタログファイルを格納
+      File.open(filepath(ca[:uid])) { |file| catalog.pdf = file }
+
+      catalog.update(changed_at: Time.current)
     end
+  end
+
+  private
+
+  def filepath(uid)
+    "#{Catalog::UPLOAD_PATH}/#{uid}.pdf"
   end
 end
