@@ -1,0 +1,32 @@
+- set_meta_tags title: "システムエラー"
+- breadcrumb :something, "システムエラー"
+
+h1 システムエラー
+
+.row
+  .col-8.m-auto
+    .alert.alert-danger
+      .mb-4 #{mi(:warning)} システムエラーが発生しました。
+      .
+        | お手数ですが、再度
+        = link_to "マシンライフ", "/"
+        | でおさがしの機械を検索して下さい。
+
+      .mt-2
+        | ※ もし、再度システムエラーが発生する場合、<br />
+        | お手数ですが、
+        = link_to "事務局にご連絡", "/contacts/new"
+        | お願いいたします。
+
+  - unless Rails.env.production?
+    .col-12.mx-auto.my-2
+      .alert.alert-info
+        .mb-2 = @exception
+        hr
+        .mb-2 = params.to_s
+        hr
+        . = simple_format @exception.backtrace.join("\n")
+
+  .col-10.m-auto
+    .my-4 = link_to "/" do
+      | #{mi(:home)} 中古機械情報 マシンライフ トップページへ

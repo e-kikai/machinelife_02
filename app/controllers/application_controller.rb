@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Pagy::Backend
+  include ErrorHandlers
 
   before_action :make_utag
 

@@ -1,10 +1,4 @@
 Rails.application.routes.draw do
-  namespace :system do
-    get 'search_logs/index'
-    get 'mails/index'
-    get 'mails/new'
-    get 'catalog_logs/index'
-  end
   constraints ->(req) { req.host.exclude?("daihou") && req.host.exclude?("org") } do
     ### health check ###
     get "up" => "rails/health#show", as: :rails_health_check
@@ -127,6 +121,9 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  # すべての未知のルートを404エラーページへリダイレクト
+  match '*path', to: 'errors#not_found', via: :all
 
   ### daihou ###
   constraints ->(req) { req.host.include?("daihou") } do
