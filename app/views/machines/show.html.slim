@@ -28,7 +28,8 @@ h1 #{@machine.full_name}
           | #{mi(:search)} マシンライフで #{@machine.genre.genre} の中古機械をさがす
         .my-4 = link_to "/" do
           | #{mi(:home)} 中古機械情報 マシンライフ トップページへ
-    - elsif @machine.view_option == :hide
+
+    - elsif @machine.view_option == "hide"
       .col-8.m-auto
         .alert.alert-danger
           .mb-2 #{mi(:warning)} この機械は現在は表示できません。
