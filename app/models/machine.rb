@@ -103,7 +103,7 @@ class Machine < ApplicationRecord
 
   ### scope ###
   scope :includes_all, -> { includes(:company, :genre, :large_genre, :xl_genre, :maker_m, :machine_pdfs) }
-  scope :sales, -> { includes_all.where(deleted_at: nil, companies: { deleted_at: nil, rank: Company::MACHINE_RANK_RATIO.. }, view_option: [nil, :negotiation]) }
+  scope :sales, -> { includes_all.where(companies: { deleted_at: nil, rank: Company::MACHINE_RANK_RATIO.. }, view_option: [nil, :negotiation]) }
 
   scope :only_machines, -> { where(large_genre: { xl_genre_id: XlGenre::MACHINE_IDS }) }
   scope :only_tools, -> { where.not(large_genre: { xl_genre_id: XlGenre::MACHINE_IDS }) }
