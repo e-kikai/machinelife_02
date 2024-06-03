@@ -45,7 +45,7 @@ class MachinesController < ApplicationController
   end
 
   def show
-    @machine = Machine.with_deleted.sales.find(params[:id])
+    @machine = Machine.with_deleted.find(params[:id])
 
     @sames     = @machine.sames.sales.order(created_at: :desc)
     @nitamonos = @machine.nitamonos.sales.order("machine_nitamonos.norm").limit(15)
