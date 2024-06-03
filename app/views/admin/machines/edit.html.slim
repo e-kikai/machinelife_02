@@ -3,5 +3,5 @@
 
 h1 在庫機械情報変更
 
-= form_with model: @machine_form, url: "/admin/machines/#{@machine.id}", method: :patch, data: { turbo: false } do |f|
+= form_with model: @machine_form, url: "/admin/machines/#{@machine.id}", method: :patch do |f|
   = render "form", f:

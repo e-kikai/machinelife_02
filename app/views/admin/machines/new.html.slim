@@ -3,5 +3,5 @@
 
 h1 新規在庫機械登録
 
-= form_with model: @machine_form, url: "/admin/machines", method: :post, data: { turbo: false } do |f|
+= form_with model: @machine_form, url: "/admin/machines", method: :post do |f|
   = render "form", f:
