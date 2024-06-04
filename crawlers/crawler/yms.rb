@@ -36,28 +36,28 @@ class Yms < Base
     #### ページ情報のスクレイピング ####
     (@p/'table.kikai-list tr').each do |m|
       begin
-        next unless m%'td:nth(4)'
+        next unless m.at('td:nth(4)')
 
-        # next if (m%'td:nth(3)').text.f =~ /売約済|在庫状況/
-        next if (m%'td:nth(3)').text.f =~ /在庫状況/
+        next if m.at('td:nth(3)').text.f =~ /売約済|在庫状況/
+        # next if (m%'td:nth(3)').text.f =~ /在庫状況/
         # log.debug((m%'td:nth(5)').to_s)
 
         #### 既存情報の場合スキップ ####
         # uid = (m%'td:nth(1)').text.f == '' ? (m%'td:nth(2)').text.f : (m%'td:nth(1)').text.f.gsub(/[^0-9a-zA-Z]/, '')
-        uid = (m%'td:nth(1)').text.f
+        uid = m.at('td:nth(1)').text.f
         next unless check_uid(uid)
 
         temp = {
-          :uid   => uid,
-          :no    => uid,
-          :name  => (m%'td:nth(2)').text.f,
-          :comment => (m%'td:nth(3)').text.f,
-          :maker => (m%'td:nth(4)').text.f,
-          :model => (m%'td:nth(5)').text.f,
-          :spec  => (m%'td:nth(6)').text.f,
-          :year  => (m%'td:nth(7)').text.f,
-          # :price => (m%'td:nth(8)').text.f,
-          :location => '本社',
+          uid:,
+          no: uid,
+          name: m.at('td:nth(2)').text.f,
+          comment: m.at('td:nth(3)').text.f,
+          maker: m.at('td:nth(4)').text.f,
+          model: m.at('td:nth(5)').text.f,
+          spec: m.at('td:nth(6)').text.f,
+          year: m.at('td:nth(7)').text.f,
+          price: m.at('td:nth(8)').text.gsub(/[^0-9]/, ''),
+          location: '本社'
         }
 
         temp[:maker] = '' if temp[:maker] == '-'
@@ -108,10 +108,14 @@ class Yms < Base
         # next if NKF.nkf("-wZX--cp932", open(detail_uri).read) =~ /売約済/
 
         # 画像
-        temp[:used_imgs] = []
-        (p2/'.photos a').each do |i|
-          temp[:used_imgs] << join_uri(detail_uri, i[:href])
-        end
+        # temp[:used_imgs] = []
+        # (p2/'.photos a').each do |i|
+        #   temp[:used_imgs] << join_uri(detail_uri, i[:href])
+        # end
+
+        temp[:used_imgs] = p2.search('.gallery__item img').filter_map do |i|
+          join_uri(detail_uri, i[:src])
+        end.uniq
 
         temp[:used_pdfs] = {}
         (p2/'.items a').each do |a|

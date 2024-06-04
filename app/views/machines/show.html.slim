@@ -144,6 +144,10 @@ h1 #{@machine.full_name}
                   . = link_to "https://www.google.co.jp/maps/dir//#{@machine.addr}+#{@machine.company.company}/", rel: :noopener, target: :_blank, class: "btn btn-primary" do
                     | #{mi(:map)} MAP
 
+          - if current_user_id.present? && @machine.price.present?
+              dt.col-3 金額<br /> <span class="text-primary small fw-normal">(会員のみ公開)</span>
+              dd.col-9 #{number_to_currency @machine.price} (#{@machine.price_tax ? "税抜" : "税込価格"})
+
         /** ラベル枠  **/
         .gx-2 = render partial: "label", locals: { machine: @machine, cls: "" }
 
