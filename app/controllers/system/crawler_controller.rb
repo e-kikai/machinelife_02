@@ -52,32 +52,49 @@ class System::CrawlerController < ApplicationController
         machine.assign_attributes({ addr1: office[:addr1], addr2: office[:addr2], addr3: office[:addr3] })
       end
 
-      # images(旧画像処理がある場合はスキップ)
-      images_res = []
-      if machine.top_img.blank? && da[:used_imgs].present?
+      # 保存
+      machine.save if machine.changed?
+
+      # images(旧画像処理がある場合はスキップ) + メカニー限定処理
+      if (machine.top_img.blank? || params[:id] == 232) && da[:used_imgs].present?
+        # TOP画像
+        top = da[:used_imgs].shift
+        machine.update(remote_top_image_url: top) if machine[:top_image] != File.basename(top)
+
+        # その他画像(ない画像の削除)
         images = machine.machine_images.pluck(:image)
+        deletes = images - (da[:used_imgs].map { |im| File.basename(im) })
 
-        da[:used_imgs]&.each do |im|
-          filename = File.basename(Addressable::URI.parse(im).path)
+        machine.machine_images.where(image: deletes).soft_delete_all if deletes.present?
 
-          if machine.top_image.blank?
-            machine.remote_top_image_url = im # トップ画像に格納
-          elsif machine[:top_image] != filename && images.exclude?(filename)
-            images_res << { remote_image_url: im } # その他画像に格納
-          end
+        # その他画像登録・更新
+        da[:used_imgs].each do |im|
+          filename = File.basename(im)
+
+          # image = machine.machine_images.find_or_initialize_by(image: filename)
+          # image.update(remote_image_url: im)
+
+          machine.machine_images.create(remote_image_url: im) if images.exclude?(filename)
         end
       end
 
-      # 保存
-      # machine.update(changed_at: Time.current) if machine.changed?
-      machine.save if machine.changed?
+      # images_res = []
+      # if machine.top_img.blank? && da[:used_imgs].present?
+      #   images = machine.machine_images.pluck(:image)
 
-      ### リレーション先(images, pdfs)の処理 ###
-      # threads = images_res.filter_map do |im_attr|
-      #   Thread.new { machine.machine_images.create(im_attr) }
+      #   da[:used_imgs]&.each do |im|
+      #     filename = File.basename(Addressable::URI.parse(im).path)
+
+      #     if machine.top_image.blank?
+      #       machine.remote_top_image_url = im # トップ画像に格納
+      #     elsif machine[:top_image] != filename && images.exclude?(filename)
+      #       images_res << { remote_image_url: im } # その他画像に格納
+      #     end
+      #   end
+
+      #   # 保存
+      #   machine.machine_images.create(images_res) if images_res.present?
       # end
-
-      machine.machine_images.create(images_res) if images_res.present?
 
       # PDFs(旧PDFがある場合はスキップ)
       if machine.pdfs_parsed.datas.blank? && da[:used_pdfs].present?
@@ -87,15 +104,6 @@ class System::CrawlerController < ApplicationController
           filename = File.basename(Addressable::URI.parse(pdf).path)
           machine.machine_pdfs.create(remote_pdf_url: pdf, name: k) if pdfs.exclude?(filename)
         end
-
-        # threads.concat(
-        #   da[:used_pdfs]&.filter_map do |k, pdf|
-        #     Thread.new do
-        #       filename = File.basename(Addressable::URI.parse(pdf).path)
-        #       machine.machine_pdfs.create(remote_pdf_url: pdf, name: k) if pdfs.exclude?(filename)
-        #     end
-        #   end
-        # )
       end
 
       # threads.each(&:join) # スレッドを結合

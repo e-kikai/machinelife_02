@@ -45,6 +45,7 @@ class MachinesController < ApplicationController
   end
 
   def show
+    # raise "errr"
     @machine = Machine.with_deleted.find(params[:id])
 
     @sames     = @machine.sames.sales.order(created_at: :desc)

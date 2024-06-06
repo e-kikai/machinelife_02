@@ -85,4 +85,6 @@ Rails.application.configure do
 
   config.hosts << "daihou.lvh.me:3000"
   config.hosts << "daihou.localhost:3000"
+
+  # config.exceptions_app = self.routes
 end
