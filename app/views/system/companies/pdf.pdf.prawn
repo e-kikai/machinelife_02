@@ -3,10 +3,10 @@ prawn_document(filename: "companies_seikyu.pdf") do |pdf|
     ### 金額計算 ###
     price, title =
       case co.rank
-      when "特別会員"; [80_000, "特別会員 年会費"]
-      # when "支店・営業所"; next
-      when "A会員"; [30_000, "A会員 年会費"]
-      when "B会員"; [12_000, "B会員 年会費"]
+      when "special"; [80_000, "特別会員 年会費"]
+      # when "branch"; next
+      when "a_member"; [30_000, "A会員 年会費"]
+      when "b_member"; [12_000, "B会員 年会費"]
       else; next
       end
 
