@@ -75,3 +75,5 @@ public/sitemap*
 *.log
 *.log.*
 /config/credentials/production.key
+
+/vendor

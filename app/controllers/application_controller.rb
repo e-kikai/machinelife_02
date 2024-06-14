@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   ### IPアドレス取得処理 ###
   def ip
-    request.env["HTTP_X_FORWARDED_FOR"].split(",").first.strip || request.remote_ip
+    request.env["HTTP_X_FORWARDED_FOR"].to_s.split(",").first&.strip || request.remote_ip
   end
 
   ### 未ログインユーザ追跡タグ生成 ###

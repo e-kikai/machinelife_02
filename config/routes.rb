@@ -122,9 +122,6 @@ Rails.application.routes.draw do
     end
   end
 
-  # すべての未知のルートを404エラーページへリダイレクト
-  match '*path', to: 'errors#not_found', via: :all
-
   ### daihou ###
   constraints ->(req) { req.host.include?("daihou") } do
     namespace :daihou, path: nil do
@@ -159,4 +156,7 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  # すべての未知のルートを404エラーページへリダイレクト
+  match '*path', to: 'errors#not_found', via: :all
 end
