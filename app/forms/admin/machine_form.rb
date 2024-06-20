@@ -39,12 +39,14 @@ class Admin::MachineForm < FormBase
 
   attribute :machine_pdfs, default: []
 
-  delegate :id, :persisted?, :top_img_media, :imgs_parsed, :pdfs_parsed, :top_image_url, :machine_images, :others_hash, :genre, to: :machine
+  attribute :used_change, :integer
+
+  delegate :id, :persisted?, :top_img_media, :imgs_parsed, :pdfs_parsed, :top_image_url, :machine_images, :others_hash, :genre, :used_id, to: :machine
 
   SLICE_ATTRS =
     %i[
       no name maker model year spec accessory comment location addr1 addr2 addr3
-      capacity catalog_id genre_id commission price price_tax youtube view_option
+      capacity catalog_id genre_id commission price price_tax youtube view_option used_change
     ].freeze
 
   ### validater ###
@@ -91,7 +93,7 @@ class Admin::MachineForm < FormBase
     end
 
     # 新PDF更新(削除)
-    puts machine_pdfs
+    # puts machine_pdfs
     machine_pdfs.each do |id, v|
       machine.machine_pdfs.find_by(id:)&.update!(v)
     end

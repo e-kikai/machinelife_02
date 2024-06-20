@@ -5,7 +5,7 @@
 # Date::      2012/5/17
 # Copyright:: Copyright (c) 2012 川端洋平
 #
-require  File.dirname(__FILE__) + '/base'
+require File.dirname(__FILE__) + '/base'
 
 # クローラクラス
 class Yms < Base

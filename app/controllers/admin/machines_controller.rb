@@ -79,6 +79,7 @@ class Admin::MachinesController < Admin::ApplicationController
         :location, :addr1, :addr2, :addr3, :catalog_id, :genre_id,
         :commission, :price, :price_tax, :youtube, :view_option,
         :top_image, :top_image_delete,
+        :used_change,
         images: [], imgs_delete: [], images_delete: [], images_cancel: [],
         pdfs: [], pdfs_filename: [], pdfs_name: [], pdfs_delete: [], pdfs_cancel: [],
         machine_pdfs: [:name, :deleted_at]

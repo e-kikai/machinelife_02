@@ -13,6 +13,13 @@ javascript:
 .row: .col-9.m-auto.my-4
   = render 'layouts/error_messages', obj: f.object
 
+  - if f.object.used_id.present?
+    = f.hidden_field :used_change, value: 1
+    - if f.object.used_change.present?
+      .mb-2.alert.alert-warning △ この機械情報は、新九郎、CSVで同期後に変更を行った機械です。<br />(削除以外の同期の影響を受けません)
+    - else
+      .mb-2.alert.alert-warning ◯ この機械情報は、新九郎、CSVで同期された機械です。<br />(変更後は、削除以外の同期の影響を受けなくなります)
+
   .row.mb-2
     .col-3.text-end = f.label :no, "管理番号", class: 'col-form-label'
     .col-3 = f.text_field :no, class: "form-control"

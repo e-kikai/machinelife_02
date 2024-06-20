@@ -82,7 +82,8 @@ h1 在庫機械一覧
               td.p-0 = image_tag ma.top_image_thumb, alt: "", class: "news_thumbnail", style: "width:60px;height:60px;"
               td.text-center
                 - if ma.used_id.present?
-                  - if ma.changed_at.present?
+                  / - if ma.changed_at.present?
+                  - if ma.used_change.present?
                     = "△"
                   - else
                     = "◯"
