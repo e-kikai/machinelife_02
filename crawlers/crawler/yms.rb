@@ -9,12 +9,11 @@ require  File.dirname(__FILE__) + '/base'
 
 # クローラクラス
 class Yms < Base
-
   #
   # コンストラクタ
   # Param:  Hash site クロール対象サイト情報
   #
-  def initialize()
+  def initialize
     # 親クラスのコンストラクタ
     super()
 
@@ -38,8 +37,9 @@ class Yms < Base
       begin
         next unless m.at('td:nth(4)')
 
-        next if m.at('td:nth(3)').text.f =~ /売約済|在庫状況/
-        # next if (m%'td:nth(3)').text.f =~ /在庫状況/
+        # next if m.at('td:nth(3)').text.f =~ /売約済|在庫状況/
+        next if m.at('td:nth(3)').text.f.include?("在庫状況")
+
         # log.debug((m%'td:nth(5)').to_s)
 
         #### 既存情報の場合スキップ ####
