@@ -12,7 +12,8 @@ h2.minititle #{mi(:settings)} #{@machine.full_name}
       #imagesCarousel.carousel.carousel-dark.slide data-bs-interval="false"
         .carousel-inner.ratio.ratio-4x3
           .carousel-item.active
-            = image_tag @machine.top_image_url, alt: @machine.full_name, class: "d-block w-100 h-100 object-fit-contain"
+            / = image_tag @machine.top_image_url, alt: @machine.full_name, class: "d-block w-100 h-100 object-fit-contain"
+            = image_tag @machine.top_image_url(noimage: Media::DAIHOU_NOTHING_URL), alt: @machine.full_name, class: "d-block w-100 h-100 object-fit-contain"
 
           - @machine.machine_images.each do |img|
             .carousel-item

@@ -193,11 +193,11 @@ class Machine < ApplicationRecord
     end.to_h rescue {}
   end
 
-  def top_image_url
-    top_image&.url || top_img_media.url
+  def top_image_url(noimage: Media::NOTHING_URL)
+    top_image&.url || top_img_media.url(noimage:)
   end
 
-  def top_image_thumb
-    top_image&.thumb&.url || top_img_media.thumbnail
+  def top_image_thumb(noimage: Media::NOTHING_URL)
+    top_image&.thumb&.url || top_img_media.thumbnail(noimage:)
   end
 end
