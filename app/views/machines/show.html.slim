@@ -93,7 +93,7 @@ h1 #{@machine.full_name}
         p.small お問い合せフォーム TEL FAXより掲載会社へお問い合せください。
         .row
           .col-6
-            = link_to "/contacts/new?m=#{@machine.id}", class: "btn btn-lg btn-warning" do
+            = link_to "/contacts/new?m=#{@machine.id}", class: "btn btn-lg btn-warning", data: { turbo: false } do
               . #{mi(:forward_to_inbox)} 問い合わせ (無料)
               .small お気軽に
           .col-6

@@ -71,5 +71,5 @@ h2.minititle #{mi(:settings)} #{@machine.full_name}
           .fw-bold 仕様
           . #{simple_format(@machine.spec)}
 
-    = link_to "/contact/new?m=#{@machine.id}", class: "footer_contact_link"
+    = link_to "/contact/new?m=#{@machine.id}", class: "footer_contact_link", data: { turbo: false }
       = image_tag "daihou/daihou_mc_02.png"

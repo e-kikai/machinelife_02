@@ -66,7 +66,7 @@ html lang="ja"
     /-- フッタ --/
     - if @show_contact == true
       .footer_link_area
-        = link_to "/contact/new", class: "footer_contact_link" do
+        = link_to "/contact/new", class: "footer_contact_link", data: { turbo: false } do
           = image_tag "daihou/daihou_c.png"
 
     footer.row.footer.mt-5.pb-5
@@ -82,4 +82,4 @@ html lang="ja"
           = link_to "在庫機械一覧", "/machines"
           = link_to "会社情報", "/company"
           = link_to "アクセス", "/access"
-          = link_to "お問い合わせ", "/contact/new"
+          = link_to "お問い合わせ", "/contact/new", data: { turbo: false }

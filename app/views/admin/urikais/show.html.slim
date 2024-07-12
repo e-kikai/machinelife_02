@@ -23,7 +23,7 @@ h1 <span class="#{@urikai.goal_class}">#{@urikai.goal_jp}</span> No. #{@urikai.i
       dt.col-4 問い合わせフォーム
       dd.col-8
         - if @urikai.end_date.blank?
-          = link_to "/contacts/new/?c=#{@urikai.company_id}&mes=No.#{@urikai.id}[[#{@urikai.goal_jp}]]について問合せ", class: "btn btn-warning" do
+          = link_to "/contacts/new/?c=#{@urikai.company_id}&mes=No.#{@urikai.id}[[#{@urikai.goal_jp}]]について問合せ", class: "btn btn-warning", data: { turbo: false } do
             . #{mi(:forward_to_inbox)} この#{@urikai.goal_jp}について問い合わせ
         - else
           . この情報は解決済みです (#{l @urikai.end_date})

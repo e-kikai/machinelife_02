@@ -4,7 +4,7 @@ module Hosts
   require 'resolv'
 
   def ip
-    request.env["HTTP_X_FORWARDED_FOR"].split(",").first.strip || request.remote_ip
+    request.env["HTTP_X_FORWARDED_FOR"].to_s.split(",").first&.strip || request.remote_ip
   end
 
   def host

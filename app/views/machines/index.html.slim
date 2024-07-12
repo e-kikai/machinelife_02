@@ -54,7 +54,7 @@ h1 = @title
 = turbo_frame_tag :machine_list do
   / . = @pmachines.to_sql
 
-  = form_with(url: "/contacts/new", local: true, method: :get, html: { 'data-turbo-frame': :_top }) do |f|
+  = form_with(url: "/contacts/new", local: true, method: :get, html: { data: { turbo: false } }) do |f|
     .row
       .col-2
         .small 検索結果 : #{number_with_delimiter @count} 件
@@ -104,7 +104,7 @@ h1 = @title
                 - if ma.location.present?
                   . = "(#{ma.location})"
               td.text-center
-                = link_to "/contacts/new?m=#{ma.id}", class: "btn btn-warning btn-sm", 'data-turbo-frame': :_top do
+                = link_to "/contacts/new?m=#{ma.id}", class: "btn btn-warning btn-sm", data: { turbo: false } do
                   | #{mi(:forward_to_inbox)} 問合せ
 
   .row

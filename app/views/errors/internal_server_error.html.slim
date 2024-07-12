@@ -15,7 +15,7 @@ h1 システムエラー
       .mt-2
         | ※ もし、再度システムエラーが発生する場合、<br />
         | お手数ですが、
-        = link_to "事務局にご連絡", "/contacts/new"
+        = link_to "事務局にご連絡", "/contacts/new", data: { turbo: false }
         | お願いいたします。
 
   - unless Rails.env.production?
