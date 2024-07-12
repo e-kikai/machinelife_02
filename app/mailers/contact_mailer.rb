@@ -28,7 +28,7 @@ class ContactMailer < ApplicationMailer
     @contact = contact
 
     mail(
-      to: "inof@zenkiren.net",
+      to: "info@zenkiren.net",
       reply_to: @contact.mail,
       subject: "マシンライフ: 問い合わせ通知"
     )
@@ -41,7 +41,7 @@ class ContactMailer < ApplicationMailer
 
     mail(
       to: @contact.mail,
-      reply_to: "inof@zenkiren.net",
+      reply_to: "info@zenkiren.net",
       subject: "マシンライフ:お問い合せ送信確認"
     )
   end

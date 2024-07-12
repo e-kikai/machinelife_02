@@ -29,7 +29,7 @@ class DaihouContactMailer < ApplicationMailer
 
     mail(
       to: @contact.mail,
-      reply_to: "inof@zenkiren.net",
+      reply_to: contact.company.contact_mail,
       subject: "#{@contact.company.company}ウェブサイト :お問い合せ送信確認"
     )
   end
