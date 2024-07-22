@@ -59,17 +59,17 @@ class System::CrawlerController < ApplicationController
       if (machine.top_img.blank? || params[:id] == 232) && da[:used_imgs].present?
         # TOP画像
         top = da[:used_imgs].shift
-        machine.update(remote_top_image_url: top) if machine[:top_image] != File.basename(top)
+        machine.update(remote_top_image_url: top) if machine[:top_image] != File.basename(top).gsub(/\?.*$/, "")
 
         # その他画像(ない画像の削除)
         images = machine.machine_images.pluck(:image)
-        deletes = images - (da[:used_imgs].map { |im| File.basename(im) })
+        deletes = images - (da[:used_imgs].map { |im| File.basename(im).gsub(/\?.*$/, "") })
 
         machine.machine_images.where(image: deletes).soft_delete_all if deletes.present?
 
         # その他画像登録・更新
         da[:used_imgs].each do |im|
-          filename = File.basename(im)
+          filename = File.basename(im).gsub(/\?.*$/, "")
 
           # image = machine.machine_images.find_or_initialize_by(image: filename)
           # image.update(remote_image_url: im)

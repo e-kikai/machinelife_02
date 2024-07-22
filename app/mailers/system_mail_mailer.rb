@@ -10,7 +10,7 @@ class SystemMailMailer < ApplicationMailer
 
     mail(
       to: @mail,
-      reply_to: "inof@zenkiren.net",
+      reply_to: "info@zenkiren.net",
       subject: "マシンライフ : #{@system_mail.subject}"
     )
   end
