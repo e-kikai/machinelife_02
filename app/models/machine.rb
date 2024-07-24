@@ -87,8 +87,8 @@ class Machine < ApplicationRecord
   belongs_to :genre
   has_one    :large_genre,     through: :genre
   has_one    :xl_genre,        through: :large_genre
-  has_many   :machine_nitamono
-  has_many   :nitamonos,       through: :machine_nitamono, source: :nitamono
+  has_many   :machine_nitamonos
+  has_many   :nitamonos,       through: :machine_nitamonos, source: :nitamono
   belongs_to :maker_m,         class_name: "Maker", primary_key: :maker, foreign_key: :maker2, optional: true
   belongs_to :state,           foreign_key: :addr1, optional: true
   has_many   :machine_images

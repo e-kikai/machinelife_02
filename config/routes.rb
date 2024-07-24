@@ -119,6 +119,8 @@ Rails.application.routes.draw do
         patch ":id/:company" => :update
         get "auction_show"
       end
+
+      resources :machine_nitamonos, only: [:new, :create]
     end
   end
 

@@ -46,4 +46,8 @@ unless rails_env == "staging" # stagingではクローラは廻さない
   # every 1.minute do
   #   command 'echo "test1"'
   # end
+
+  # every :day, at: '4:30 am' do
+  #   rake "session:sweep"
+  # end
 end

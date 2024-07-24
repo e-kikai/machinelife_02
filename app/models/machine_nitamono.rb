@@ -18,6 +18,8 @@
 #  index_machine_nitamonos_on_soft_destroyed_at           (soft_destroyed_at)
 #
 class MachineNitamono < ApplicationRecord
-  belongs_to :machine
-  belongs_to :nitamono, class_name: "Machine", foreign_key: "nitamono_id"
+  belongs_to :machine, optional: false
+  belongs_to :nitamono, class_name: "Machine", optional: false
+
+  validates :machine_id, uniqueness: { scope: :nitamono_id }
 end

@@ -1,0 +1,12 @@
+- columns = %w[id top_image]
+
+. = columns
+
+. = @machines.to_sql
+
+- @machines.pluck(columns).each do |ma|
+  / . = [ma.id, (ma.machine_nitamonos.blank? ? ma&.top_image&.file&.filename : nil)]
+  . = ma
+
+/ - @associated_machines.pluck(:id).each do |ma|
+/   . = [ma, nil]
