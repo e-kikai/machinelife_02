@@ -5,7 +5,10 @@ class System::MachineNitamonosController < ApplicationController
     # @machines = Machine.includes(:machine_nitamonos)
     #   .merge(Machine.where.not(top_image: nil).or(Machine.where.not(top_img: nil)))
     #   .order(id: :desc)
-    @machines = Machine.merge(Machine.where.not(top_image: nil).or(Machine.where.not(top_img: nil))).order(id: :desc)
+    # @machines = Machine.merge(Machine.where.not(top_image: nil).or(Machine.where.not(top_img: nil))).order(id: :desc)
+
+    @machines = Machine.where.missing(:machine_nitamonos).where.not(top_image: nil).distinct.order(:id)
+    @old_machines = Machine.where.associated(:machine_nitamonos).distinct.order(:id)
 
     respond_to do |format|
       format.html
