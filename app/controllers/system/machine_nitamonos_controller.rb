@@ -20,7 +20,8 @@ class System::MachineNitamonosController < ApplicationController
   def create
     temp = []
     params[:_json].each do |ma|
-      temp << [machine_id: ma[0], nitamono_id: ma[1], norm: ma[2]] << [machine_id: ma[1], nitamono_id: ma[0], norm: ma[2]]
+      temp << [machine_id: ma[0], nitamono_id: ma[1], norm: ma[2]]
+      temp << [machine_id: ma[1], nitamono_id: ma[0], norm: ma[2]]
     end
 
     MachineNitamono.insert_all(temp, record_timestamps: true)
