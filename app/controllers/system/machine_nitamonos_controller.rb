@@ -1,5 +1,6 @@
 class System::MachineNitamonosController < ApplicationController
   include Exports
+  skip_before_action :verify_authenticity_token, only: [:create]
 
   def new
     # @machines = Machine.includes(:machine_nitamonos)
