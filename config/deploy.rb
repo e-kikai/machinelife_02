@@ -30,7 +30,7 @@ set :linked_files, %w[config/database.yml config/master.key]
 
 # Default value for linked_dirs is []
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system", "vendor", "storage"
-set :linked_dirs, %w[log tmp/pids tmp/cache tmp/sockets tmp/vbpr tmp vendor public/system public/sitemaps]
+set :linked_dirs, %w[log tmp/pids tmp/cache tmp/sockets tmp/vbpr tmp vendor public/system public/sitemaps public/assets]
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }

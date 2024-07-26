@@ -53,7 +53,8 @@ config/database.yml
 
 /public/uploads
 /public/*.gz
-public/sitemap*
+/public/sitemap*
+/public/assets*
 
 # Ignore files related to IDE
 /.vscode
