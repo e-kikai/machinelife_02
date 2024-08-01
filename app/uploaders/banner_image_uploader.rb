@@ -1,4 +1,6 @@
 class BannerImageUploader < CarrierWave::Uploader::Base
+  include CarrierWave::RMagick
+
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
   # include CarrierWave::MiniMagick
