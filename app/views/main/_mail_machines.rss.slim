@@ -27,7 +27,7 @@ ul
         td = link_to bi.bid_name, bi.uri
         td = bi.organizer
         td #{simple_format(bi.place, {}, wrapper_tag: :span)}
-        td #{l(bi.preview_start_date)} 〜 #{l(bi.preview_en_date)}
+        td #{l(bi.preview_start_date)} 〜 #{l(bi.preview_end_date)}
         td = l(bi.bid_date)
 
 footer style="margin-top: 8px;width: 100%;height: 30px;line-height: 30px;text-align: center;background: #111;color: #fff;"
