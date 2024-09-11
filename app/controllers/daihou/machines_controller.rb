@@ -6,6 +6,9 @@ class Daihou::MachinesController < Daihou::ApplicationController
     @filtering_genres = @machines.group("machines.genre_id", "genres.genre").order(count: :desc, genre_id: :asc).limit(100).count
     @filtering_makers = @machines.where.not(maker2: "").group("COALESCE(makers.maker_master, machines.maker2)").order(count: :desc).limit(100).count
 
+    @fc_genres = @filtering_genres.map { |k, v| { label: k[1], value: k[0], count: v } }
+    @fc_makers = @filtering_makers.map { |k, v| { label: k, value: k, count: v } }
+
     ### 検索 ###
     @machines = @machines.where(genre_id: params[:g]) if params[:g].present?
     @machines = @machines.where(maker: params[:ma]) if params[:ma].present?
