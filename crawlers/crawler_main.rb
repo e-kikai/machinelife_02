@@ -14,6 +14,7 @@ require 'net/http'
 require 'json'
 require 'yaml'
 require 'active_support'
+require 'time'
 
 require "#{File.dirname(__FILE__)}/lib/my_string"
 
@@ -46,8 +47,15 @@ set_uri = config['set_uri']
 #### 各サイトのクロール開始 ####
 sites = config['sites'] if sites.empty?
 
+### 並列クロール ###
+THREAD_NUM = 3
+locks = Queue.new
+3.times { locks.push :lock }
+
 threads = sites.filter_map do |o|
   Thread.new do
+    lock = locks.pop
+
     #### クローラオブジェクト作成 ####
     require "#{File.dirname(__FILE__)}/crawler/#{o}"
     crawler = Object.const_get(o.capitalize).new
@@ -88,6 +96,8 @@ threads = sites.filter_map do |o|
         log.info("#{crawler.company}: #{res.body}")
       end
     end
+
+    locks.push lock
   end
 end
 
