@@ -2,7 +2,8 @@ class Admin::CatalogsController < Admin::ApplicationController
   before_action :check_rank
 
   def index
-    @maker_counts = Catalog.group(:maker, :maker_kana).order(:maker_kana, :maker).count
+    # @maker_counts = Catalog.group(:maker, :maker_kana).order(:maker_kana, :maker).count
+    @maker_counts = Catalog.group(:maker, :maker_kana).order('maker_kana COLLATE "C"', :maker).count
     # @infos = Info.where(target: :catalog).order(info_date: :desc).limit(10)
     @miniblogs = Miniblog.includes(:user).where(target: :catalog).order(created_at: :desc).limit(20)
     @catalog_count = Catalog.count
