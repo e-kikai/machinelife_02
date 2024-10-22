@@ -1,0 +1,29 @@
+= turbo_stream.update "form_area", partial: "form"
+
+- if @message
+  = turbo_stream.prepend "messages_area" do
+    - if @wheres.present?
+      .mx-auto.my-3.p-3.rounded-1.bg-primary.text-white
+        . = simple_format(@message.strip)
+      .mx-auto.my-3.p-3.rounded-1.bg-success.text-white
+        . = simple_format(@wheres.to_s.strip)
+
+      / .mx-auto.my-3.p-3.rounded-1.bg-success.text-white = simple_format(@wheres.to_s.strip)
+
+      .mx-auto.my-3.rounded-1
+        .my-2 = "#{number_with_delimiter(@machines.count)} 件 の機械・工具がマッチしました。(うち30件を表示)"
+
+        .row
+          - @machines.limit(30).each do |ma|
+            .col-1.p-1 style="width:20%;"
+              = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :test }
+
+      / .mx-auto.my-3.p-3.rounded-1.bg-success.text-white = simple_format(@generated_text.strip)
+
+    - if @error.present?
+      .mx-auto.my-3.p-3.rounded-1.bg-danger.text-white
+        . エラーが発生しました。
+        hr
+        . = simple_format(@generated_text.strip)
+        hr
+        . = simple_format(@error.strip)

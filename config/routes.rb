@@ -122,6 +122,11 @@ Rails.application.routes.draw do
 
       resources :machine_nitamonos, only: [:new, :create]
     end
+
+    ### playground ###
+    namespace :playground do
+      resources :openai_test01, only: [:index, :create]
+    end
   end
 
   ### daihou ###
