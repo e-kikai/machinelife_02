@@ -11,12 +11,15 @@
       / .mx-auto.my-3.p-3.rounded-1.bg-success.text-white = simple_format(@wheres.to_s.strip)
 
       .mx-auto.my-3.rounded-1
-        .my-2 = "#{number_with_delimiter(@machines.count)} 件 の機械・工具がマッチしました。(うち30件を表示)"
+        - if @machines.present?
+          .my-2 = "#{number_with_delimiter(@machines.count)} 件 の機械・工具がマッチしました。(うち30件を表示) : #{@time + 1}回施行"
 
-        .row
-          - @machines.limit(30).each do |ma|
-            .col-1.p-1 style="width:20%;"
-              = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :test }
+          .row
+            - @machines.limit(30).each do |ma|
+              .col-1.p-1 style="width:20%;"
+                = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :test }
+        - else
+          .my-2 = "マッチする機械・工具はありませんでした。: #{@time + 1}回施行"
 
       / .mx-auto.my-3.p-3.rounded-1.bg-success.text-white = simple_format(@generated_text.strip)
 

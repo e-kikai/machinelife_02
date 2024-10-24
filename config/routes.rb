@@ -125,7 +125,7 @@ Rails.application.routes.draw do
 
     ### playground ###
     namespace :playground do
-      resources :openai_test01, only: [:index, :create]
+      resources :openai_test01, only: [:index, :create, :show]
     end
   end
 
