@@ -1,5 +1,10 @@
 = form_with url: "/playground/openai_test01", method: :post, data: { turbo_stream: true } do |f|
-  .input-group
-    = f.text_area :message, placeholder: "どんな機械・工具をおさがしですか？", class: "form-control", id: :message_field, required: true
+  .col-10.mx-auto.my-2
+    = f.text_area :message, placeholder: "どんな機械・工具をおさがしですか？", class: "form-control", style: "height:120px;", id: :message_field, required: true
+  .col-8.mx-auto.my-2.text-center
     = f.button type: :submit, value: :model, class: "btn btn-primary" do
-      | #{mi(:search)} 検索
+      |
+      span.show-when-enabled #{mi(:search)} OpenAI検索
+      span.show-when-disabled
+        span.spinner-border.spinner-border-sm.me-2 role="status" aria-hidden="true"
+        | 検索中です。お待ち下さい。
