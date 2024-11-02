@@ -1,5 +1,5 @@
 = form_with url: "/playground/openai_test01", method: :post, data: { turbo_stream: true } do |f|
-  .col-10.mx-auto.my-2
+  .col-8.mx-auto.my-2
     = f.text_area :message, placeholder: "どんな機械・工具をおさがしですか？", class: "form-control", style: "height:120px;", id: :message_field, required: true
   .col-8.mx-auto.my-2.text-center
     = f.button type: :submit, value: :model, class: "btn btn-primary" do
