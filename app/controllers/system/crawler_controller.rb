@@ -34,7 +34,7 @@ class System::CrawlerController < ApplicationController
     datas.each do |da|
       next if da[:uid].blank?
 
-      machine = @company.machines.with_deleted.find_or_initialize_by(used_id: da[:uid])
+      machine = @company.machines.with_deleted.find_or_initialize_by(used_id: da[:uid]) # 機械情報取得
 
       machine.new_record? ? create_count += 1 : update_count += 1
 

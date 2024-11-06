@@ -1,39 +1,42 @@
 = turbo_stream.update "form_area", partial: "form"
 
 - if @message
-  = turbo_stream.prepend "messages_area" do
+  = turbo_stream.replace "result_area" do
+    hr
+
     - if @wheres.present?
-      .mx-auto.my-3.p-3.rounded-1.bg-primary.text-white.col-10 = simple_format(h(@message.strip))
+      / .mx-auto.my-3.p-3.rounded-1.bg-primary.text-white.col-10 = simple_format(h(@message.strip))
       .mx-auto.text-muted.small = simple_format(h(@wheres.to_s.strip))
 
       / .mx-auto.my-3.p-3.rounded-1.bg-success.text-white = simple_format(@wheres.to_s.strip)
 
       - if @machines.present?
-        .row.mx-auto.my-3.col-10
-          / .my-2 = "#{number_with_delimiter(@machines&.count)} 件 の機械・工具がマッチしました。(うち30件を表示) : #{@time + 1}回施行"
-          / .row
-          /   - @machines.each do |ma|
-          /     .col-1.p-1 style="width:20%;"
-          /       = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :test }
+        .row
+          .ms-4.p-3.rounded-5.bg-success.text-white.col-10
+            / .my-2 = "#{number_with_delimiter(@machines&.count)} 件 の機械・工具がマッチしました。(うち30件を表示) : #{@time + 1}回施行"
+            / .row
+            /   - @machines.each do |ma|
+            /     .col-1.p-1 style="width:20%;"
+            /       = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :test }
 
-          / . = simple_format(@mes)
-          / .my-2 = simple_format(@sort_array.to_s)
+            / . = simple_format(@mes)
+            / .my-2 = simple_format(@sort_array.to_s)
 
-          / .my-2 = "#{number_with_delimiter(@sort_machines&.count)} 件 の機械・工具がフィルタリングされました。"
-          .my-2 = "#{number_with_delimiter(@machines&.count)} 件 => #{number_with_delimiter(@sort_machines&.count)} 件 の機械・工具がマッチされました。"
+            / .my-2 = "#{number_with_delimiter(@sort_machines&.count)} 件 の機械・工具がフィルタリングされました。"
+            .me-2 = "#{number_with_delimiter(@machines&.count)} 件 => #{number_with_delimiter(@sort_machines&.count)} 件 の機械・工具がマッチしました。"
 
-          / - if @report_text.present?
-          /   .my-2
-          /     h5 #{mi(:summarize)} OpenAIによるレポート
-          /     . = simple_format(@report_text)
+            / - if @report_text.present?
+            /   .my-2
+            /     h5 #{mi(:summarize)} OpenAIによるレポート
+            /     . = simple_format(@report_text)
 
-          - if @sort_array_text.present?
-            h6.mt-2 #{mi(:summarize)} OpenAIによるレポート
-            .border.p-3.rounded-1
-              / . = simple_format(@sort_array_text.match(/<<(.*)>>/m)[1].gsub('。', "。\n"))
-              . = simple_format(@report_text.gsub(/(在庫ID:\s*([0-9]+))/) { link_to(Regexp.last_match(1), "/machines/#{Regexp.last_match(2)}", target: :_blank, rel: :noopener) })
-              / hr
-              / . = simple_format(@sort_array_text)
+            - if @sort_array_text.present?
+              h6.mt-2 #{mi(:summarize)} OpenAIによるレポート
+              .p-3.rounded-3.bg-white.text-black
+                / . = simple_format(@sort_array_text.match(/<<(.*)>>/m)[1].gsub('。', "。\n"))
+                . = simple_format(h(@report_text.strip).gsub(/(在庫ID\s*:\s*([0-9]+))/) { link_to(Regexp.last_match(1), "/machines/#{Regexp.last_match(2)}", target: :_blank, rel: :noopener) })
+                / hr
+                / . = simple_format(@sort_array_text)
 
         .row
           - @sort_machines.each do |ma|
@@ -51,5 +54,3 @@
         . = simple_format(@generated_text.strip)
         hr
         . = simple_format(@error.strip)
-
-    hr
