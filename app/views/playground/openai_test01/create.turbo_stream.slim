@@ -4,53 +4,44 @@
   = turbo_stream.replace "result_area" do
     hr
 
-    - if @wheres.present?
-      / .mx-auto.my-3.p-3.rounded-1.bg-primary.text-white.col-10 = simple_format(h(@message.strip))
-      .mx-auto.text-muted.small = simple_format(h(@wheres.to_s.strip))
+    .mx-auto.text-muted.small
+      . = simple_format(h(@wheres.to_s.strip))
+      . 検索パターン:#{@pattern} 処理時間:#{@time}sec 途中件数:#{number_with_delimiter(@machines&.count)}件
+      . = @error
 
-      / .mx-auto.my-3.p-3.rounded-1.bg-success.text-white = simple_format(@wheres.to_s.strip)
+    - if @error_mes.present?
+      .ms-4.p-3.rounded-5.bg-danger.text-white.col-8
+        / . エラーが発生しました。
+        / hr
+        / . = simple_format(@generated_text.strip)
+        / hr
+        . = simple_format(@error_mes.strip)
 
-      - if @machines.present?
+    - elsif @wheres.present?
+      - if @machines.blank?
+        .row
+          .ms-4.p-3.rounded-5.bg-warning.text-white.col-8
+            | ご質問にマッチする機械・工具はありませんでした。<br />
+            | ご質問を変更して、より広い条件で再度検索してみてください。
+      - elsif @report_text.blank?
+        .row
+          .ms-4.p-3.rounded-5.bg-warning.text-white.col-8
+            | マッチする機械・工具が多すぎてレポートが生成できませんでした。(#{number_with_delimiter(@machines&.count)} 件)<br />
+            | ご質問の条件を追加して、絞り込みを行ってみてください。
+      - else
         .row
           .ms-4.p-3.rounded-5.bg-success.text-white.col-10
-            / .my-2 = "#{number_with_delimiter(@machines&.count)} 件 の機械・工具がマッチしました。(うち30件を表示) : #{@time + 1}回施行"
-            / .row
-            /   - @machines.each do |ma|
-            /     .col-1.p-1 style="width:20%;"
-            /       = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :test }
-
-            / . = simple_format(@mes)
-            / .my-2 = simple_format(@sort_array.to_s)
-
-            / .my-2 = "#{number_with_delimiter(@sort_machines&.count)} 件 の機械・工具がフィルタリングされました。"
-            .me-2 = "#{number_with_delimiter(@machines&.count)} 件 => #{number_with_delimiter(@sort_machines&.count)} 件 の機械・工具がマッチしました。"
-
-            / - if @report_text.present?
-            /   .my-2
-            /     h5 #{mi(:summarize)} OpenAIによるレポート
-            /     . = simple_format(@report_text)
+            . = "#{number_with_delimiter(@sort_machines&.count)} 件 の機械・工具がマッチしました。"
 
             - if @sort_array_text.present?
-              h6.mt-2 #{mi(:summarize)} OpenAIによるレポート
+              h6.mt-2 #{mi(:summarize)} MAIによるレポート
               .p-3.rounded-3.bg-white.text-black
                 / . = simple_format(@sort_array_text.match(/<<(.*)>>/m)[1].gsub('。', "。\n"))
-                . = simple_format(h(@report_text.strip).gsub(/(在庫ID\s*:\s*([0-9]+))/) { link_to(Regexp.last_match(1), "/machines/#{Regexp.last_match(2)}", target: :_blank, rel: :noopener) })
+                . = simple_format(h(@report_text.strip).gsub(/(ID\s*:\s*([0-9]+))/) { link_to(Regexp.last_match(1), "/machines/#{Regexp.last_match(2)}", target: :_blank, rel: :noopener) })
                 / hr
                 / . = simple_format(@sort_array_text)
 
         .row
           - @sort_machines.each do |ma|
             .col-1.p-1 style="width:16.6%;"
-              = render partial: "/machines/card", locals: { machine: ma, titles: ["在庫ID:#{ma.id}", ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :test }
-      - else
-        .row.my-2 = "マッチする機械・工具はありませんでした。: #{@time + 1}回施行"
-
-      / .mx-auto.my-3.p-3.rounded-1.bg-success.text-white = simple_format(@generated_text.strip)
-
-    - if @error.present?
-      .mx-auto.my-3.p-3.rounded-1.bg-danger.text-white
-        . エラーが発生しました。
-        hr
-        . = simple_format(@generated_text.strip)
-        hr
-        . = simple_format(@error.strip)
+              = render partial: "/machines/card", locals: { machine: ma, titles: ["ID:#{ma.id}", ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :test }

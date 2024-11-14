@@ -4,13 +4,14 @@ class System::GenreForm < FormBase
   attribute :capacity_label, :string
   attribute :capacity_unit, :string
   attribute :order_no, :integer
+  attribute :spec_labels, :string
 
   delegate :id, :persisted?, :xl_genre, :large_genre, to: :genre
 
   ### validater ###
   validates_presence_of %w[genre_name order_no]
 
-  SLICE_ATTRS = %w[genre_kana capacity_label capacity_unit order_no].freeze
+  SLICE_ATTRS = %w[genre_kana capacity_label capacity_unit order_no spec_labels].freeze
 
   def initialize(attributes = nil, genre: Genre.new)
     @genre = genre
