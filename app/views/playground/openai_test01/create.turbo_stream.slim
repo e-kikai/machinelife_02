@@ -38,7 +38,7 @@
               h6.mt-2 #{mi(:summarize)} MAIによるレポート
               .p-3.rounded-3.bg-white.text-black
                 / . = simple_format(@sort_array_text.match(/<<(.*)>>/m)[1].gsub('。', "。\n"))
-                . = simple_format(h(@report_text.strip).gsub(/(ID\s*:\s*([0-9]+))/) { link_to(Regexp.last_match(1), "/machines/#{Regexp.last_match(2)}", target: :_blank, rel: :noopener) })
+                . = simple_format(h(@report_text.strip).gsub(/(ID\s*:\s*([0-9]+))/) { link_to(Regexp.last_match(1), "/machines/#{Regexp.last_match(2)}?r=mai_src_rep", target: :_blank, rel: :noopener) })
                 / hr
                 / . = simple_format(@sort_array_text)
 
@@ -51,4 +51,4 @@
         .row
           - @sort_machines.each do |ma|
             .col-1.p-1 style="width:16.6%;"
-              = render partial: "/machines/card", locals: { machine: ma, titles: ["ID:#{ma.id}", ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :test }
+              = render partial: "/machines/card", locals: { machine: ma, titles: ["ID:#{ma.id}", ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :mai_src }
