@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_30_064815) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_15_053948) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -529,6 +529,29 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_30_064815) do
     t.index ["deleted_at"], name: "machines_ix1"
     t.index ["genre_id"], name: "machines_ix2"
     t.index ["maker"], name: "machines_ix3"
+  end
+
+  create_table "mai_search_logs", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "message", default: "", null: false, comment: "質問文"
+    t.string "keywords", default: "", null: false, comment: "検索キーワード"
+    t.integer "search_count", default: 0, null: false, comment: "検索結果件数"
+    t.integer "search_level", default: 0, null: false, comment: "検索レベル"
+    t.integer "count", default: 0, null: false, comment: "最終結果件数"
+    t.text "report", default: "", null: false, comment: "レポート"
+    t.float "time", default: 0.0, null: false, comment: "処理時間"
+    t.text "error", default: "", null: false, comment: "エラー"
+    t.boolean "good", default: false, null: false, comment: "高評価"
+    t.boolean "bad", default: false, null: false, comment: "低評価"
+    t.string "utag", default: ""
+    t.string "ip", default: ""
+    t.string "host", default: ""
+    t.string "ua", default: ""
+    t.string "referer", default: ""
+    t.string "r", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_mai_search_logs_on_user_id"
   end
 
   create_table "mailmagazine_log_user", id: { type: :serial, comment: "リレーションID" }, comment: "メルマガ送信ログ、ユーザリレーション", force: :cascade do |t|

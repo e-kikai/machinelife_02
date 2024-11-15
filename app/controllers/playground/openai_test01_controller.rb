@@ -1,5 +1,8 @@
 class Playground::OpenaiTest01Controller < ApplicationController
+  include Hosts
+
   before_action :check_env
+  before_action :set_mai_search_log, only: [:good, :bad]
   around_action :skip_bullet
 
   CHAT_TIMES = 3
@@ -175,12 +178,42 @@ QUERY_EXP_RES = '
         @error_mes = "質問がありません。"
       end
     rescue StandardError => e
-      @error = e.full_message
+      # @error = e.full_message
+      @error = e.message
       @error_mes = e.message
+    end
+
+    if logging?
+      @mai_search_log = MaiSearchLog.create(
+        log_data(
+          {
+            message: @message || "",
+            keywords: @wheres.to_json.strip || "",
+            search_count: @machines&.count || 0,
+            search_level: @level || 0,
+            count: @sort_machines&.count || 0,
+            report: @report_text&.strip || "",
+            time: @time || 0,
+            error: @error || ""
+          }
+        )
+      )
     end
   end
 
+  def good
+    @mai_search_log.toggle(:good).update(bad: false)
+  end
+
+  def bad
+    @mai_search_log.toggle(:bad).update(good: false)
+  end
+
   private
+
+  def set_mai_search_log
+    @mai_search_log = MaiSearchLog.find(params[:id])
+  end
 
   def check_env
     redirect_to "/" if Rails.env.production?
@@ -230,7 +263,7 @@ QUERY_EXP_RES = '
 
     ### (型式、キーワード抜きの)検索結果件数により条件の増減 ###
     @count = @machines.count
-    @pattern = 100
+    @level = 100
 
     # 数が多すぎる場合
     if @count > PRODUCTS_LIMIT && @wheres[:model].present? # 型式条件追加
@@ -240,7 +273,7 @@ QUERY_EXP_RES = '
       if model_count.positive?
         @machines = model_machines
         @count = model_count
-        @pattern = 200
+        @level = 200
       end
     end
 
@@ -251,7 +284,7 @@ QUERY_EXP_RES = '
       if name2_count.positive?
         @machines = name2_machines
         @count = name2_count
-        @pattern = 300
+        @level = 300
       end
     end
     # if @count > PRODUCTS_LIMIT && @wheres[:keywords].present? # キーワード条件追加
@@ -261,7 +294,7 @@ QUERY_EXP_RES = '
     #   if key_count.positive?
     #     @machines = key_machines
     #     @count = key_count
-    #     @pattern = 400
+    #     @level = 400
     #   end
     # end
 
@@ -274,7 +307,7 @@ QUERY_EXP_RES = '
       if img_count.positive?
         @machines = img_machines
         @count = img_count
-        @pattern = 500
+        @level = 500
       end
     end
   rescue StandardError => e

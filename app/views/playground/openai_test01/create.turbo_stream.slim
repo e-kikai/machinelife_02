@@ -4,10 +4,11 @@
   = turbo_stream.replace "result_area" do
     hr
 
-    .mx-auto.text-muted.small
-      . = simple_format(h(@wheres.to_s.strip))
-      . 検索パターン:#{@pattern} 処理時間:#{@time}sec 途中件数:#{number_with_delimiter(@machines&.count)}件
-      . = @error
+    - if Rails.env.development?
+      .mx-auto.text-muted.small
+        . = simple_format(h(@wheres.to_s.strip))
+        . 検索レベル:#{@level} 処理時間:#{@time}sec 途中件数:#{number_with_delimiter(@machines&.count)}件
+        . = @error
 
     - if @error_mes.present?
       .ms-4.p-3.rounded-5.bg-danger.text-white.col-8
@@ -40,6 +41,12 @@
                 . = simple_format(h(@report_text.strip).gsub(/(ID\s*:\s*([0-9]+))/) { link_to(Regexp.last_match(1), "/machines/#{Regexp.last_match(2)}", target: :_blank, rel: :noopener) })
                 / hr
                 / . = simple_format(@sort_array_text)
+
+        - if @mai_search_log.present?
+          .row
+            .my-2.small.text-end.col-10
+              | AIが出力した検索結果・レポートは、ご満足いただけましたでしょうか？
+              span id="good_area_#{@mai_search_log.id}" = render "good", mai_search_log: @mai_search_log
 
         .row
           - @sort_machines.each do |ma|

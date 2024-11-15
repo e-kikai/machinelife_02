@@ -98,6 +98,7 @@ Rails.application.routes.draw do
       resources :detail_logs, only: [:index]
       resources :catalog_logs, only: [:index]
       resources :search_logs, only: [:index]
+      resources :mai_search_logs, only: [:index]
 
       namespace :catalogs do
         get   :csv
@@ -125,7 +126,12 @@ Rails.application.routes.draw do
 
     ### playground ###
     namespace :playground do
-      resources :openai_test01, only: [:index, :create, :show]
+      resources :openai_test01, only: [:index, :create, :show] do
+        member do
+          patch :good
+          patch :bad
+        end
+      end
     end
   end
 

@@ -1,0 +1,112 @@
+- set_meta_tags title: "MAI検索ログ"
+- breadcrumb :system_something, "MAI検索ログ"
+
+h1 MAI検索ログ
+
+/* 検索枠 */
+= turbo_frame_tag :search_log_list do
+  .row
+    .col-11.mx-auto.my-2
+      = form_with(url: "/system/search_logs/", local: true, method: :get, html: { 'data-turbo-frame': :search_log_list }) do |f|
+        .row.g-1.mt-1
+          .col-auto
+            .input-group.input-group-sm
+              = f.label :k, class: "input-group-text" do
+                . #{mi(:person)}
+              = f.text_field :k, value: params[:k], class: "form-control form-control-sm", placeholder: "IP/host, utagフィルタ"
+
+          .col-1
+            .input-group.input-group-sm
+              = f.label :user_id, class: "input-group-text" do
+                . #{mi(:account_circle)}
+              = f.number_field :user_id, value: params[:user_id], class: "form-control form-control-sm", placeholder: "user ID"
+
+          .col-auto
+            .input-group.input-group-sm
+              = f.label :start_date, class: "input-group-text" do
+                . 日時
+              = f.datetime_field :start_date, value: params[:start_date], class: "form-control form-control-sm"
+              = f.label :end_date, class: "input-group-text" do
+                . 〜
+              = f.datetime_field :end_date, value: params[:end_date], class: "form-control form-control-sm"
+
+          .col-auto = f.button class: "btn btn-primary btn-sm" do
+            . #{mi(:search)} 検索
+          .col-auto.ms-auto = link_to "/system/search_logs", class: "btn btn-sm btn-secondary" do
+            . #{mi(:filter_alt_off)} リセット
+
+  /* 検索結果 */
+  / . = @psearch_logs.to_sql
+  . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
+
+  . style=" margin: 0 calc(50% - 49.5vw);width: 99vw;"
+    table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+      thead
+        tr.small
+          th scope="col" style="width:60px;" アクセス<br />日時
+          th scope="col" style="border-left-style:double;border-left-width:3px;" IP/host
+          / th scope="col" utag
+          / th scope="col" 会社・ユーザ名
+
+          th scope="col" utag<br />会社・ユーザ名
+
+          / th scope="col" デバイス・OS・ブラウザ
+          / th scope="col" style="border-left-style:double;border-left-width:3px;" パス
+          / th scope="col" ページ
+          / th scope="col" 件数
+          / th scope="col" リンク元
+          th style="width:200px;"scope="col" 質問文
+          th style="width:200px;" scope="col" 検索キーワード
+          th scope="col" 検索<br />レベル
+          th scope="col" 検索<br />件数
+          th scope="col" 処理<br />sec
+          th scope="col" 最終<br />件数
+          th scope="col" style="width:500px;" レポート (エラー)
+          th scope="col" #{mi(:thumb_up_alt)}
+
+      tbody
+        - @pmai_search_logs.each do |sl|
+            tr
+              td.text-end
+                . = sl.created_at.strftime("%y/%m/%d")
+                . = sl.created_at.strftime("%H:%M:%S")
+              td style="border-left-style:double;border-left-width:3px;"
+                . = link_to sl.ip, "/system/mai_search_logs/?k=#{sl.ip}"
+                . = sl.host
+              / td = link_to sl.utag, "/system/mai_search_logs/?k=#{sl.utag}"
+              / td
+              /   - if sl.user_id
+              /     . = sl.company&.company_remove_kabu
+              /     . = link_to "#{sl.user_id}:#{sl.user&.user_name}", "/system/mai_search_logs/?user_id=#{sl.user_id}"
+              /   - else
+              /     | -
+              td
+                = link_to sl.utag, "/system/mai_search_logs/?k=#{sl.utag}"
+                - if sl.user_id
+                  . = sl.company&.company_remove_kabu
+                  . = link_to "#{sl.user_id}:#{sl.user&.user_name}", "/system/mai_search_logs/?user_id=#{sl.user_id}"
+
+              / td title="#{sl.ua}" = sl.browse_info
+              / td style="border-left-style:double;border-left-width:3px;" = CGI.unescape(sl.path)
+              / td.text-end = number_with_delimiter(sl.page)
+              / td.text-end = number_with_delimiter(sl.count)
+              / td.text-break title="#{CGI.unescape(sl.referer.to_s)}" = CGI.unescape(sl.link_source)
+
+              td = sl.message
+              td style="word-break: break-word;"
+                - sl.keywords.gsub(/[{}"]/, '').split(",").each do |col|
+                  .d-inline-block.me-2 #{col},
+              td.text-end = number_with_delimiter(sl.search_level)
+              td.text-end = number_with_delimiter(sl.search_count)
+              td.text-end = number_with_delimiter(sl.time.round(3))
+              td.text-end = number_with_delimiter(sl.count)
+              td.small
+                = simple_format(h(sl.report))
+                = simple_format(h(sl.error))
+              td
+                - if sl.good
+                  .text-success.m-auto #{mi(:thumb_up_alt)}
+                - elsif sl.bad
+                  .text-danger.m-auto #{mi(:thumb_down_alt)}
+
+  . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
