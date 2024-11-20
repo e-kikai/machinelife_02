@@ -25,7 +25,8 @@ module ApplicationHelper
         card: 'summary',
         site: '@zenkiren'
       },
-      'turbo-prefetch': false
+      'turbo-prefetch': false,
+      robots: Rails.env.production? && request.path_info !~ /admin|system|catalog|playground/ ? :index : :noindex
     }
   end
 
@@ -53,7 +54,8 @@ module ApplicationHelper
         card: 'summary',
         site: '@zenkiren'
       },
-      'turbo-prefetch': false
+      'turbo-prefetch': false,
+      robots: Rails.env.production? ? :index : :noindex
     }
   end
 
@@ -81,7 +83,8 @@ module ApplicationHelper
         card: 'summary',
         site: '@zenkiren'
       },
-      'turbo-prefetch': false
+      'turbo-prefetch': false,
+      robots: Rails.env.production? ? :index : :noindex
     }
   end
 

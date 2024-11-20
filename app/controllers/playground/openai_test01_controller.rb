@@ -233,10 +233,15 @@ QUERY_EXP_RES = '
         model: "gpt-4o-mini",
         # response_format: { type: "json_object" },
         messages: [
-          { role: "system", content: SYSTEM_MESSAGE },
-          { role: "user", content: "#{QUERY_MESSAGE}\例: #{QUERY_EXP}" },
-          { role: "assistant", content: "回答例: #{QUERY_EXP_RES}" },
-          { role: "user", content: "質問文: #{message}" }
+          # { role: "system", content: SYSTEM_MESSAGE },
+          # { role: "user", content: "#{QUERY_MESSAGE}\例: #{QUERY_EXP}" },
+          # { role: "assistant", content: "回答例: #{QUERY_EXP_RES}" },
+          # { role: "user", content: "質問文: #{message}" }
+
+          { role: "system", content: "#{SYSTEM_MESSAGE}\n#{QUERY_MESSAGE}" },
+          { role: "user", content: QUERY_EXP },
+          { role: "assistant", content: QUERY_EXP_RES },
+          { role: "user", content: message }
         ],
         temperature:
       }
@@ -313,20 +318,24 @@ QUERY_EXP_RES = '
   rescue StandardError => e
     # @error = e.full_message
     @error = e.message
-    @error_mes = "在庫検索処理でエラーが発生しました。\nお手数ですが、再度検索してみてください。"
+    @error_mes = "MAI在庫検索処理でエラーが発生しました。\nお手数ですが、再度検索してみてください。"
   end
 
   def sort_for_chat(message, machines)
     machines_json = machines_to_json(machines.limit(PRODUCTS_LIMIT))
 
-    @mes = "#{SORT_QUERY_MESSAGE}\n\n<機械情報>\n#{machines_json}\n\n<質問文>\n#{message}"
+    # @mes = "#{SORT_QUERY_MESSAGE}\n\n<機械情報>\n#{machines_json}\n\n<質問文>\n#{message}"
+    system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n<機械情報>\n#{machines_json}"
 
     response = @client.chat(
       parameters: {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: SYSTEM_MESSAGE },
-          { role: "user", content: @mes }
+          # { role: "system", content: SYSTEM_MESSAGE },
+          # { role: "user", content: @mes }
+
+          { role: "system", content: system_message },
+          { role: "user", content: message }
         ],
         temperature: 0
       }
@@ -351,34 +360,8 @@ QUERY_EXP_RES = '
     rescue StandardError => e
       # @error = e.full_message
       @error = e.message
-      @error_mes = "レポート生成処理でエラーが発生しました。\nお手数ですが、再度検索してみてください。"
+      @error_mes = "MAIレポート生成処理でエラーが発生しました。\nお手数ですが、再度検索してみてください。"
     end
-  end
-
-  # フィルタリング＆レポート生成
-  def report_for_chat(message, machines)
-    machines_json = machines_to_json(machines)
-
-    @mes = "#{REPORT_QUERY_MESSAGE}\n\n<機械情報>\n#{machines_json}\n\n<質問文>\n#{message}"
-
-    logger.debug "レポート生成"
-
-    response = @client.chat(
-      parameters: {
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: SYSTEM_MESSAGE },
-          { role: "user", content: @mes }
-        ],
-        temperature: 0
-      }
-    )
-
-    @report_text = response.dig("choices", 0, "message", "content")
-
-    logger.debug "レポート完了"
-  rescue StandardError => e
-    @error_mes = e.message
   end
 
   # JSON用ハッシュ生成
