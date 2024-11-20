@@ -216,7 +216,7 @@ QUERY_EXP_RES = '
   end
 
   def check_env
-    redirect_to "/" if Rails.env.production?
+    # redirect_to "/" if Rails.env.production?
   end
 
   def set_client
