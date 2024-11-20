@@ -183,7 +183,8 @@ QUERY_EXP_RES = '
       @error_mes = e.message
     end
 
-    if logging?
+    # if logging?
+    if logging? || system_user?
       @mai_search_log = MaiSearchLog.create(
         log_data(
           {
