@@ -324,18 +324,18 @@ QUERY_EXP_RES = '
   def sort_for_chat(message, machines)
     machines_json = machines_to_json(machines.limit(PRODUCTS_LIMIT))
 
-    # @mes = "#{SORT_QUERY_MESSAGE}\n\n<機械情報>\n#{machines_json}\n\n<質問文>\n#{message}"
-    system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n<機械情報>\n#{machines_json}"
+    @mes = "#{SORT_QUERY_MESSAGE}\n\n<機械情報>\n#{machines_json}\n\n<質問文>\n#{message}"
+    # system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n<機械情報>\n#{machines_json}"
 
     response = @client.chat(
       parameters: {
         model: "gpt-4o-mini",
         messages: [
-          # { role: "system", content: SYSTEM_MESSAGE },
-          # { role: "user", content: @mes }
+          { role: "system", content: SYSTEM_MESSAGE },
+          { role: "user", content: @mes }
 
-          { role: "system", content: system_message },
-          { role: "user", content: message }
+          # { role: "system", content: system_message },
+          # { role: "user", content: message }
         ],
         temperature: 0
       }
