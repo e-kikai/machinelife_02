@@ -6,6 +6,8 @@ h1 MAI 在庫検索
 p
   | 機械工具検索に関する質問文を入力すると、MAIがマシンライフの在庫をさがして、レポートを生成します。<br />
   | 質問文の例: オークマの6尺旋盤、大阪にあるもの。
+  = link_to "/playground/openai_test01/help" do
+    . #{mi(:help)} ヘルプ : MAI在庫検索について
 
 . data-controller="openai01"
   #form_area.mx-auto.my-3 = render "form"
