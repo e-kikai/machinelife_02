@@ -210,6 +210,8 @@ QUERY_EXP_RES = '
     @mai_search_log.toggle(:bad).update(good: false)
   end
 
+  def help; end
+
   private
 
   def set_mai_search_log

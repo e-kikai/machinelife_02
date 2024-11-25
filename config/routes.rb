@@ -131,6 +131,10 @@ Rails.application.routes.draw do
           patch :good
           patch :bad
         end
+
+        collection do
+          get :help
+        end
       end
     end
   end
