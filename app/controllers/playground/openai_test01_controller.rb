@@ -43,6 +43,7 @@ Please respond to user inquiries as an industry expert, using clear and polite l
 }
 '.freeze
 
+# "category": 大型から卓上までサイズの工作機械(machine)を探しているか、手作業用の工具を探しているか、machineかtoolで,
 # "category": 質問文から、さがしているのが工作機械か工具(工作機械周辺機器)か？machine or tool or unknown で,
 # "image": 質問文の内容から画像が必要かどうかを判別し、true（画像あり）、false（画像なし）、空白(指定なし)で指定,
 # "youtube": 質問文の内容からYoutube動画が必要かどうかを判別し、true（動画あり）、false（動画なし）、空白(指定なし)で指定,
@@ -106,12 +107,12 @@ QUERY_EXP_RES = '
 ・ 質問文の商品名に「NC」が含まれていない場合は、絶対にNCではないものを優先してください。
 
 2) 上記処理でフィルタリングした結果の機械・工具情報から、
-これらの要約をまとめて、200文字程度のユーザ向けのレポートを日本語で作成してください。
+これらの要約をまとめて、200文字程度のユーザ向けのレポートをMAIの提案として、日本語で作成してください。
 
 ・ 対象ユーザは、工場で実際に加工作業を行う方を想定しています。各機種の違いや用途など、実用的な情報を提案してください。
 ・ ユーザが出品会社へのお問い合わせをしたくなるように、そして購入を促すような内容にしてください。
 ・ 各機械・工具の違いや用途、適した作業について実用的な解説を行い、質問文の内容に合わせた回答をしてください。
-・ 個別の機械・工具に関する情報は、個別に「(ID:id)」を表記してください。
+・ 個別の機械・工具に関する情報は、個別に「[ID:id maker name model]」を表記してください。
 ・ 丁寧で優秀な美人眼鏡秘書のような語り口で回答してください。
 ・ 結果は「report>>>」以降に記述してください。
 ".freeze
@@ -265,8 +266,10 @@ QUERY_EXP_RES = '
     @machines = Machine.sales
 
     @machines = @machines.where("machines.addr1 ~* ?", @wheres[:addr1]) if @wheres[:addr1].present?
-    @machines = @machines.where("machines.maker || ' ' || machines.maker2 || ' ' || makers.maker_master ~* ?", @wheres[:maker]) if @wheres[:maker].present?
-    @machines = @machines.where("machines.name || ' ' || genres.genre ~* ?", @wheres[:name]) if @wheres[:name].present?
+    # @machines = @machines.where("machines.maker || ' ' || machines.maker2 || ' ' || makers.maker_master ~* ?", @wheres[:maker]) if @wheres[:maker].present?
+    @machines = @machines.where("concat_ws(' ', machines.maker, machines.maker2, makers.maker_master) ~* ?", @wheres[:maker]) if @wheres[:maker].present?
+    # @machines = @machines.where("machines.name || ' ' || genres.genre ~* ?", @wheres[:name]) if @wheres[:name].present?
+    @machines = @machines.where("concat_ws(' ', machines.name, genres.genre) ~* ?", @wheres[:name]) if @wheres[:name].present?
     @machines = @machines.where("machines.year ~* ?", @wheres[:year]) if @wheres[:year].present?
 
     ### (型式、キーワード抜きの)検索結果件数により条件の増減 ###
@@ -275,7 +278,8 @@ QUERY_EXP_RES = '
 
     # 数が多すぎる場合
     if @count > PRODUCTS_LIMIT && @wheres[:model].present? # 型式条件追加
-      model_machines = @machines.where("machines.model || ' ' || machines.model2 ~* ?", @wheres[:model])
+      # model_machines = @machines.where("machines.model || ' ' || machines.model2 ~* ?", @wheres[:model])
+      model_machines = @machines.where("concat_ws(' ', machines.model, machines.model2) ~* ?", @wheres[:model])
       model_count = model_machines.count
 
       if model_count.positive?
@@ -286,7 +290,8 @@ QUERY_EXP_RES = '
     end
 
     if @count > PRODUCTS_LIMIT && @wheres[:name2].present? # 名前(より厳しく)条件追加
-      name2_machines = @machines.where("machines.name || ' ' || genres.genre ~* ?", @wheres[:name2])
+      # name2_machines = @machines.where("machines.name || ' ' || genres.genre ~* ?", @wheres[:name2])
+      name2_machines = @machines.where("concat_ws(' ', machines.name, genres.genre) ~* ?", @wheres[:name2])
       name2_count = name2_machines.count
 
       if name2_count.positive?
