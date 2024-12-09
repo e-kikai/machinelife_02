@@ -6,7 +6,7 @@ class Playground::OpenaiTest01Controller < ApplicationController
   around_action :skip_bullet
 
   CHAT_TIMES = 3
-  PRODUCTS_LIMIT = 200
+  PRODUCTS_LIMIT = 250
   RESULT_LIMIT = 60
 
 #   SYSTEM_MESSAGE = "
@@ -100,11 +100,13 @@ QUERY_EXP_RES = '
   SORT_QUERY_MESSAGE = "
 1) 以下のJSON形式の配列の機械・工具情報は、在庫databaseから<質問文>のkeywordで検索した結果です。
 しかしこれは、databaseのcolumnに含まれない内容(各能力値や有姿 etc)はフィルタリングしきれていません。
-そこで<質問文>の内容、特に能力値の内容でフィルタリングして、より精度の高い検索結果を出力したい。
+そこで<質問文>の内容、特に能力値(単位を含む)で検索結果をフィルタリングして、より精度の高い検索結果を出力したい。
 
 ・ 検索結果の機械・工具情報すべての「id」の数値を列挙してください。
 ・ 結果はJSON形式の配列 ([1,2,3]) のみを返してください。
 ・ 質問文の商品名に「NC」が含まれていない場合は、絶対にNCではないものを優先してください。
+・ 条件に能力値(単位を含む)が含まれる場合、特に厳守してフィルタリングしてください。
+・ 結果が多すぎる場合は、特に条件にマッチするもの100件に絞ってください。
 
 2) 上記処理でフィルタリングした結果の機械・工具情報から、
 これらの要約をまとめて、200文字程度のユーザ向けのレポートをMAIの提案として、日本語で作成してください。
@@ -235,17 +237,15 @@ QUERY_EXP_RES = '
     response = @client.chat(
       parameters: {
         model: "gpt-4o-mini",
+        # model: "o1-mini",
+
         # response_format: { type: "json_object" },
         messages: [
-          # { role: "system", content: SYSTEM_MESSAGE },
-          # { role: "user", content: "#{QUERY_MESSAGE}\例: #{QUERY_EXP}" },
-          # { role: "assistant", content: "回答例: #{QUERY_EXP_RES}" },
-          # { role: "user", content: "質問文: #{message}" }
-
           { role: "system", content: "#{SYSTEM_MESSAGE}\n#{QUERY_MESSAGE}" },
           { role: "user", content: QUERY_EXP },
           { role: "assistant", content: QUERY_EXP_RES },
           { role: "user", content: message }
+          # { role: "user", content: { type: :text, text: "#{SYSTEM_MESSAGE}\n#{QUERY_MESSAGE}\n#{message}" } }
         ],
         temperature:
       }
@@ -265,10 +265,15 @@ QUERY_EXP_RES = '
     # search
     @machines = Machine.sales
 
-    @machines = @machines.where("machines.addr1 ~* ?", @wheres[:addr1]) if @wheres[:addr1].present?
-    # @machines = @machines.where("machines.maker || ' ' || machines.maker2 || ' ' || makers.maker_master ~* ?", @wheres[:maker]) if @wheres[:maker].present?
-    @machines = @machines.where("concat_ws(' ', machines.maker, machines.maker2, makers.maker_master) ~* ?", @wheres[:maker]) if @wheres[:maker].present?
-    # @machines = @machines.where("machines.name || ' ' || genres.genre ~* ?", @wheres[:name]) if @wheres[:name].present?
+    @machines = @machines.where("machines.addr1 ~* ?", "^(#{@wheres[:addr1]})") if @wheres[:addr1].present?
+
+    if @wheres[:maker].present?
+      maker_masters = Maker.where("concat_ws(' ', makers.maker, makers.maker_kana, makers.maker_master) ~* ?", @wheres[:maker]).distinct.pluck(:maker_master).join('|')
+
+      makers = maker_masters.present? ? "#{@wheres[:maker]}|#{maker_masters}" : @wheres[:maker]
+      @machines = @machines.where("concat_ws(' ', machines.maker, machines.maker2, makers.maker_master) ~* ?", makers)
+    end
+
     @machines = @machines.where("concat_ws(' ', machines.name, genres.genre) ~* ?", @wheres[:name]) if @wheres[:name].present?
     @machines = @machines.where("machines.year ~* ?", @wheres[:year]) if @wheres[:year].present?
 
@@ -349,10 +354,9 @@ QUERY_EXP_RES = '
       }
     )
     begin
+      # 結果から、ID一覧を取得
       @sort_array_text = response.dig("choices", 0, "message", "content")
-
       @sort_json = @sort_array_text.to_s.match(/(\{.*?\}|\[.*?\])/m)[0]
-
       @sort_array = JSON.parse(@sort_json, symbolize_names: true)
 
       # search
