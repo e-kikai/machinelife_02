@@ -38,4 +38,16 @@ class ApplicationController < ActionController::Base
   def system_user?
     current_user&.role == "system"
   end
+
+  # テスト環境用簡易認証
+  # USERS = { Rails.application.secrets.digest_user => Rails.application.secrets.digest_password }.freeze
+  USERS = { "zenkiren" => "ml1210" }.freeze
+
+  before_action :digest_auth
+
+  private
+
+  def digest_auth
+    authenticate_or_request_with_http_digest { |user| USERS[user] } if Rails.env.staging?
+  end
 end

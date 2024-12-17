@@ -6,8 +6,11 @@ class Playground::OpenaiTest01Controller < ApplicationController
   around_action :skip_bullet
 
   CHAT_TIMES = 3
-  PRODUCTS_LIMIT = 250
+  PRODUCTS_LIMIT = 200
   RESULT_LIMIT = 60
+  REPORT_LIMIT = 300
+
+  IGNORE_WORDS = /\|?(切削工具|不明|工作機械|測定工具)\|?/
 
 #   SYSTEM_MESSAGE = "
 # あなたは、「全日本機械業連合会（全機連）」が運営する中古工作機械・工具の販売サイト「マシンライフ」のサポート担当です。
@@ -22,25 +25,48 @@ Please respond to user inquiries as an industry expert, using clear and polite l
 ".freeze
 
   QUERY_MESSAGE = '
-質問文に回答するためにはどんな工作機械・工具が必要か？を考え、その機械・工具をリレーショナルデータベースから検索するためのキーワードを抽出してください。
+質問文に回答するためにはどんな工作機械・工具が必要か？を考え、
+質問文からその機械・工具をRDBから検索するためのキーワードを抽出してください。
 
-・ 金額、値段については当サイト上では提示していないため、条件から除外。
-・ あいまい検索(オークマ,大隈,OKUMAどれでもマッチ)をしたいので、
-キーワードの別表記・類義語・短縮語(牧野フライス -> マキノ など)、漢字違い(沢と澤、富と冨 etc)、読み(カタカナ)、英訳和訳などがあれば、可能な限りできるだけ多く・幅広く列挙してください。
-・ 型式は、半角大文字英数で、記号は除外してください。
-・ 単語の最後のカタカナの伸ばし棒「ー」は除外してください。
-・ 結果は、カラムを|区切りで、以下のJSONフォーマットで類義語ごとに出力してください。
-・ どのカラムも、不明な場合やない場合は空白で。
-・ 各カラムに該当するキーワードのみを抽出し、その他の要素を含まないようにしてください。
+* 金額、値段については当サイト上では提示していないため、条件から除外。
+* keywordは|区切り(正規表現)で、以下のJSONで類義語ごとに出力してください。
+* カラムにkeywordがない場合は何も記述せず空白「""」にしてください。
+* あいまい検索(オークマ,大隈,OKUMAどれでもマッチ)をしたいので、
+キーワードの別表記・類義語・短縮語(牧野フライス -> マキノ など)、漢字違い(沢と澤、富と冨 etc)、読み(カタカナ)などがあれば、可能な限りできるだけ多く列挙してください。
+* 単語末尾のカタカナの「ー」は除去してください。
 
 {
-  "name": 質問文から機械・工具の一般名称を抽出。能力値や maker、model に含まれるキーワードは除外,
+  "name": 質問文から機械・工具の一般名称を抽出。能力値や maker、model に含まれるkeywordは除外,
   "name2": 質問文から機械・工具の一般名称を抽出。こちらはあいまい検索せずに、これというもの1つだけ,
-  "maker": 質問文から機械・工具のメーカー会社名(固有名詞部分)を抽出。name model に含まれているキーワードは除外,
-  "model": 質問文から機械・工具の型式を半角英数字大文字で抽出。それ以外の記号や漢字カナは除外。能力値(100Tのような数字と単位)も除外,
-  "year": 質問文から西暦数字4桁の年式を抽出。範囲の場合はすべての西暦を列挙,
-  "addr1": 質問文から都道府県を抽出(既に maker name に含まれている単語は除外)。周辺の都道府県も含む、逆に多すぎる場合は空白で,
+  "maker": 質問文から機械・工具のメーカー会社名(固有名詞部分)を抽出。name model に含まれているkeywordは除外,
+  "model": 質問文から機械・工具の型式を半角英数字大文字で抽出。全角、小文字などは半角英数字大文字に変換、それ以外の記号や漢字カナや能力値(100Tのような数字と単位)除外,
+  "year": 質問文から西暦数字4桁の年式を抽出。範囲の場合はすべての西暦に合致するような正規表現,
+  "addr1": 質問文から都道府県を抽出(既に maker name に含まれている単語は除外)。周辺の都道府県も含む、逆に多すぎる場合は空白
 }
+
+ex.1)
+大阪近辺で、オークマかアマダの90年代の5尺立型旋盤の型式がLSかods-12で。
+
+ans.1)
+{"name": "立旋盤|立型旋盤|縦旋盤|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ|大隈", "year": "199[0-9]", "model": "LS|ODS12", "addr1": "大阪|兵庫|京都|奈良|和歌山"}
+
+ex.2)
+ナガセのSGW-63
+
+ans.2)
+{"name": "", "name2": "", "maker": "ナガセ|長瀬", "model": "SGW63", "year": "", "addr1": ""}
+
+ex.3)
+大阪でアマダ製バンドソー250mm
+
+ans.3)
+{"name": "バンドソ|帯鋸|バンドノコ", "name2": "バンドソ", "maker": "アマダ|AMADA", "model": "", "year": "", "addr1": "大阪|兵庫|京都|奈良|和歌山"}
+
+ex.4)
+大阪にある7.5kwパッケージコンプレッサー、アネスト岩田製
+
+ans.4)
+{"name": "パッケージコンプレッサ|パッケージ型コンプレッサ|コンプレッサ", "name2": "パッケージコンプレッサ", "maker": "アネスト岩田|岩田|イワタ", "model": "", "year": "", "addr1": "大阪|兵庫|京都|奈良|和歌山"}
 '.freeze
 
 # "category": 大型から卓上までサイズの工作機械(machine)を探しているか、手作業用の工具を探しているか、machineかtoolで,
@@ -49,7 +75,7 @@ Please respond to user inquiries as an industry expert, using clear and polite l
 # "youtube": 質問文の内容からYoutube動画が必要かどうかを判別し、true（動画あり）、false（動画なし）、空白(指定なし)で指定,
 # "commision": 質問文の内容から試運転が必要かどうかを判別し、true（試運転可）、false（試運転不可）、空白(指定なし)で指定,
 # "nc": 質問文の内容から検索する商品がNC工作機械かどうかを判別し、true（NC工作機械）、false（それ以外の機械・工具）で指定,
-# "keywords": 上記以外のキーワード、能力、仕様、付属品など(できるだけたくさん)。上記キーワード二該当する内容は除外。
+# "keywords": 上記以外のキーワード(能力、仕様、付属品などできるだけたくさん)。すでに上記カラムに入っているkeywordは除外。
 
   QUERY_EXP = '
 オークマかアマダの90年代の5尺立型旋盤で、型式がLSかods-12で。大阪近辺で。
@@ -59,77 +85,29 @@ Please respond to user inquiries as an industry expert, using clear and polite l
 # {"name": "立旋盤|立型旋盤|縦旋盤|タテセンバン|vertical laser", "maker": "オークマ|アマダ|大隈", "year": "1990|1991|1992|1993|1994|1995|1996|1997|1998|1999", "model": "LS|ODS12", "addr1": "大阪|兵庫|京都|奈良|和歌山", "keywords": "5尺|0.6m|600cm"}
 # '.freeze
 
-QUERY_EXP_RES = '
-{"name": "立旋盤|立型旋盤|縦旋盤|タテセンバン|vertical laser", "maker": "オークマ|アマダ|大隈", "year": "1990|1991|1992|1993|1994|1995|1996|1997|1998|1999", "model": "LS|ODS12", "addr1": "大阪|兵庫|京都|奈良|和歌山"}
+  QUERY_EXP_RES = '
+{"name": "立旋盤|立型旋盤|縦旋盤|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ|大隈", "year": "199[0-9]", "model": "LS|ODS12", "addr1": "大阪|兵庫|京都|奈良|和歌山"}
 '.freeze
 
-#   QUERY_MESSAGE = '
-# To answer the question, consider what machines or tools are required, then extract keywords to search for these machines and tools in a relational database. However, as prices are not listed on this site, exclude them from the conditions.
-
-# Since we want to enable fuzzy search (e.g., "オークマ," "大隈," or "OKUMA" all match), if there are alternative spellings, synonyms, abbreviations (such as "Makino Milling" to "Makino"), variations in kanji characters, readings (katakana), or translations, please list as many as possible across a wide range.
-
-# Model names should be in uppercase alphanumeric characters with no symbols. The final katakana "ー" should be excluded from words.
-
-# Output the results, with synonyms separated by "|", in the following JSON format:
-# {
-#   "name": "Machine or tool name. If there are alternate spellings, synonyms, abbreviations, or readings, list as many as possible (exclude terms included in maker or model fields).",
-#   "maker": "Machine or tool manufacturer name. If there are alternate spellings, synonyms, abbreviations, or readings (katakana), or kanji variations (such as 沢 and 澤, 富 and 冨), list as many as possible separated by "|". (Exclude terms included in name or model fields.)",
-#   "model": "Model name, in uppercase alphanumeric characters only. Exclude other symbols, kanji, katakana, and numerical values such as capacity (e.g., 100T).",
-#   "year": "Four-digit year in AD. If it is a range, list all years within the range.",
-#   "addr1": "Prefecture (exclude terms already included in maker or name). Include nearby prefectures if relevant, but leave blank if too many.",
-#   "keywords": "Other keywords such as capabilities, specifications, accessories (as many as possible). Exclude keywords that fall under the categories above."
-# }
-# If any keywords are not applicable, leave the fields blank.
-# '.freeze
-
-#   SORT_QUERY_MESSAGE = '
-# 以下のJSON形式の配列の機械・工具情報から、
-# 提示する質問文の内容に合致する機械・工具情報をさがして、その"ID"の数値を列挙してください。
-
-# ・ 合致の度合いは完全一致ではなく、近しいものも取得。
-# ・ 結果はJSON形式の配列 ([1,2,3,4]) のみを返してください。
-# '.freeze
-
-#   REPORT_QUERY_MESSAGE = '
-# 質問文から検索された以下のJSON形式の配列の機械・工具情報から、
-# これらの機械・工具の概要を要約して、280字程度のユーザ向けのレポートを作成してください。
-
-# ・ 適宜改行を行ってください。
-# '.freeze
-
   SORT_QUERY_MESSAGE = "
-1) 以下のJSON形式の配列の機械・工具情報は、在庫databaseから<質問文>のkeywordで検索した結果です。
-しかしこれは、databaseのcolumnに含まれない内容(各能力値や有姿 etc)はフィルタリングしきれていません。
-そこで<質問文>の内容、特に能力値(単位を含む)で検索結果をフィルタリングして、より精度の高い検索結果を出力したい。
+1) 以下のJSON形式の配列の<machines>は、在庫databaseから<question>のkeywordで検索した結果です。
+しかしこれは、databaseのcolumnに含まれない内容(能力値や有姿 etc)はフィルタリングしきれていません。
 
-・ 検索結果の機械・工具情報すべての「id」の数値を列挙してください。
-・ 結果はJSON形式の配列 ([1,2,3]) のみを返してください。
-・ 質問文の商品名に「NC」が含まれていない場合は、絶対にNCではないものを優先してください。
-・ 条件に能力値(単位を含む)が含まれる場合、特に厳守してフィルタリングしてください。
-・ 結果が多すぎる場合は、特に条件にマッチするもの100件に絞ってください。
+そこで、<machines>から<question>の内容にマッチしないものを除外し、より精度の高い検索結果を出力してください。
 
-2) 上記処理でフィルタリングした結果の機械・工具情報から、
-これらの要約をまとめて、200文字程度のユーザ向けのレポートをMAIの提案として、日本語で作成してください。
+* フィルタリングした結果の機械・工具情報の「id」の数値を列挙してください。
+* 結果はJSON形式の配列 ([1,2,3]) のみを返してください。
+* 条件に単位のある能力値(6尺、13mm、3本 etc)が含まれる場合、厳密に該当するものをフィルタリングしてください。
+* 結果が多すぎる場合は、特に条件にマッチするもの100件に絞ってください。
 
-・ 対象ユーザは、工場で実際に加工作業を行う方を想定しています。各機種の違いや用途など、実用的な情報を提案してください。
-・ ユーザが出品会社へのお問い合わせをしたくなるように、そして購入を促すような内容にしてください。
-・ 各機械・工具の違いや用途、適した作業について実用的な解説を行い、質問文の内容に合わせた回答をしてください。
-・ 個別の機械・工具に関する情報は、個別に「[ID:id maker name model]」を表記してください。
-・ 丁寧で優秀な美人眼鏡秘書のような語り口で回答してください。
-・ 結果は「report>>>」以降に記述してください。
+2) フィルタリングした機械・工具情報について、#{REPORT_LIMIT}文字程度のユーザ向けレポートをMAIからの提案として日本語で作成してください。
+
+* 工場で実際に加工作業を行うユーザを想定し、<question>の内容に回答する形で、各機械・工具ごとの差異、用途、適した作業などについての実用的な解説・提案してください。
+* 購入(出品会社への問い合わせ)を促すような内容にしてください。
+* 機械・工具に関する情報は、個別に「[ID:id maker name model]」を表記してください。
+* 丁寧で優秀な美人眼鏡秘書のような語り口で回答してください。
+* 結果は「report>>>」以降に記述してください。
 ".freeze
-
-#   SORT_QUERY_MESSAGE = '
-# From the array of machine/tool information in the JSON format below, search for machine/tool information that matches the content of the given question, and list the "ID" numbers.
-# Return the results only as an array in JSON format ([1,2,3,4]).
-# Ensure numeric values, in particular, match accurately.
-# If the question does not include "NC," prioritize non-NC machines.
-# Based on the JSON array results from (1), create a summary report in Japanese, approximately 300 characters, intended for the user. Assume the user is someone performing actual processing work at a factory. Describe practical information, such as the differences and uses of each model.
-# Consider the content of the question and answer accordingly.
-# Include specific machine/tool information as "(ID:ID)".
-# Respond in the style of a polite and highly competent assistant.
-# Write the result after "report>>>".
-# '.freeze
 
 #   SYSTEM_MESSAGE = '
 # あなたは、AXTORMのNAOKI MAEDAです。
@@ -242,8 +220,8 @@ QUERY_EXP_RES = '
         # response_format: { type: "json_object" },
         messages: [
           { role: "system", content: "#{SYSTEM_MESSAGE}\n#{QUERY_MESSAGE}" },
-          { role: "user", content: QUERY_EXP },
-          { role: "assistant", content: QUERY_EXP_RES },
+          # { role: "user", content: QUERY_EXP },
+          # { role: "assistant", content: QUERY_EXP_RES },
           { role: "user", content: message }
           # { role: "user", content: { type: :text, text: "#{SYSTEM_MESSAGE}\n#{QUERY_MESSAGE}\n#{message}" } }
         ],
@@ -255,47 +233,55 @@ QUERY_EXP_RES = '
 
     @json = @generated_text.to_s.match(/(\{.*?\}|\[.*?\])/m)[0]
 
-    @wheres = JSON.parse(@json, symbolize_names: true)
+    @wheres = JSON.parse(@json.gsub(IGNORE_WORDS, ''), symbolize_names: true)
 
     if @wheres.all? { |_, v| v.blank? }
       @error_mes = "質問文に検索できるキーワードがありませんでした。\n「機械名」「メーカー」「型式」などが含まれていると、検索しやすいです。"
       return
     end
 
-    # search
+    ### search ###
     @machines = Machine.sales
 
+    # 在庫場所
     @machines = @machines.where("machines.addr1 ~* ?", "^(#{@wheres[:addr1]})") if @wheres[:addr1].present?
 
+    # メーカー
     if @wheres[:maker].present?
       maker_masters = Maker.where("concat_ws(' ', makers.maker, makers.maker_kana, makers.maker_master) ~* ?", @wheres[:maker]).distinct.pluck(:maker_master).join('|')
 
       makers = maker_masters.present? ? "#{@wheres[:maker]}|#{maker_masters}" : @wheres[:maker]
-      @machines = @machines.where("concat_ws(' ', machines.maker, machines.maker2, makers.maker_master) ~* ?", makers)
+      @machines = @machines.where("concat_ws(' ', machines.maker, makers.maker_master) ~* ?", makers)
     end
 
+    # 機械名
     @machines = @machines.where("concat_ws(' ', machines.name, genres.genre) ~* ?", @wheres[:name]) if @wheres[:name].present?
-    @machines = @machines.where("machines.year ~* ?", @wheres[:year]) if @wheres[:year].present?
+
+    # 年式
+    @machines = @machines.where("machines.year ~* ?", "^(#{@wheres[:year]})") if @wheres[:year].present?
+
+    # 型式
+    @machines = @machines.where("machines.model2 ~* ?", @wheres[:model]) if @wheres[:model].present?
 
     ### (型式、キーワード抜きの)検索結果件数により条件の増減 ###
     @count = @machines.count
-    @level = 100
+    # @level = 100
+    @level = 200
 
-    # 数が多すぎる場合
-    if @count > PRODUCTS_LIMIT && @wheres[:model].present? # 型式条件追加
-      # model_machines = @machines.where("machines.model || ' ' || machines.model2 ~* ?", @wheres[:model])
-      model_machines = @machines.where("concat_ws(' ', machines.model, machines.model2) ~* ?", @wheres[:model])
-      model_count = model_machines.count
+    # # 数が多すぎる場合
+    # if @count > PRODUCTS_LIMIT && @wheres[:model].present? # 型式条件追加
+    #   # model_machines = @machines.where("machines.model || ' ' || machines.model2 ~* ?", @wheres[:model])
+    #   model_machines = @machines.where("concat_ws(' ', machines.model, machines.model2) ~* ?", @wheres[:model])
+    #   model_count = model_machines.count
 
-      if model_count.positive?
-        @machines = model_machines
-        @count = model_count
-        @level = 200
-      end
-    end
+    #   if model_count.positive?
+    #     @machines = model_machines
+    #     @count = model_count
+    #     @level = 200
+    #   end
+    # end
 
     if @count > PRODUCTS_LIMIT && @wheres[:name2].present? # 名前(より厳しく)条件追加
-      # name2_machines = @machines.where("machines.name || ' ' || genres.genre ~* ?", @wheres[:name2])
       name2_machines = @machines.where("concat_ws(' ', machines.name, genres.genre) ~* ?", @wheres[:name2])
       name2_count = name2_machines.count
 
@@ -305,6 +291,7 @@ QUERY_EXP_RES = '
         @level = 300
       end
     end
+
     # if @count > PRODUCTS_LIMIT && @wheres[:keywords].present? # キーワード条件追加
     #   key_machines = @machines.where(KEYWORDSEARCH_SQL_ALL, @wheres[:keywords])
 
@@ -337,7 +324,7 @@ QUERY_EXP_RES = '
   def sort_for_chat(message, machines)
     machines_json = machines_to_json(machines.limit(PRODUCTS_LIMIT))
 
-    @mes = "#{SORT_QUERY_MESSAGE}\n\n<機械情報>\n#{machines_json}\n\n<質問文>\n#{message}"
+    @mes = "#{SORT_QUERY_MESSAGE}\n\n<machines>\n#{machines_json}\n\n<question>\n#{message}"
     # system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n<機械情報>\n#{machines_json}"
 
     response = @client.chat(
@@ -385,22 +372,17 @@ QUERY_EXP_RES = '
       model: machine.model,
       year: machine.myear,
       spec: machine.spec,
-      accesory: machine.accessory,
+      accessory: machine.accessory,
       comment: "#{machine.comment} ",
       # '試運転可': (machine.commission == 1),
       location: "#{machine.addr1} #{machine.addr2} #{machine.addr3} (#{machine.location})",
-      # created_at: machine.created_at,
-      # genres: {
-      #   xl_genre: machine.xl_genre.xl_genre,
-      #   large_genre: machine.large_genre.large_genre,
-      #   genre: machine.genre.genre
-      # },
       large_genre: machine.large_genre.large_genre,
       genre: machine.genre.genre,
-      capacity: {}
+      capacity: {},
       # image: machine.top_img.present? || machine.top_image.present?,
       # youtube: machine.youtube.present?,
       # catalog: machine.catalog_id.present?
+      registration_date: machine.created_at.strftime("%y/%m/%d %H:%M:%S")
     }
 
     if machine.genre.capacity_label.present?
