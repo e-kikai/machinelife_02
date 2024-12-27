@@ -12,102 +12,182 @@ class Playground::OpenaiTest01Controller < ApplicationController
 
   IGNORE_WORDS = /\|?(切削工具|不明|工作機械|測定工具)\|?/
 
-#   SYSTEM_MESSAGE = "
-# あなたは、「全日本機械業連合会（全機連）」が運営する中古工作機械・工具の販売サイト「マシンライフ」のサポート担当です。
-# 全機連は、機械流通業界の近代化と業界協調を目指して組織された全国団体で、マシンライフはその会員企業の中古機械や工具の在庫情報を提供しています。
-# ユーザーの質問には、業界の専門家として、わかりやすく丁寧な言葉で回答してください。
-# ".freeze
-
   SYSTEM_MESSAGE = "
-You are a support representative for 'Machine Life' a sales platform for used machine tools and equipment operated by the All Japan Machine Traders' Association (Zenkiren).
-Zenkiren is a nationwide organization established to modernize distribution and foster collaboration within the machine tool distribution industry. Machine Life provides inventory information on used machines and tools from member companies across the country.
-Please respond to user inquiries as an industry expert, using clear and polite language.
+## あなたの役割
+あなたは「全日本機械業連合会（全機連）」が運営する、中古工作機械・工具の販売サイト「マシンライフ」のAIアシスタント「MAI」です。
+MAIは、中古機械・工具業界に精通した、優秀な美人眼鏡秘書です。
+中古機械・工具のプロフェッショナルの言葉を使って商品提案を行ってください。
+
+## マシンライフとは
+全機連は、機械流通業界の近代化と業界協調を目指して組織された全国団体です。
+マシンライフは、全機連の会員企業の中古機械・工具の在庫情報を提供しています。
+
+## あなたの目的
+ユーザの質問に対して、マシンライフの在庫情報から適切かつ具体的な機械・工具を提案し、
+ユーザに、マシンライフの機械・工具を購入(出品会社への問い合わせ)するように促すことです。
+
+## 対象ユーザ
+対象ユーザは、工場で実際に加工作業を行う技術者や、中古工作機械・工具の販売商社です。
+相手は工作機械・工具のプロフェッショナルで、専門知識を持っていますので、
+各機械・工具ごとの差異を比較や、用途や適した作業などについての具体的、専門的、実践的な解説・提案をしてください。
+
+## 入力情報
+ユーザは、探している機械・工具の情報を入力します。
+また、行いたい作業についての概要を入力する場合もあります。その場合は、その作業を行うのに必要な機械・工具を考えて提案してください。
 ".freeze
 
+#   SYSTEM_MESSAGE = "
+# You are a support representative for 'Machine Life' a sales platform for used machine tools and equipment operated by the All Japan Machine Traders' Association (Zenkiren).
+# Zenkiren is a nationwide organization established to modernize distribution and foster collaboration within the machine tool distribution industry. Machine Life provides inventory information on used machines and tools from member companies across the country.
+# Please respond to user inquiries as an industry expert, using clear and polite language.
+# ".freeze
+
   QUERY_MESSAGE = '
-質問文に回答するためにはどんな工作機械・工具が必要か？を考え、
-質問文からその機械・工具をRDBから検索するためのキーワードを抽出してください。
+## 処理
+1. messageに回答するためには、マシンライフにあるどんな工作機械・工具が必要かを考えて下さい。
 
+2. その機械・工具をRDBから検索するためのキーワードを抽出してください。
 * 金額、値段については当サイト上では提示していないため、条件から除外。
-* keywordは|区切り(正規表現)で、以下のJSONで類義語ごとに出力してください。
-* カラムにkeywordがない場合は何も記述せず空白「""」にしてください。
-* あいまい検索(オークマ,大隈,OKUMAどれでもマッチ)をしたいので、
-キーワードの別表記・類義語・短縮語(牧野フライス -> マキノ など)、漢字違い(沢と澤、富と冨 etc)、読み(カタカナ)などがあれば、可能な限りできるだけ多く列挙してください。
 * 単語末尾のカタカナの「ー」は除去してください。
+* 正規表現で検索処理を行うので、類義語ごとに|区切りで列挙して下さい。
 
-{
-  "name": 質問文から機械・工具の一般名称を抽出。能力値や maker、model に含まれるkeywordは除外,
-  "name2": 質問文から機械・工具の一般名称を抽出。こちらはあいまい検索せずに、これというもの1つだけ,
-  "maker": 質問文から機械・工具のメーカー会社名(固有名詞部分)を抽出。name model に含まれているkeywordは除外,
-  "model": 質問文から機械・工具の型式を半角英数字大文字で抽出。全角、小文字などは半角英数字大文字に変換、それ以外の記号や漢字カナや能力値(100Tのような数字と単位)除外,
-  "year": 質問文から西暦数字4桁の年式を抽出。範囲の場合はすべての西暦に合致するような正規表現,
-  "addr1": 質問文から都道府県を抽出(既に maker name に含まれている単語は除外)。周辺の都道府県も含む、逆に多すぎる場合は空白
-}
+## 出力フォーマット
+messageから、以下のRDBのcolumn項目を出力して下さい。
+columnにkeywordがない場合は、何も記述せず空白にして下さい。
 
-ex.1)
-大阪近辺で、オークマかアマダの90年代の5尺立型旋盤の型式がLSかods-12で。
+## column
+### name
+機械・工具の一般名称を抽出。
+数値のcapacityや maker、model に含まれるkeywordは除外。
+表記ゆれ・別表記をできるだけ吸収し、いろんな表記でマッチするような正規表現を作成して下さい。
+
+### name2
+機械・工具の一般名称を抽出。こちらはあいまい検索せずに、これというもの1つだけ,
+
+### maker
+機械・工具のメーカー会社名の固有名詞部分を抽出。
+あいまい検索(オークマ,大隈,OKUMA どれでもマッチ)をしたいので、
+別表記・略称、漢字違い(沢と澤、富と冨 etc)、読み(カタカナ)などがあれば、可能な限りできるだけ多く列挙してください。
+name model に含まれているkeywordは除外。
+
+### model
+機械・工具の型式を半角英数字大文字で抽出。
+全角、小文字などは半角英数字大文字に変換、それ以外の文字種、記号や漢字カナは除外。
+能力値(100Tのような数字と単位)は後述のcapacityに入れるため除外。
+
+### year
+西暦数字4桁の年式を抽出。範囲の場合はすべての西暦に合致するような正規表現。
+
+### addr1
+日本の都道府県を抽出し、周辺の都道府県も含んで出力。
+関西や関東など、地域が入力されている場合は、それに含む都道府県を出力。
+既に maker name に含まれている単語は除外)。
+多すぎる場合は(全国、など)の場合は空白。
+
+### capacity
+機械・工具の能力数値を単位とともに列挙。範囲の場合はマッチする正規表現を記述。数値ではないものは除外。
+英語表記と日本語表記などを正規表現で併記。例えばインチの場合、(インチ|inch|吋)を併記。
+
+## 出力例
+ex.1) 大阪近辺で、オークマかアマダの90年代の5尺立型旋盤の型式がLSかods-12で。
 
 ans.1)
-{"name": "立旋盤|立型旋盤|縦旋盤|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ|大隈", "year": "199[0-9]", "model": "LS|ODS12", "addr1": "大阪|兵庫|京都|奈良|和歌山"}
+{"name": "((立||立型|縦)旋盤))|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ|大隈", "year": "199[0-9]", "model": "LS|ODS12", "addr1": "大阪|兵庫|京都|奈良|和歌山", "capacity": "5尺"}
 
-ex.2)
-ナガセのSGW-63
+ex.2) ナガセのSGW-63
 
 ans.2)
-{"name": "", "name2": "", "maker": "ナガセ|長瀬", "model": "SGW63", "year": "", "addr1": ""}
+{"name": "", "name2": "", "maker": "ナガセ|長瀬", "model": "SGW63", "year": "", "addr1": "", "capacity": ""}
 
-ex.3)
-大阪でアマダ製バンドソー250mm
+ex.3) 関東でアマダ製バンドソー250mm
 
 ans.3)
-{"name": "バンドソ|帯鋸|バンドノコ", "name2": "バンドソ", "maker": "アマダ|AMADA", "model": "", "year": "", "addr1": "大阪|兵庫|京都|奈良|和歌山"}
+{"name": "バンドソ|帯鋸|バンドノコ", "name2": "バンドソ", "maker": "アマダ|AMADA", "model": "", "year": "", "addr1": "東京|神奈川|埼玉|千葉|群馬|茨城|栃木", "capacity": "(250(mm|ミリメートル|粍))"}
 
-ex.4)
-大阪にある7.5kwパッケージコンプレッサー、アネスト岩田製
+ex.4) 大阪にある7.5kwパッケージコンプレッサー、アネスト岩田製
 
 ans.4)
-{"name": "パッケージコンプレッサ|パッケージ型コンプレッサ|コンプレッサ", "name2": "パッケージコンプレッサ", "maker": "アネスト岩田|岩田|イワタ", "model": "", "year": "", "addr1": "大阪|兵庫|京都|奈良|和歌山"}
+{"name": "((パッケージ|パッケージ型)コンプレッサ)|コンプレッサ", "name2": "パッケージコンプレッサ", "maker": "アネスト岩田|岩田|イワタ", "model": "", "year": "", "addr1": "大阪|兵庫|京都|奈良|和歌山", "capacity": "(7.5(kw|キロワット))"}
+
+ex.5) 大阪にある相澤鐵工所の1000mm以上のメカシャーリング。
+
+ans.5)
+{"name": "シャーリング|メカシャー", "name2": "シャーリング", "maker": "相澤|相沢", "model": "", "year": "", "addr1": "大阪|兵庫|京都|奈良|和歌山", "capacity": "([1-9][0-9][0-9][0-9](mm|ミリメートル|粍))"}
+
+ex.6) 大阪にある山崎のNC立フライス。
+
+ans.6)
+{"name": "NCフライス|NC立フライス", "name2": "NC立フライス", "maker": "山崎|ヤマザキ|MAZAK", "model": "", "year": "", "addr1": "大阪|兵庫|京都|奈良|和歌山", "capacity": ""}
+
 '.freeze
 
-# "category": 大型から卓上までサイズの工作機械(machine)を探しているか、手作業用の工具を探しているか、machineかtoolで,
-# "category": 質問文から、さがしているのが工作機械か工具(工作機械周辺機器)か？machine or tool or unknown で,
 # "image": 質問文の内容から画像が必要かどうかを判別し、true（画像あり）、false（画像なし）、空白(指定なし)で指定,
 # "youtube": 質問文の内容からYoutube動画が必要かどうかを判別し、true（動画あり）、false（動画なし）、空白(指定なし)で指定,
 # "commision": 質問文の内容から試運転が必要かどうかを判別し、true（試運転可）、false（試運転不可）、空白(指定なし)で指定,
 # "nc": 質問文の内容から検索する商品がNC工作機械かどうかを判別し、true（NC工作機械）、false（それ以外の機械・工具）で指定,
 # "keywords": 上記以外のキーワード(能力、仕様、付属品などできるだけたくさん)。すでに上記カラムに入っているkeywordは除外。
 
-  QUERY_EXP = '
-オークマかアマダの90年代の5尺立型旋盤で、型式がLSかods-12で。大阪近辺で。
-'.freeze
+#   QUERY_EXP = '
+# オークマかアマダの90年代の5尺立型旋盤で、型式がLSかods-12で。大阪近辺で。
+# '.freeze
 
 #   QUERY_EXP_RES = '
 # {"name": "立旋盤|立型旋盤|縦旋盤|タテセンバン|vertical laser", "maker": "オークマ|アマダ|大隈", "year": "1990|1991|1992|1993|1994|1995|1996|1997|1998|1999", "model": "LS|ODS12", "addr1": "大阪|兵庫|京都|奈良|和歌山", "keywords": "5尺|0.6m|600cm"}
 # '.freeze
 
-  QUERY_EXP_RES = '
-{"name": "立旋盤|立型旋盤|縦旋盤|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ|大隈", "year": "199[0-9]", "model": "LS|ODS12", "addr1": "大阪|兵庫|京都|奈良|和歌山"}
-'.freeze
+#   QUERY_EXP_RES = '
+# {"name": "立旋盤|立型旋盤|縦旋盤|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ|大隈", "year": "199[0-9]", "model": "LS|ODS12", "addr1": "大阪|兵庫|京都|奈良|和歌山"}
+# '.freeze
 
   SORT_QUERY_MESSAGE = "
-1) 以下のJSON形式の配列の<machines>は、在庫databaseから<question>のkeywordで検索した結果です。
-しかしこれは、databaseのcolumnに含まれない内容(能力値や有姿 etc)はフィルタリングしきれていません。
+## 処理
+<machines>は、マシンライフの在庫機械・工具からmessageの内容で検索した結果リストです。
+<machines>のうち、messageの意味を分析して、マッチするような機械・工具をユーザに提案してください。
 
-そこで、<machines>から<question>の内容にマッチしないものを除外し、より精度の高い検索結果を出力してください。
+1. <machines>のうち、messageの質問(条件)にマッチしていない紛れ機械・工具を除外して、
+残ったものの「id」をJSON形式の配列 ([1,2,3]) で出力してください。
 
-* フィルタリングした結果の機械・工具情報の「id」の数値を列挙してください。
-* 結果はJSON形式の配列 ([1,2,3]) のみを返してください。
-* 条件に単位のある能力値(6尺、13mm、3本 etc)が含まれる場合、厳密に該当するものをフィルタリングしてください。
-* 結果が多すぎる場合は、特に条件にマッチするもの100件に絞ってください。
+2. 1.の結果から、messageの質問の回答するため、#{REPORT_LIMIT}文字程度のレポートを日本語で作成し「report>>>」以降に記述してください。
 
-2) フィルタリングした機械・工具情報について、#{REPORT_LIMIT}文字程度のユーザ向けレポートをMAIからの提案として日本語で作成してください。
+- レポートに個別の機械・工具に関する情報が含まれる場合「[ID:id maker name model]」を表記してください。
+- 回答は、ユーザに購入(問い合わせ)を促すように、具体的なメリットや選別理由も添えてください。
 
-* 工場で実際に加工作業を行うユーザを想定し、<question>の内容に回答する形で、各機械・工具ごとの差異、用途、適した作業などについての実用的な解説・提案してください。
-* 購入(出品会社への問い合わせ)を促すような内容にしてください。
-* 機械・工具に関する情報は、個別に「[ID:id maker name model]」を表記してください。
-* 丁寧で優秀な美人眼鏡秘書のような語り口で回答してください。
-* 結果は「report>>>」以降に記述してください。
+## 出力フォーマット
+[1, 2, 3, 4, 5]
+
+report>>>
+出力2の回答をここに記述。
 ".freeze
+
+# 入力された<machines>は、マシンライフの在庫機械・工具のリストです。
+# 入力された<question>の意味を分析して、ユーザに商品を提案するために、
+
+# * 工場で実際に加工作業を行うユーザを想定し、<question>の内容に合う回答をしてください。
+# * 各機械・工具ごとの差異を比較して、用途や適した作業などについての実用的な解説・提案してください。
+# * 機械・工具に関する情報は、個別に「[ID:id maker name model]」を表記してください。
+# * 丁寧で優秀な美人眼鏡秘書のような語り口で回答してください。
+# * 購入(出品会社への問い合わせ)を促してください。
+# * 1)を行った結果がもし多すぎる(100件以上)場合、条件を追加して再検索するように、
+#   もし結果がない(少ない)場合、より広い条件で検索することを促してください。
+
+#
+# 1. 能力値
+# 例えば「6尺旋盤」の場合、6尺, 芯間が850mm etc. があるものは残し、5尺,7尺,芯間1000mm,NC旋盤 etc.は除外。
+
+# 2. 本数など
+# 「ドリル3本セット」などは、本数が明記されていないもの、2本などは除外。
+
+# 3. 質問しているものが機械か工具かを判断する
+# 例えば「ドリル」の場合は工具なので、「ドリル研削盤」などの機械は除外。
+# 逆に「旋盤」の場合は機械なので、「旋盤チャック」などの工具は除外。
+
+# 4. 付属品があるかどうか
+
+# 5. 旋盤の場合
+# 尺と芯間(mm)を相互に変換して、どちらも該当するものを取得。
+
+# 6. NC工作機械か一般工作機械か？
+# NCと明示していない場合は、NCのものは除外。
 
 #   SYSTEM_MESSAGE = '
 # あなたは、AXTORMのNAOKI MAEDAです。
@@ -120,14 +200,17 @@ ans.4)
 # 適宜改行を入れて、関西弁(北大阪)で返答してください。
 # '.freeze
 
-  KEYWORDSEARCH_COLUMNS_ALL =
-    %w[
-      machines.no machines.name machines.maker machines.model machines.year machines.addr1
-      machines.model2 machines.maker2
-      makers.maker_master genres.genre machines.others machines.addr2 machines.addr3 machines.spec machines.comment machines.location machines.accessory
-      genres.spec_labels
-    ].freeze
-  KEYWORDSEARCH_SQL_ALL = KEYWORDSEARCH_COLUMNS_ALL.map { |c| "coalesce(#{c}, '')" }.join(" || ' ' || ") << " ~* ?".freeze
+  # KEYWORDSEARCH_COLUMNS_ALL =
+  #   %w[
+  #     machines.no machines.name machines.maker machines.model machines.year machines.addr1
+  #     machines.model2 machines.maker2
+  #     makers.maker_master genres.genre machines.others machines.addr2 machines.addr3 machines.spec machines.comment machines.location machines.accessory
+  #     genres.spec_labels
+  #   ].freeze
+  # KEYWORDSEARCH_SQL_ALL = KEYWORDSEARCH_COLUMNS_ALL.map { |c| "coalesce(#{c}, '')" }.join(" || ' ' || ") << " ~* ?".freeze
+
+  CAPACITY_COLUMNS_ALL = %w[machines.name machines.model machines.spec trim_scale(machines.capacity::NUMERIC) genres.capacity_unit].freeze
+  CAPACITY_SQL_ALL     = "concat_ws('', #{CAPACITY_COLUMNS_ALL.join(', ')})  ~* ?".freeze
 
   def index; end
 
@@ -215,8 +298,6 @@ ans.4)
     response = @client.chat(
       parameters: {
         model: "gpt-4o-mini",
-        # model: "o1-mini",
-
         # response_format: { type: "json_object" },
         messages: [
           { role: "system", content: "#{SYSTEM_MESSAGE}\n#{QUERY_MESSAGE}" },
@@ -255,13 +336,35 @@ ans.4)
     end
 
     # 機械名
-    @machines = @machines.where("concat_ws(' ', machines.name, genres.genre) ~* ?", @wheres[:name]) if @wheres[:name].present?
+    if @wheres[:name].present?
+      @wheres[:name].gsub!(/CNC/i, 'NC')
+      @wheres[:name] = "(?<!NC)(#{@wheres[:name]})" if @wheres[:name] =~ /旋盤|フライス|研削盤|ボール盤|中ぐり/ && @wheres[:name].exclude?("NC")
+
+      @machines = @machines.where("machines.name ~* ?", "(#{@wheres[:name]})")
+    end
 
     # 年式
     @machines = @machines.where("machines.year ~* ?", "^(#{@wheres[:year]})") if @wheres[:year].present?
 
     # 型式
     @machines = @machines.where("machines.model2 ~* ?", @wheres[:model]) if @wheres[:model].present?
+
+    # 能力
+    if @wheres[:capacity].present?
+      # 旋盤能力の特別処理
+      if @wheres[:name].include?("旋盤")
+        @wheres[:capacity] = @wheres[:capacity]
+          .gsub(/3尺|360mm|0.36m/i, '(3尺|360mm|0.36m)')
+          .gsub(/4尺|500mm|550mm|0.5m|0.55m/i, '(4尺|500mm|550mm|0.5m|0.55m)')
+          .gsub(/5尺|600mm|0.6m/i, '(5尺|600mm|0.6m)')
+          .gsub(/6尺|800mm|0.8m/i, '(6尺|800mm|0.8m)')
+          .gsub(/7尺|1000mm|1.0m/i, '(7尺|1000mm|1.0m)')
+          .gsub(/8尺|1250mm|1.25m /i, '(8尺|1250mm|1.25m)')
+          .gsub(/9尺|1500mm|1.5m/i, '(9尺|1500mm|1.5m)')
+      end
+
+      @machines = @machines.where(CAPACITY_SQL_ALL, "(^|[^0-9])+(#{@wheres[:capacity]})")
+    end
 
     ### (型式、キーワード抜きの)検索結果件数により条件の増減 ###
     @count = @machines.count
@@ -282,7 +385,8 @@ ans.4)
     # end
 
     if @count > PRODUCTS_LIMIT && @wheres[:name2].present? # 名前(より厳しく)条件追加
-      name2_machines = @machines.where("concat_ws(' ', machines.name, genres.genre) ~* ?", @wheres[:name2])
+      # name2_machines = @machines.where("concat_ws(' ', machines.name, genres.genre) ~* ?", @wheres[:name2])
+      name2_machines = @machines.where("machines.name ~* ?", @wheres[:name2])
       name2_count = name2_machines.count
 
       if name2_count.positive?
@@ -324,18 +428,18 @@ ans.4)
   def sort_for_chat(message, machines)
     machines_json = machines_to_json(machines.limit(PRODUCTS_LIMIT))
 
-    @mes = "#{SORT_QUERY_MESSAGE}\n\n<machines>\n#{machines_json}\n\n<question>\n#{message}"
-    # system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n<機械情報>\n#{machines_json}"
+    # @mes = "#{SORT_QUERY_MESSAGE}\n\n<machines>\n#{machines_json}\n\n<question>\n#{message}"
+    system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n\n<machines>\n#{machines_json}"
+    # user_message   = "<question>\n#{message}"
 
     response = @client.chat(
       parameters: {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: SYSTEM_MESSAGE },
-          { role: "user", content: @mes }
-
-          # { role: "system", content: system_message },
-          # { role: "user", content: message }
+          # { role: "system", content: SYSTEM_MESSAGE },
+          # { role: "user", content: @mes }
+          { role: "system", content: system_message },
+          { role: "user", content: message }
         ],
         temperature: 0
       }
@@ -385,8 +489,9 @@ ans.4)
       registration_date: machine.created_at.strftime("%y/%m/%d %H:%M:%S")
     }
 
+    # capacity
     if machine.genre.capacity_label.present?
-      val = machine.capacity.present? ? "#{machine.capacity}#{machine.genre.capacity_unit}" : nil
+      val = machine.capacity.present? ? "#{ActiveSupport::NumberHelper.number_to_rounded(machine.capacity, strip_insignificant_zeros: true)}#{machine.genre.capacity_unit}" : nil
       res[:capacity][machine.genre.capacity_label] = val if val.present?
     end
 
@@ -394,6 +499,7 @@ ans.4)
       res[:capacity][other[:label]] = other[:disp] if other[:disp].present?
     end
 
+    # comment
     res[:comment] += machine.top_img.present? || machine.top_image.present? ? " 画像あり" : " 画像なし"
     # res[:comment] += machine.commission == 1 ? " 試運転可" : " 試運転不可"
     res[:comment] += " 試運転可" if machine.commission == 1

@@ -4,13 +4,16 @@
 h1 MAI 在庫検索
 
 p
-  | 機械工具検索に関する質問文を入力すると、MAIがマシンライフの在庫をさがして、レポートを生成します。<br />
-  | ＜質問文の例＞ オークマの6尺旋盤、大阪にあるもの。
+  | 機械工具に関する質問をすると、AIアシスタント<span class="mx-1 h5">MAI</span>がマシンライフの在庫をさがして、レポートを生成します。<br />
+  | ＜質問の例＞ 「大阪にある滝沢の6尺旋盤、おすすめトップ3は。」
   = link_to "/playground/openai_test01/help" do
     span.ms-4 #{mi(:help)} ヘルプ : MAI在庫検索について
 
-.border-top.border-bottom.m-2.mx-auto.my-4.p-2.col-8
-  .row.small
+.border-top.border-bottom.m-2.mx-auto.my-4.p-2.col-8.small
+  .row
+    .col-3 2024/12/27
+    .col-9 = "(更新) 能力値での検索、および検索精度を改善しました。"
+  .row
     .col-3 2024/12/10
     .col-9 = "(更新) メーカー名、都道府県による検索精度を改善しました。"
 
