@@ -94,6 +94,8 @@ class Machine < ApplicationRecord
   has_many   :machine_images
   has_many   :machine_pdfs
   has_many   :catalogs
+  has_many   :contacts
+  has_many   :detail_logs
 
   mount_uploader :top_image, MachineImageUploader
 

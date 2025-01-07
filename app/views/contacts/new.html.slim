@@ -65,7 +65,8 @@ h1 = @title
         - if @targets&.klass == Machine
           - ContactForm::PRESETS.each do |pre|
             .form-check
-              = f.check_box :s, { multiple: true, include_hidden: false, class: "form-check-input" }, pre
+              - checked = pre == "この機械の価格を知りたい" && params[:price].present?
+              = f.check_box :s, { multiple: true, include_hidden: false, class: "form-check-input", checked: }, pre
               = f.label :s, pre, class: "form-check-label", value: pre
 
           .form-text その他問い合わせ（下記に記入してください）

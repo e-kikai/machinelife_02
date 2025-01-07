@@ -6,7 +6,7 @@ class Playground::OpenaiTest01Controller < ApplicationController
   around_action :skip_bullet
 
   CHAT_TIMES = 3
-  PRODUCTS_LIMIT = 200
+  PRODUCTS_LIMIT = 250
   RESULT_LIMIT = 60
   REPORT_LIMIT = 300
 
@@ -15,25 +15,17 @@ class Playground::OpenaiTest01Controller < ApplicationController
   SYSTEM_MESSAGE = "
 ## あなたの役割
 あなたは「全日本機械業連合会（全機連）」が運営する、中古工作機械・工具の販売サイト「マシンライフ」のAIアシスタント「MAI」です。
-MAIは、中古機械・工具業界に精通した、優秀な美人眼鏡秘書です。
+MAIは、中古機械・工具業界に精通した、丁寧な口調の優秀な美人眼鏡秘書です。
 中古機械・工具のプロフェッショナルの言葉を使って商品提案を行ってください。
-
-## マシンライフとは
-全機連は、機械流通業界の近代化と業界協調を目指して組織された全国団体です。
-マシンライフは、全機連の会員企業の中古機械・工具の在庫情報を提供しています。
 
 ## あなたの目的
 ユーザの質問に対して、マシンライフの在庫情報から適切かつ具体的な機械・工具を提案し、
 ユーザに、マシンライフの機械・工具を購入(出品会社への問い合わせ)するように促すことです。
 
 ## 対象ユーザ
-対象ユーザは、工場で実際に加工作業を行う技術者や、中古工作機械・工具の販売商社です。
-相手は工作機械・工具のプロフェッショナルで、専門知識を持っていますので、
-各機械・工具ごとの差異を比較や、用途や適した作業などについての具体的、専門的、実践的な解説・提案をしてください。
-
-## 入力情報
-ユーザは、探している機械・工具の情報を入力します。
-また、行いたい作業についての概要を入力する場合もあります。その場合は、その作業を行うのに必要な機械・工具を考えて提案してください。
+工場で実際に加工作業を行う技術者や、中古工作機械・工具の販売商社です。
+工作機械・工具のプロフェッショナルで、専門知識を持っていますので、
+回答は、各機械・工具ごとの差異を比較や、用途や適した作業などについての具体的、専門的、実践的な解説・提案をしてください。
 ".freeze
 
 #   SYSTEM_MESSAGE = "
@@ -43,13 +35,12 @@ MAIは、中古機械・工具業界に精通した、優秀な美人眼鏡秘�
 # ".freeze
 
   QUERY_MESSAGE = '
-## 処理
 1. messageに回答するためには、マシンライフにあるどんな工作機械・工具が必要かを考えて下さい。
 
 2. その機械・工具をRDBから検索するためのキーワードを抽出してください。
-* 金額、値段については当サイト上では提示していないため、条件から除外。
-* 単語末尾のカタカナの「ー」は除去してください。
-* 正規表現で検索処理を行うので、類義語ごとに|区切りで列挙して下さい。
+- 金額、値段については当サイト上では提示していないため、条件から除外。
+- 単語末尾のカタカナの「ー」は除去してください。
+- 正規表現で検索処理を行うので、類義語ごとに|区切りで列挙して下さい。
 
 ## 出力フォーマット
 messageから、以下のRDBのcolumn項目を出力して下さい。
@@ -59,7 +50,7 @@ columnにkeywordがない場合は、何も記述せず空白にして下さい�
 ### name
 機械・工具の一般名称を抽出。
 数値のcapacityや maker、model に含まれるkeywordは除外。
-表記ゆれ・別表記をできるだけ吸収し、いろんな表記でマッチするような正規表現を作成して下さい。
+表記ゆれ・別表記を含めた正規表現を作成して下さい。
 
 ### name2
 機械・工具の一般名称を抽出。こちらはあいまい検索せずに、これというもの1つだけ,
@@ -141,22 +132,28 @@ ans.6)
 
   SORT_QUERY_MESSAGE = "
 ## 処理
-<machines>は、マシンライフの在庫機械・工具からmessageの内容で検索した結果リストです。
-<machines>のうち、messageの意味を分析して、マッチするような機械・工具をユーザに提案してください。
+<machines>は、マシンライフの在庫機械・工具からmessageの内容で検索した結果のJSONです。
+配列の1つずつが1つの機械・工具情報になっています。
+<machines>のうち、messageの意味を分析して、マッチするような機械・工具を抽出し、
+結果を元に、ユーザが購入する際によりよい選択ができるようにアドバイスをしてください。
 
-1. <machines>のうち、messageの質問(条件)にマッチしていない紛れ機械・工具を除外して、
+1. <machines>のうち、messageの内容(検索条件)に全くマッチしていない機械・工具を除外して、
 残ったものの「id」をJSON形式の配列 ([1,2,3]) で出力してください。
 
-2. 1.の結果から、messageの質問の回答するため、#{REPORT_LIMIT}文字程度のレポートを日本語で作成し「report>>>」以降に記述してください。
+2. 1.の結果から、messageの質問から、ユーザに対する購入についてのアドバイスを#{REPORT_LIMIT}文字程度の日本語で作成し「report>>>」以降に記述してください。
 
-- レポートに個別の機械・工具に関する情報が含まれる場合「[ID:id maker name model]」を表記してください。
-- 回答は、ユーザに購入(問い合わせ)を促すように、具体的なメリットや選別理由も添えてください。
+## アドバイス内容
+- 購入する際の選定方法、購入する具体的なメリット、おすすめ商品とその理由 etc 、
+ユーザに機械・工具を購入(マシンライフでは、出品会社への金額についての問い合わせ)してもらえるような魅力的な内容を記述。
+- 結果から商品ごとの違いを比較して説明、できるだけたくさん。
+- 個別の機械・工具に関する情報が含まれる場合「[ID:id maker name model]」を表記。
+- 読みやすいように適宜改行。
 
 ## 出力フォーマット
-[1, 2, 3, 4, 5]
+[1, 2, 3, 4]
 
 report>>>
-出力2の回答をここに記述。
+2.のアドバイスをここに記述。
 ".freeze
 
 # 入力された<machines>は、マシンライフの在庫機械・工具のリストです。
@@ -202,15 +199,13 @@ report>>>
 
   # KEYWORDSEARCH_COLUMNS_ALL =
   #   %w[
-  #     machines.no machines.name machines.maker machines.model machines.year machines.addr1
-  #     machines.model2 machines.maker2
-  #     makers.maker_master genres.genre machines.others machines.addr2 machines.addr3 machines.spec machines.comment machines.location machines.accessory
-  #     genres.spec_labels
+  #     machines.name machines.maker machines.model machines.addr1 machines.model2
+  #     makers.maker_master machines.others machines.addr2 machines.addr3 machines.spec machines.comment machines.location machines.accessory
   #   ].freeze
   # KEYWORDSEARCH_SQL_ALL = KEYWORDSEARCH_COLUMNS_ALL.map { |c| "coalesce(#{c}, '')" }.join(" || ' ' || ") << " ~* ?".freeze
 
   CAPACITY_COLUMNS_ALL = %w[machines.name machines.model machines.spec trim_scale(machines.capacity::NUMERIC) genres.capacity_unit].freeze
-  CAPACITY_SQL_ALL     = "concat_ws('', #{CAPACITY_COLUMNS_ALL.join(', ')})  ~* ?".freeze
+  CAPACITY_SQL_ALL     = "concat_ws('', #{CAPACITY_COLUMNS_ALL.join(', ')}) ~* ?".freeze
 
   def index; end
 
@@ -298,56 +293,34 @@ report>>>
     response = @client.chat(
       parameters: {
         model: "gpt-4o-mini",
-        # response_format: { type: "json_object" },
         messages: [
           { role: "system", content: "#{SYSTEM_MESSAGE}\n#{QUERY_MESSAGE}" },
           # { role: "user", content: QUERY_EXP },
           # { role: "assistant", content: QUERY_EXP_RES },
           { role: "user", content: message }
-          # { role: "user", content: { type: :text, text: "#{SYSTEM_MESSAGE}\n#{QUERY_MESSAGE}\n#{message}" } }
         ],
         temperature:
       }
     )
 
+    ### キーワードJSON抽出 ###
     @generated_text = response.dig("choices", 0, "message", "content")
 
-    @json = @generated_text.to_s.match(/(\{.*?\}|\[.*?\])/m)[0]
-
-    @wheres = JSON.parse(@json.gsub(IGNORE_WORDS, ''), symbolize_names: true)
-
-    if @wheres.all? { |_, v| v.blank? }
-      @error_mes = "質問文に検索できるキーワードがありませんでした。\n「機械名」「メーカー」「型式」などが含まれていると、検索しやすいです。"
+    begin
+      @json = @generated_text.to_s.match(/(\{.*?\}|\[.*?\])/m)[0]
+    rescue StandardError
+      @error_mes = "すいません。\n質問文に検索できるキーワードがありませんでした。\n\n検索のヒント : 質問に「機械名」「メーカー」「型式」などを含めてみてください。"
       return
     end
 
-    ### search ###
-    @machines = Machine.sales
+    ### キーワード整形 ###
+    # JSONパース(除外ワード処理)
+    @wheres = JSON.parse(@json.gsub(IGNORE_WORDS, ''), symbolize_names: true)
 
-    # 在庫場所
-    @machines = @machines.where("machines.addr1 ~* ?", "^(#{@wheres[:addr1]})") if @wheres[:addr1].present?
-
-    # メーカー
-    if @wheres[:maker].present?
-      maker_masters = Maker.where("concat_ws(' ', makers.maker, makers.maker_kana, makers.maker_master) ~* ?", @wheres[:maker]).distinct.pluck(:maker_master).join('|')
-
-      makers = maker_masters.present? ? "#{@wheres[:maker]}|#{maker_masters}" : @wheres[:maker]
-      @machines = @machines.where("concat_ws(' ', machines.maker, makers.maker_master) ~* ?", makers)
-    end
-
-    # 機械名
     if @wheres[:name].present?
       @wheres[:name].gsub!(/CNC/i, 'NC')
       @wheres[:name] = "(?<!NC)(#{@wheres[:name]})" if @wheres[:name] =~ /旋盤|フライス|研削盤|ボール盤|中ぐり/ && @wheres[:name].exclude?("NC")
-
-      @machines = @machines.where("machines.name ~* ?", "(#{@wheres[:name]})")
     end
-
-    # 年式
-    @machines = @machines.where("machines.year ~* ?", "^(#{@wheres[:year]})") if @wheres[:year].present?
-
-    # 型式
-    @machines = @machines.where("machines.model2 ~* ?", @wheres[:model]) if @wheres[:model].present?
 
     # 能力
     if @wheres[:capacity].present?
@@ -362,9 +335,29 @@ report>>>
           .gsub(/8尺|1250mm|1.25m /i, '(8尺|1250mm|1.25m)')
           .gsub(/9尺|1500mm|1.5m/i, '(9尺|1500mm|1.5m)')
       end
-
-      @machines = @machines.where(CAPACITY_SQL_ALL, "(^|[^0-9])+(#{@wheres[:capacity]})")
     end
+
+    if @wheres.blank? || @wheres.all? { |_, v| v.blank? }
+      @error_mes = "すいません。\n質問文に検索できるキーワードがありませんでした。\n\n検索のヒント : 質問に「機械名」「メーカー」「能力値」などを含めてみてください。"
+      return
+    end
+
+    ### search ###
+    @machines = Machine.sales
+
+    # メーカー
+    if @wheres[:maker].present?
+      maker_masters = Maker.where("concat_ws(' ', makers.maker, makers.maker_kana, makers.maker_master) ~* ?", @wheres[:maker]).distinct.pluck(:maker_master).join('|')
+
+      makers = maker_masters.present? ? "#{@wheres[:maker]}|#{maker_masters}" : @wheres[:maker]
+      @machines = @machines.where("concat_ws(' ', machines.maker, makers.maker_master) ~* ?", makers)
+    end
+
+    @machines = @machines.where("machines.addr1 ~* ?", "^(#{@wheres[:addr1]})") if @wheres[:addr1].present? # 在庫場所
+    @machines = @machines.where("machines.name ~* ?", "(#{@wheres[:name]})")    if @wheres[:name].present? # 機械名
+    @machines = @machines.where("machines.year ~* ?", "^(#{@wheres[:year]})")   if @wheres[:year].present? # 年式
+    @machines = @machines.where("machines.model2 ~* ?", @wheres[:model])        if @wheres[:model].present? # 型式
+    @machines = @machines.where(CAPACITY_SQL_ALL, "(^|[^0-9])+(#{@wheres[:capacity]})") if @wheres[:capacity].present? # 能力
 
     ### (型式、キーワード抜きの)検索結果件数により条件の増減 ###
     @count = @machines.count
@@ -426,18 +419,14 @@ report>>>
   end
 
   def sort_for_chat(message, machines)
-    machines_json = machines_to_json(machines.limit(PRODUCTS_LIMIT))
+    machines_json = machines_to_json(machines.includes(:detail_logs, :contacts).limit(PRODUCTS_LIMIT))
 
-    # @mes = "#{SORT_QUERY_MESSAGE}\n\n<machines>\n#{machines_json}\n\n<question>\n#{message}"
     system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n\n<machines>\n#{machines_json}"
-    # user_message   = "<question>\n#{message}"
 
     response = @client.chat(
       parameters: {
         model: "gpt-4o-mini",
         messages: [
-          # { role: "system", content: SYSTEM_MESSAGE },
-          # { role: "user", content: @mes }
           { role: "system", content: system_message },
           { role: "user", content: message }
         ],
@@ -480,13 +469,17 @@ report>>>
       comment: "#{machine.comment} ",
       # '試運転可': (machine.commission == 1),
       location: "#{machine.addr1} #{machine.addr2} #{machine.addr3} (#{machine.location})",
+      category: machine.xl_genre.xl_genre,
       large_genre: machine.large_genre.large_genre,
       genre: machine.genre.genre,
       capacity: {},
       # image: machine.top_img.present? || machine.top_image.present?,
       # youtube: machine.youtube.present?,
       # catalog: machine.catalog_id.present?
-      registration_date: machine.created_at.strftime("%y/%m/%d %H:%M:%S")
+      registration_date: machine.created_at.strftime("%y/%m/%d %H:%M:%S"),
+      access_count: machine.detail_logs.count,
+      contact_count: machine.contacts.count,
+      attached_document_PDF: machine.pdfs_parsed.medias.map(&:name)
     }
 
     # capacity
@@ -517,6 +510,8 @@ report>>>
     machines.map do |ma|
       machine_to_json_hash(ma)
     end.to_json
+  ensure
+    "[]"
   end
 
   # Bullet処理のスキップ

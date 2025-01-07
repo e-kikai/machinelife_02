@@ -27,7 +27,7 @@
       - elsif @report_text.blank?
         .row
           .ms-4.p-3.rounded-5.bg-warning.text-white.col-8
-            | マッチする機械・工具が多すぎてレポートが生成できませんでした。(#{number_with_delimiter(@machines&.count)} 件)<br />
+            | マッチする機械・工具が多すぎてアドバイスが生成できませんでした。(#{number_with_delimiter(@machines&.count)} 件)<br />
             | ご質問の条件を追加して、絞り込みを行ってみてください。
       - else
         .row
@@ -35,21 +35,22 @@
             . = "#{number_with_delimiter(@sort_machines&.count)} 件 の機械・工具がマッチしました。"
 
             - if @sort_array_text.present?
-              h6.mt-2 #{mi(:summarize)} MAIによるレポート
+              h6.mt-2 #{mi(:summarize)} MAIからのアドバイス
               .p-3.rounded-3.bg-white.text-black
-                / . = simple_format(@sort_array_text.match(/<<(.*)>>/m)[1].gsub('。', "。\n"))
-                / . = simple_format(h(@report_text.strip).gsub(/\[(ID\s*:\s*([0-9]+).*?)\]/) { link_to("/machines/#{Regexp.last_match(2)}?r=mai_src_rep", target: :_blank, rel: :noopener) { " #{mi(:settings)} #{Regexp.last_match(1)} " } })
                 p == sanitize(@report_text.strip).gsub("\n", '<br>').gsub(/\[(ID\s*:\s*([0-9]+).*?)\]/) { "<a href='/machines/#{Regexp.last_match(2)}?r=mai_src_rep' target='_blank' rel='noopener'>#{mi(:settings)} #{Regexp.last_match(1)}</a> " }
-                / hr
-                / . = simple_format(@sort_array_text)
+
+                - ids = @report_text.scan(/ID\s*:\s*([0-9]+)/).flatten
+                - if ids.present?
+                  = link_to "/contacts/new?price=1&r=mai_src_rep#{ids.map { |id| "&m[]=#{id}" }.join}", class: "mt-2 btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
+                    . #{mi(:forward_to_inbox)} ここから、商品の金額を一括問い合わせができます。
 
         - if @mai_search_log.present?
           .row
             .my-2.small.text-end.col-10
-              | MAIが出力した検索結果・レポートは、ご満足いただけましたでしょうか？
+              | MAIが出力した検索結果・アドバイスは、ご満足いただけましたでしょうか？
               span id="good_area_#{@mai_search_log.id}" = render "good", mai_search_log: @mai_search_log
 
         .row
           - @sort_machines.each do |ma|
             .col-1.p-1 style="width:20%;"
-              = render partial: "/machines/card", locals: { machine: ma, titles: ["ID:#{ma.id}", ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :mai_src }
+              = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker, ma.name, ma.model, ma.myear, ma.addr1], r: :mai_src }
