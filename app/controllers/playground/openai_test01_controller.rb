@@ -15,17 +15,20 @@ class Playground::OpenaiTest01Controller < ApplicationController
   SYSTEM_MESSAGE = "
 ## あなたの役割
 あなたは「全日本機械業連合会（全機連）」が運営する、中古工作機械・工具の販売サイト「マシンライフ」のAIアシスタント「MAI」です。
-MAIは、中古機械・工具業界に精通した、丁寧な口調の優秀な美人眼鏡秘書です。
+MAIは、中古機械・工具業界に精通した、丁寧な口調の優秀な美少女眼鏡秘書です。
 中古機械・工具のプロフェッショナルの言葉を使って商品提案を行ってください。
+
+## マシンライフとは
+全機連が運営する、中古工作機械・工具の売買をサポートするオンラインプラットフォームです。
+機械産業に携わる企業が中古機械を売買する場として利用されており、特に中古市場の活性化や効率的な流通を目的としています。
 
 ## あなたの目的
 ユーザの質問に対して、マシンライフの在庫情報から適切かつ具体的な機械・工具を提案し、
 ユーザに、マシンライフの機械・工具を購入(出品会社への問い合わせ)するように促すことです。
 
 ## 対象ユーザ
+工作機械・工具のプロフェッショナルで、専門知識を持っている、
 工場で実際に加工作業を行う技術者や、中古工作機械・工具の販売商社です。
-工作機械・工具のプロフェッショナルで、専門知識を持っていますので、
-回答は、各機械・工具ごとの差異を比較や、用途や適した作業などについての具体的、専門的、実践的な解説・提案をしてください。
 ".freeze
 
 #   SYSTEM_MESSAGE = "
@@ -133,21 +136,20 @@ ans.6)
   SORT_QUERY_MESSAGE = "
 ## 処理
 <machines>は、マシンライフの在庫機械・工具からmessageの内容で検索した結果のJSONです。
-配列の1つずつが1つの機械・工具情報になっています。
-<machines>のうち、messageの意味を分析して、マッチするような機械・工具を抽出し、
+messageの意味を分析して、内容にマッチするような機械・工具を抽出し、
 結果を元に、ユーザが購入する際によりよい選択ができるようにアドバイスをしてください。
 
-1. <machines>のうち、messageの内容(検索条件)に全くマッチしていない機械・工具を除外して、
-残ったものの「id」をJSON形式の配列 ([1,2,3]) で出力してください。
+1. <machines>のうち、messageの内容(検索条件)に完全にマッチしない機械・工具を除外してください。
+残った機械・工具の「id」をJSON形式の配列 ([1,2,3]) で出力してください。
 
 2. 1.の結果から、messageの質問から、ユーザに対する購入についてのアドバイスを#{REPORT_LIMIT}文字程度の日本語で作成し「report>>>」以降に記述してください。
 
 ## アドバイス内容
-- 購入する際の選定方法、購入する具体的なメリット、おすすめ商品とその理由 etc 、
-ユーザに機械・工具を購入(マシンライフでは、出品会社への金額についての問い合わせ)してもらえるような魅力的な内容を記述。
-- 結果から商品ごとの違いを比較して説明、できるだけたくさん。
-- 個別の機械・工具に関する情報が含まれる場合「[ID:id maker name model]」を表記。
-- 読みやすいように適宜改行。
+- 購入する際の選定方法、用途や適した作業、複数の商品を比較して差異の説明、おすすめ商品とその理由 etc。
+- ユーザに機械・工具を購入(出品会社への金額についての問い合わせ)してもらえるよう、具体的、専門的、実践的、かつ魅力的な解説・提案。
+- 登録されている機械・工具は、特に注釈がない限り中古一点ものです。
+- 個別の機械・工具に関する情報は「[ID:id maker name model]」を表記。
+- 読みやすいように適宜整形。
 
 ## 出力フォーマット
 [1, 2, 3, 4]
@@ -208,6 +210,10 @@ report>>>
   CAPACITY_SQL_ALL     = "concat_ws('', #{CAPACITY_COLUMNS_ALL.join(', ')}) ~* ?".freeze
 
   def index; end
+
+  def search
+    redirect_to "/playground/openai_test01/", flash: { message: params[:message] }
+  end
 
   def show
     machine = Machine.sales.find(params[:id])
@@ -477,8 +483,8 @@ report>>>
       # youtube: machine.youtube.present?,
       # catalog: machine.catalog_id.present?
       registration_date: machine.created_at.strftime("%y/%m/%d %H:%M:%S"),
-      access_count: machine.detail_logs.count,
-      contact_count: machine.contacts.count,
+      access_count: machine.detail_logs.size,
+      contact_count: machine.contacts.size,
       attached_document_PDF: machine.pdfs_parsed.medias.map(&:name)
     }
 
@@ -510,8 +516,6 @@ report>>>
     machines.map do |ma|
       machine_to_json_hash(ma)
     end.to_json
-  ensure
-    "[]"
   end
 
   # Bullet処理のスキップ

@@ -35,7 +35,7 @@
             . = "#{number_with_delimiter(@sort_machines&.count)} 件 の機械・工具がマッチしました。"
 
             - if @sort_array_text.present?
-              h6.mt-2 #{mi(:summarize)} MAIからのアドバイス
+              h6.mt-2.fw-bold #{mi(:support_agent)} MAIからのアドバイス
               .p-3.rounded-3.bg-white.text-black
                 p == sanitize(@report_text.strip).gsub("\n", '<br>').gsub(/\[(ID\s*:\s*([0-9]+).*?)\]/) { "<a href='/machines/#{Regexp.last_match(2)}?r=mai_src_rep' target='_blank' rel='noopener'>#{mi(:settings)} #{Regexp.last_match(1)}</a> " }
 

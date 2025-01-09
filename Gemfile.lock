@@ -160,6 +160,9 @@ GEM
     diff-lcs (1.5.1)
     domain_name (0.6.20240107)
     drb (2.2.1)
+    duckduckgo (0.1.8)
+      nokogiri
+      open_uri_redirections (~> 0.2.1)
     erubi (1.13.0)
     event_stream_parser (1.0.0)
     excon (0.112.0)
@@ -293,6 +296,7 @@ GEM
     nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     observer (0.1.2)
+    open_uri_redirections (0.2.1)
     ostruct (0.6.0)
     pagy (9.1.0)
     pdf-core (0.10.0)
@@ -486,6 +490,7 @@ DEPENDENCIES
   dartsass-rails
   dartsass-sprockets
   debug
+  duckduckgo
   factory_bot_rails
   fog-aws
   gretel

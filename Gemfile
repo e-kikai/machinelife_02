@@ -133,3 +133,4 @@ gem 'activerecord-session_store'
 
 ### openai ###
 gem 'ruby-openai'
+gem 'duckduckgo'

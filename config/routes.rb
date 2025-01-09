@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     ### root ###
     root "main#index"
 
+    get "test" => "main#test"
     get "feed" => "main#feed"
     # get "admin_mail_feed" => "main#admin_mail_feed"
 
@@ -134,6 +135,7 @@ Rails.application.routes.draw do
 
         collection do
           get :help
+          post :search
         end
       end
     end
