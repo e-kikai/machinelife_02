@@ -44,7 +44,8 @@ class System::ContactsController < System::ApplicationController
 
     @contacts_system_count  = @contacts.where(machine_id: nil, company_id: nil).count
     @contacts_company_count = @contacts.where(machine_id: nil).where.not(company_id: nil).count
-    @contacts_machine_count = @contacts.where.not(machine_id: nil).where.not(company_id: nil).count
+    contacts_machine =        @contacts.where.not(machine_id: nil).where.not(company_id: nil)
+    @contacts_machine_count = contacts_machine.count
     @contacts_sum_count     = @contacts.count
 
     @detail_logs_count = @detail_logs.count
@@ -56,6 +57,12 @@ class System::ContactsController < System::ApplicationController
     @search_logs_count = @search_logs.count
     @search_logs_utag_count = @search_logs.distinct.count(:utag)
 
+    # 追加:定型文カウント
+    @contacts_cond_count  = contacts_machine.where("message LIKE ?", "%この機械の状態を知りたい%").count
+    @contacts_money_count = contacts_machine.where("message LIKE ?", "%この機械の価格を知りたい%").count
+    @contacts_ship_count = contacts_machine.where("message LIKE ?", "%送料を知りたい%").count
+    @contacts_real_count = contacts_machine.where("message LIKE ?", "%現物を見たい%").count
+    @contacts_commision_count = contacts_machine.where("message LIKE ?", "%試運転は可能ですか%").count
   end
 
   def formula

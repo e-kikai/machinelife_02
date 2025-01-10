@@ -5,7 +5,7 @@
 
 h1 ログ集計 (#{title})
 
-.my-2.col-10.m-auto
+.my-2.col-12.m-auto
   - if @month.present?
     . = link_to "← 全体に戻る", "/system/contacts/total?all=1"
 
@@ -18,6 +18,7 @@ h1 ログ集計 (#{title})
         th colspan="2" style="border-left-style:double;border-left-width:3px;" 在庫検索ログ
         th colspan="2" style="border-left-style:double;border-left-width:3px;" カタログログ
         th colspan="4" style="border-left-style:double;border-left-width:3px;" 問い合わせ
+        th colspan="5" style="border-left-style:double;border-left-width:3px;" 問い合わせ - 定型文
       tr.small
         th scope="col" style="width: 64px;" 登録
         th scope="col" style="width: 64px;" 削除
@@ -31,12 +32,16 @@ h1 ログ集計 (#{title})
         th scope="col" style="width: 50px;" 会社
         th scope="col" style="width: 50px;" 機械
         th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 合計
-
+        th scope="col" style="width: 50px;border-left-style:double;border-left-width:3px;" 状態
+        th scope="col" style="width: 50px;" 価格
+        th scope="col" style="width: 50px;" 送料
+        th scope="col" style="width: 50px;" 現物
+        th scope="col" style="width: 50px;" 試運転
     tbody
       - @rows.each do |row|
 
         tr
-          td.text-end
+          td.text-end.small
             - if params[:all].present?
               = link_to row, "/system/contacts/total?month=#{row}"
             - else
@@ -54,6 +59,11 @@ h1 ログ集計 (#{title})
           td.text-end = @contacts_company_count[row]
           td.text-end = @contacts_machine_count[row]
           td.text-end style="border-left-style:solid;border-left-width:2px;" = @contacts_sum_count[row]
+          td.text-end style="border-left-style:double;border-left-width:3px;" = @contacts_cond_count[row]
+          td.text-end = @contacts_money_count[row]
+          td.text-end = @contacts_ship_count[row]
+          td.text-end = @contacts_real_count[row]
+          td.text-end = @contacts_commision_count[row]
     thead
       tr.small
         th scope="col" style="width: 64px;" rowspan="2"
@@ -69,9 +79,15 @@ h1 ログ集計 (#{title})
         th scope="col" style="width: 50px;" 会社
         th scope="col" style="width: 50px;" 機械
         th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 合計
+        th scope="col" style="width: 50px;border-left-style:double;border-left-width:3px;" 状態
+        th scope="col" style="width: 50px;" 価格
+        th scope="col" style="width: 50px;" 送料
+        th scope="col" style="width: 50px;" 現物
+        th scope="col" style="width: 50px;" 試運転
       tr.small
         th colspan="2" 在庫
         th colspan="2" style="border-left-style:double;border-left-width:3px;" 在庫詳細ログ
         th colspan="2" style="border-left-style:double;border-left-width:3px;" 在庫検索ログ
         th colspan="2" style="border-left-style:double;border-left-width:3px;" カタログログ
         th colspan="4" style="border-left-style:double;border-left-width:3px;" 問い合わせ
+        th colspan="5" style="border-left-style:double;border-left-width:3px;" 問い合わせ - 定型文
