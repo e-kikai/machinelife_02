@@ -10,7 +10,7 @@ module LinkSource
   ROBOTS = /(goo|google|yahoo|naver|ahrefs|msnbot|bot|crawl|amazonaws|rate-limited-proxy)/i
   KWDS   =
     {
-      "smd" => "同じ型式", "nmr" => "似た機械", "sge" => "同ジャンル", "hst" => "閲覧履歴",
+      "smd" => "同じ型式", "nmr" => "似た機械", "sge" => "同ジャンル", "hst" => "閲覧履歴", "sad" => "同じ都道府県",
 
       # トップページキーワード検索
       "kma" => "メーカー", "kmo" => "型式",
@@ -29,7 +29,13 @@ module LinkSource
       "omdc" => "電子入札システム", "ekikai" => "e-kikai", "mnok" => "ものオク",
 
       # モバイル
-      "pc" => "PC", "mb" => "モバイル"
+      "pc" => "PC", "mb" => "モバイル",
+
+      # 検索 or 詳細
+      "src" => "検索結果", "dtl" => "詳細", "com" => "会社", "blk" => "一括", "ukt" => "売りたし買いたし",
+
+      # MAI
+      "mai" => "MAI", "adv" => "アドバイス"
     }.freeze
   IGNORE_HOSTS = %w[mcnam.rsglab.com].freeze
 

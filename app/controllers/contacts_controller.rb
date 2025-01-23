@@ -1,4 +1,6 @@
 class ContactsController < ApplicationController
+  include Hosts
+
   before_action :set_targets, only: %i[new create]
 
   def index; end
@@ -12,7 +14,7 @@ class ContactsController < ApplicationController
   end
 
   def create
-    @contact_form = ContactForm.new(contact_params, targets: @targets)
+    @contact_form = ContactForm.new(contact_params, targets: @targets, log_data:)
 
     if verify_recaptcha(model: @contact_form) && @contact_form.save
       # 再利用用情報
@@ -28,7 +30,7 @@ class ContactsController < ApplicationController
 
   def contact_params
     params.require(:contact_form)
-      .permit(:user_name, :user_company, :mail, :mail_check_1, :mail_check_2, :tel, :addr1, :mailuser_flag, :other_message, :fax, s: [], r: [])
+      .permit(:user_name, :user_company, :mail, :mail_check_1, :mail_check_2, :tel, :addr1, :mailuser_flag, :other_message, :fax, :r, s: [], ret: [])
   end
 
   def set_targets

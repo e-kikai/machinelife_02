@@ -10,46 +10,74 @@
         . 検索レベル:#{@level} 処理時間:#{@time}sec 途中件数:#{number_with_delimiter(@machines&.count)}件
         . = @error
 
-    - if @error_mes.present?
-      .ms-4.p-3.rounded-5.bg-danger.text-white.col-8
-        / . エラーが発生しました。
-        / hr
-        / . = simple_format(@generated_text.strip)
-        / hr
-        . = simple_format(@error_mes.strip)
+    .row
+      / エラー発生
+      - if @error_mes.present?
+        .ms-4.p-3.rounded-5.bg-danger.text-white.col-8
+          | #{mi(:support_agent)} すいません。AIエラーが発生しました。<br /><br />
+          | お手数ですが、再度検索をお願いいたします。<br />
+          / | #{simple_format(@error_mes.strip)}
+          / . = simple_format(@generated_text.strip)
 
-    - elsif @wheres.present?
-      - if @machines.blank?
-        .row
-          .ms-4.p-3.rounded-5.bg-warning.text-white.col-8
-            | ご質問にマッチする機械・工具はありませんでした。<br />
-            | ご質問を変更して、より広い条件で再度検索してみてください。
+      / 検索キーワードなし
+      - elsif @wheres.blank? || @wheres.all? { |_, v| v.blank? }
+        .ms-4.p-3.rounded-5.bg-warning.text-white.col-8
+          | #{mi(:support_agent)} ご質問中に検索できるキーワードがありませんでした。<br /><br />
+          | <strong>MAIからの検索ヒント</strong><br />
+          | ご質問の内容に、「機械・工具名」「メーカー」「型式」や<br />
+          |「年式」「能力値」「在庫場所(都道府県)」などを含めてみてください。
+
+      / 検索結果なし
+      - elsif @machines.blank?
+        .ms-4.p-3.rounded-5.bg-warning.text-white.col-8
+          | #{mi(:support_agent)} ご質問にマッチする機械・工具はありませんでした。<br />
+          | 質問文を変更して、より広い条件で再度検索してみてください。<br /><br />
+          | <strong>MAIからの検索ヒント</strong><br />
+          ul
+            li 「大阪周辺」「関西で」など、周辺都道府県をまとめて検索できます。
+            li メーカー、型式など「〇〇か□□か△△」のように複数まとめて検索できます。
+            li 年式を「90年代」「2005年以降」のように範囲検索できます。
+
+      / 検索結果多すぎ
       - elsif @report_text.blank?
-        .row
-          .ms-4.p-3.rounded-5.bg-warning.text-white.col-8
-            | マッチする機械・工具が多すぎてアドバイスが生成できませんでした。(#{number_with_delimiter(@machines&.count)} 件)<br />
-            | ご質問の条件を追加して、絞り込みを行ってみてください。
+        .ms-4.p-3.rounded-5.bg-warning.text-white.col-8
+          | #{mi(:support_agent)} マッチする機械・工具が多すぎてアドバイスが生成できませんでした。(#{number_with_delimiter(@machines&.count)}件)<br />
+          | ご質問に条件を追加して、絞り込みを行ってみてください。<br /><br />
+          | <strong>MAIからの絞り込みヒント</strong><br />
+          ul
+            li より詳しい機械・工具名 : 「プレス」 -> 「油圧プレス」
+            li 在庫場所 :「大阪にある滝沢の旋盤」
+            li 能力値 : 「関東近郊にある、100Tか150Tの油圧プレス」
+            li メーカー名 : 「マキノもしくはOKKの立フライス」
+            li 年式 : 「90年代製の平面研削盤で、名古屋近辺にあるもの」
+
+      / 検索結果
       - else
-        .row
-          .ms-4.p-3.rounded-5.bg-success.text-white.col-10
-            . = "#{number_with_delimiter(@sort_machines&.count)} 件 の機械・工具がマッチしました。"
+        .ms-4.p-3.rounded-5.bg-success.text-white.col-10
+          . #{mi(:support_agent)} #{number_with_delimiter(@sort_machines&.count)} 件 の機械・工具がマッチしました。
 
-            - if @sort_array_text.present?
-              h6.mt-2.fw-bold #{mi(:support_agent)} MAIからのアドバイス
-              .p-3.rounded-3.bg-white.text-black
-                p == sanitize(@report_text.strip).gsub("\n", '<br>').gsub(/\[(ID\s*:\s*([0-9]+).*?)\]/) { "<a href='/machines/#{Regexp.last_match(2)}?r=mai_src_rep' target='_blank' rel='noopener'>#{mi(:settings)} #{Regexp.last_match(1)}</a> " }
+          - if @sort_array_text.present?
+            h6.mt-2.fw-bold MAIからのアドバイス
+            .p-3.rounded-3.bg-white.text-black
+              p == sanitize(@report_text.strip).gsub("\n", '<br>').gsub(/\[(ID\s*:\s*([0-9]+).*?)\]/) { "<a href='/machines/#{Regexp.last_match(2)}?r=mai_src_rep' target='_blank' rel='noopener'>#{mi(:settings)} #{Regexp.last_match(1)}</a><a class='btn btn-xs btn-warning px-1 ms-1 me-2' data-turbo='false' target='_blank' rel='noopener' href='/contacts/new?r=mai_src_adv&m=#{Regexp.last_match(2)}'>#{mi(:forward_to_inbox)} 問合せ</a>" }
 
-                - ids = @report_text.scan(/ID\s*:\s*([0-9]+)/).flatten
-                - if ids.present?
-                  = link_to "/contacts/new?price=1&r=mai_src_rep#{ids.map { |id| "&m[]=#{id}" }.join}", class: "mt-2 btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
-                    . #{mi(:forward_to_inbox)} ここから、商品の金額を一括問い合わせができます。
+              / - ids = @report_text.scan(/ID\s*:\s*([0-9]+)/).flatten
+              / - if ids.present?
+              /   = link_to "/contacts/new?price=1&r=mai_src_adv_blk#{ids.map { |id| "&m[]=#{id}" }.join}", class: "mt-2 btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
+              /     . #{mi(:forward_to_inbox)} ここから、商品の金額を一括問い合わせができます。
 
         - if @mai_search_log.present?
           .row
             .my-2.small.text-end.col-10
-              | MAIが出力した検索結果・アドバイスは、ご満足いただけましたでしょうか？
+              | #{mi(:support_agent)} MAIの検索結果・アドバイスは、ご満足いただけましたか？
               span id="good_area_#{@mai_search_log.id}" = render "good", mai_search_log: @mai_search_log
 
+        .row
+          .my-2.col-12.g-1
+            - @sort_machines.group_by(&:model2).each do |key, gm|
+              - if key.present? && gm.length > 1
+                = link_to "/contacts/new?r=mai_src_smd_blk#{gm.map { |ma| "&m[]=#{ma.id}" }.join}", class: "m-1 mt-y btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
+                  . #{mi(:forward_to_inbox)} #{gm.first.model} <span class="small">(#{gm.size}件) に一括問い合わせ</span>
         .row
           - @sort_machines.each do |ma|
             .col-1.p-1 style="width:20%;"

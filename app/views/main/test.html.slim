@@ -23,22 +23,23 @@ ul.nav.nav-underline.m-3.mb-2
         .mt-1
           | ＜質問の例＞ 「大阪にある滝沢の6尺旋盤、おすすめトップ3は」
 
-      . = render "/playground/openai_test01/info"
-
       / . data-controller="openai01"
         / #form_area.mx-auto.my-3 = render "/playground/openai_test01/form"
 
       . = form_with url: "/playground/openai_test01/search", method: :post, data: { turbo: false } do |f|
-        .col-10.mx-auto.my-3
-          .input-group
-            / .input-group-text.bg-white.border-end-0.rounded-start-pill #{mi(:search)}
-            = f.text_field :message, placeholder: "MAI「どんな機械・工具をおさがしですか？ここに入力してください。」", class: "form-control border-primary px-4 py-2 shadow-sm rounded-pill", id: :message_field, required: true, data: { openai01_target: "textarea" }
+        .col-10.mx-auto.my-4
+          .fw-bold.small.ms-5 #{mi(:support_agent)} ↓ どんな機械・工具をおさがしですか？ ↓
+          .input-group.border.border-primary.rounded-pill.shadow-sm
+            .input-group-text.bg-white.border-0.rounded-start-pill.text-black-50 #{mi(:search)}
+            = f.text_field :message, placeholder: "", class: "form-control border-0 py-2 rounded-end-pill shadow-none", id: :message_field, required: true, data: { openai01_target: "textarea" }
 
           . = f.button type: :submit, value: :model, class: "btn btn-primary d-block mx-auto mt-4 mb-5" do
             span.show-when-enabled #{mi(:search)} MAI 在庫検索
             span.show-when-disabled
               span.spinner-border.spinner-border-sm.me-2 role="status" aria-hidden="true"
               | MAI 検索中
+
+      . = render "/playground/openai_test01/info"
 
   #pills-genre.tab-pane.fade role="tabpanel" aria-labelledby="pills-genre-tab" tabindex="0"
     .row.gx-2

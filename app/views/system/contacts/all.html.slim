@@ -20,35 +20,53 @@ h1 問い合わせ一覧(すべて)
       .col-auto = link_to "/system/contacts/all", class: "btn btn-secondary" do
         | #{mi(:free_cancellation)} 表示月をリセット
 
-table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
-  thead
-    tr.small
-      th scope="col" style="width: 30px;" ID
-      th scope="col" style="width: 140px;" 送信先
-      th scope="col" style="width: 140px;" お名前
-      th scope="col" style="width: 140px;" 連絡先
-      th scope="col" 内容
-      th scope="col" style="width: 80px;" 登録日時
+. style=" margin: 0 calc(50% - 49.5vw);width: 99vw;"
+  table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+    thead
+      tr.small
+        th scope="col" style="width: 30px;" ID
+        th scope="col" style="width:80px;" 登録日時
+        th scope="col" style="border-left-style:double;border-left-width:3px;" IP/host
+        th scope="col" utag
+        th scope="col" 会社・ユーザ名
+        th scope="col" style="width: 140px;" 送信先
+        th scope="col" style="width: 140px;" お名前
+        th scope="col" style="width: 140px;" 連絡先
+        th scope="col" 内容
+        th scope="col" リンク元
 
-  tbody
-    - @contacts.each do |co|
-      tr
-        td.text-end #{co.id}
-        td
-          . #{co.company&.company_remove_kabu}
-          .mt-2 #{co.machine&.no}
-          . #{co.machine&.full_name}
+    tbody
+      - @contacts.each do |co|
+        tr
+          td.text-end #{co.id}
+          td.text-end = co.created_at.strftime("%y/%m/%d %H:%M:%S")
+          td style="border-left-style:double;border-left-width:3px;"
+            . = link_to co.ip, "/system/detail_logs/?k=#{co.ip}"
+            . = co.host
+          td = link_to co.utag, "/system/detail_logs/?k=#{co.utag}"
+          td
+            / - if co.user_id
+            /   . = co.company&.company_remove_kabu
+            /   . = link_to "#{co.user_id}:#{co.user&.user_name}", "/system/detail_logs/?user_id=#{co.user_id}"
+            / - else
+            /   | -
 
-        td
-          . #{co.user_company}
-          . #{co.user_name}
-          . = "(#{co.addr1})"
+          td
+            . #{co.company&.company_remove_kabu}
+            .mt-2 #{co.machine&.no}
+            . #{co.machine&.full_name}
 
-        td
-          . = mail_to co.mail
-          . TEL : #{co.tel}
-          . FAX : #{co.fax}
-          .mt-2 = co.return_time
+          td
+            . #{co.user_company}
+            . #{co.user_name}
+            . = "(#{co.addr1})"
 
-        td.text-wrap.text-break = simple_format(co.message)
-        td.text-end #{l(co.created_at)}
+          td
+            . = mail_to co.mail
+            . TEL : #{co.tel}
+            . FAX : #{co.fax}
+            .mt-2 = co.return_time
+
+          td.text-wrap.text-break = simple_format(co.message)
+          / td.text-end #{l(co.created_at)}
+          td.text-break title="#{CGI.unescape(co.referer.to_s)}" = CGI.unescape(co.link_source)

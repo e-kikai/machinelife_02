@@ -65,7 +65,7 @@ h1 #{@company.company} 会社情報
               「中古機械情報 マシンライフを見て」<br />
               とお伝え下さい
           .text-danger.fs-4 FAX : #{@company.contact_fax}
-          . = link_to "/contacts/new?c=#{@company.id}", class: "btn btn-warning btn-sm", data: { turbo: false } do
+          . = link_to "/contacts/new?r=com_dtl&c=#{@company.id}", class: "btn btn-warning btn-sm", data: { turbo: false } do
             | #{mi(:forward_to_inbox)} メールフォームから問合せ
         dt.col-3 担当者
         dd.col-9 = @company.officer

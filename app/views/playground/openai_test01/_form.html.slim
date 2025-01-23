@@ -1,10 +1,11 @@
 = form_with url: "/playground/openai_test01", method: :post, data: { turbo_stream: true, action: "submit->openai01#sendMessage" } do |f|
   .col-10.mx-auto
-    .input-group
-      / .input-group-text.bg-white.border-end-0.rounded-start-pill #{mi(:search)}
-      = f.text_field :message, value: flash[:message], placeholder: "MAI「どんな機械・工具をおさがしですか？ここに入力してください。」", class: "form-control rounded-start-pill border-primary px-4 py-2 shadow-sm", id: :message_field, required: true, data: { openai01_target: "textarea" }
+    .fw-bold.small.ms-5 #{mi(:support_agent)} ↓ どんな機械・工具をおさがしですか？ ↓
+    .input-group.border.border-primary.rounded-pill.shadow-sm
+      .input-group-text.bg-white.border-0.rounded-start-pill.text-black-50 #{mi(:search)}
+      = f.text_field :message, value: flash[:message], class: "form-control border-0 py-2 shadow-none", id: :message_field, required: true, data: { openai01_target: "textarea" }
 
-      = f.button type: :submit, id: :searchButton, value: :model, class: "btn btn-primary rounded-end-pill shadow-sm" do
+      = f.button type: :submit, id: :searchButton, value: :model, class: "btn btn-primary border-0 border-start rounded-end-pill", data: { openai01_target: "button" } do
         span.show-when-enabled #{mi(:search)} MAI 在庫検索
         span.show-when-disabled
           span.spinner-border.spinner-border-sm.me-2 role="status" aria-hidden="true"

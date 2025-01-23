@@ -23,8 +23,9 @@ class ContactForm < FormBase
   attribute :fax, :string
   attribute :mailuser_flag, :boolean
   attribute :other_message, :string
-  attribute :r, default: []
+  attribute :ret, default: []
   attribute :s, default: []
+  attribute :r, :string # 追加
 
   attribute :message, :string
   attribute :return_time, :string
@@ -39,14 +40,15 @@ class ContactForm < FormBase
 
   SLICE_ATTRS = %w[user_company user_name mail tel addr1 fax mailuser_flag].freeze
 
-  def initialize(attributes = nil, contact: Contact.new, targets: nil)
-    @contact = contact
-    @targets = targets
+  def initialize(attributes = nil, contact: Contact.new, targets: nil, log_data: {})
+    @contact  = contact
+    @targets  = targets
+    @log_data = log_data
     super(attributes)
   end
 
   def persist
-    contact.assign_attributes(slice(SLICE_ATTRS).merge({ message:, return_time: }))
+    contact.assign_attributes(slice(SLICE_ATTRS).merge({ message:, return_time: }).merge((@log_data)))
 
     target_labels = []
 
@@ -108,6 +110,6 @@ class ContactForm < FormBase
 
   def attributes_format
     self.message = "#{s.join("\n")}\n\n#{other_message}".strip
-    self.return_time = r.join("\n")
+    self.return_time = ret.join("\n")
   end
 end

@@ -15,7 +15,7 @@
 #  states_ix2  (region_id)
 #
 class State < ApplicationRecord
-  CONTACT_STATES_ADD = %w|海外|
+  CONTACT_STATES_ADD = %w[海外]
 
   def self.count_machine
     where(open_id: @open_id).joins(:genre).group("genres.large_genre_id")

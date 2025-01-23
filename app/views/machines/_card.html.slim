@@ -4,7 +4,8 @@
     - titles.each do |t|
       - if t.present?
         .d-inline-block> = t
-  .position-absolute.start-0.text-white.px-1.m-1.small style="background:rgb(0 0 0 / .75);bottom:70px;" ID:#{machine.id}
-  .position-absolute style="bottom:74px;right:4px;"
-    = link_to "/contacts/new?m=#{machine.id}", class: "btn btn-sm btn-warning border-white px-1", data: { turbo: false }, target: :_blank, rel: :noopener do
+
+  .position-absolute.start-0.text-white.px-1.m-1.small style="background:rgb(0 0 0 / .75);bottom:72px;" ID:#{machine.id}
+  .position-absolute style="bottom:76px;right:4px;"
+    = link_to "/contacts/new?r=crd_#{r}&m=#{machine.id}", class: "btn btn-sm btn-warning border-white px-1", data: { turbo: false }, target: :_blank, rel: :noopener do
       . #{mi(:forward_to_inbox)} 問合せ

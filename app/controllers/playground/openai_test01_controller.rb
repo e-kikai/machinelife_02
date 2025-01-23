@@ -1,12 +1,12 @@
 class Playground::OpenaiTest01Controller < ApplicationController
   include Hosts
 
-  before_action :check_env
+  # before_action :check_env
   before_action :set_mai_search_log, only: [:good, :bad]
   around_action :skip_bullet
 
   CHAT_TIMES = 3
-  PRODUCTS_LIMIT = 250
+  PRODUCTS_LIMIT = 100
   RESULT_LIMIT = 60
   REPORT_LIMIT = 300
 
@@ -70,11 +70,13 @@ name model に含まれているkeywordは除外。
 能力値(100Tのような数字と単位)は後述のcapacityに入れるため除外。
 
 ### year
-西暦数字4桁の年式を抽出。範囲の場合はすべての西暦に合致するような正規表現。
+西暦数字4桁の年式を抽出。範囲の場合はすべての西暦に合致するような正規表現か、すべてを列挙。
 
 ### addr1
-日本の都道府県を抽出し、周辺の都道府県も含んで出力。
-関西や関東など、地域が入力されている場合は、それに含む都道府県を出力。
+日本の都道府県を抽出し出力。複数可。
+都市名は、都道府県に変換。
+関西や関東など、地域が入力されている場合は、それに含まれる都道府県を出力。
+〇〇近辺(周辺、近郊など)の場合、周辺都道府県も含めて出力。
 既に maker name に含まれている単語は除外)。
 多すぎる場合は(全国、など)の場合は空白。
 
@@ -86,32 +88,32 @@ name model に含まれているkeywordは除外。
 ex.1) 大阪近辺で、オークマかアマダの90年代の5尺立型旋盤の型式がLSかods-12で。
 
 ans.1)
-{"name": "((立||立型|縦)旋盤))|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ|大隈", "year": "199[0-9]", "model": "LS|ODS12", "addr1": "大阪|兵庫|京都|奈良|和歌山", "capacity": "5尺"}
+{"name": "((立||立型|縦)旋盤))|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ|大隈", "year": "199[0-9]", "model": "LS|ODS12", "addr1": "大阪", "capacity": "5尺"}
 
 ex.2) ナガセのSGW-63
 
 ans.2)
 {"name": "", "name2": "", "maker": "ナガセ|長瀬", "model": "SGW63", "year": "", "addr1": "", "capacity": ""}
 
-ex.3) 関東でアマダ製バンドソー250mm
+ex.3) 東京近郊でアマダ製バンドソー250mm
 
 ans.3)
-{"name": "バンドソ|帯鋸|バンドノコ", "name2": "バンドソ", "maker": "アマダ|AMADA", "model": "", "year": "", "addr1": "東京|神奈川|埼玉|千葉|群馬|茨城|栃木", "capacity": "(250(mm|ミリメートル|粍))"}
+{"name": "バンドソ|帯鋸|バンドノコ", "name2": "バンドソ", "maker": "アマダ|AMADA", "model": "", "year": "", "addr1": "東京|千葉|埼玉|神奈川", "capacity": "(250(mm|ミリメートル|粍))"}
 
 ex.4) 大阪にある7.5kwパッケージコンプレッサー、アネスト岩田製
 
 ans.4)
-{"name": "((パッケージ|パッケージ型)コンプレッサ)|コンプレッサ", "name2": "パッケージコンプレッサ", "maker": "アネスト岩田|岩田|イワタ", "model": "", "year": "", "addr1": "大阪|兵庫|京都|奈良|和歌山", "capacity": "(7.5(kw|キロワット))"}
+{"name": "((パッケージ|パッケージ型)コンプレッサ)|コンプレッサ", "name2": "パッケージコンプレッサ", "maker": "アネスト岩田|岩田|イワタ", "model": "", "year": "", "addr1": "大阪", "capacity": "(7.5(kw|キロワット))"}
 
-ex.5) 大阪にある相澤鐵工所の1000mm以上のメカシャーリング。
+ex.5) 大阪周辺にある相澤鐵工所の1000mm以上のメカシャーリング。
 
 ans.5)
 {"name": "シャーリング|メカシャー", "name2": "シャーリング", "maker": "相澤|相沢", "model": "", "year": "", "addr1": "大阪|兵庫|京都|奈良|和歌山", "capacity": "([1-9][0-9][0-9][0-9](mm|ミリメートル|粍))"}
 
-ex.6) 大阪にある山崎のNC立フライス。
+ex.6) 関西にある山崎のNC立フライス、2005年以降。
 
 ans.6)
-{"name": "NCフライス|NC立フライス", "name2": "NC立フライス", "maker": "山崎|ヤマザキ|MAZAK", "model": "", "year": "", "addr1": "大阪|兵庫|京都|奈良|和歌山", "capacity": ""}
+{"name": "NCフライス|NC立フライス", "name2": "NC立フライス", "maker": "山崎|ヤマザキ|MAZAK", "model": "", "year": "200[5-9]|20[1-9][0-9]", "addr1": "大阪|兵庫|京都|奈良|和歌山", "capacity": ""}
 
 '.freeze
 
@@ -135,12 +137,13 @@ ans.6)
 
   SORT_QUERY_MESSAGE = "
 ## 処理
-<machines>は、マシンライフの在庫機械・工具からmessageの内容で検索した結果のJSONです。
-messageの意味を分析して、内容にマッチするような機械・工具を抽出し、
-結果を元に、ユーザが購入する際によりよい選択ができるようにアドバイスをしてください。
+<machines>は、マシンライフの在庫機械・工具からmessageの内容で検索した結果です。
+messageの内容にマッチするような機械・工具を抽出し、
+その結果を元に、ユーザが購入する際によりよい選択ができるようにアドバイスをしてください。
 
-1. <machines>のうち、messageの内容(検索条件)に完全にマッチしない機械・工具を除外してください。
-残った機械・工具の「id」をJSON形式の配列 ([1,2,3]) で出力してください。
+1. <machines>の在庫機械・工具のうち、messageの質問内容を解釈し、
+質問にマッチしていない機械・工具を除外して、
+残ったものの「id」を抽出し、JSON形式の配列 ([1,2,3]) で出力してください。
 
 2. 1.の結果から、messageの質問から、ユーザに対する購入についてのアドバイスを#{REPORT_LIMIT}文字程度の日本語で作成し「report>>>」以降に記述してください。
 
@@ -149,7 +152,7 @@ messageの意味を分析して、内容にマッチするような機械・工�
 - ユーザに機械・工具を購入(出品会社への金額についての問い合わせ)してもらえるよう、具体的、専門的、実践的、かつ魅力的な解説・提案。
 - 登録されている機械・工具は、特に注釈がない限り中古一点ものです。
 - 個別の機械・工具に関する情報は「[ID:id maker name model]」を表記。
-- 読みやすいように適宜整形。
+- 読みやすいように適宜整形・改行を。
 
 ## 出力フォーマット
 [1, 2, 3, 4]
@@ -158,16 +161,7 @@ report>>>
 2.のアドバイスをここに記述。
 ".freeze
 
-# 入力された<machines>は、マシンライフの在庫機械・工具のリストです。
-# 入力された<question>の意味を分析して、ユーザに商品を提案するために、
-
-# * 工場で実際に加工作業を行うユーザを想定し、<question>の内容に合う回答をしてください。
-# * 各機械・工具ごとの差異を比較して、用途や適した作業などについての実用的な解説・提案してください。
-# * 機械・工具に関する情報は、個別に「[ID:id maker name model]」を表記してください。
-# * 丁寧で優秀な美人眼鏡秘書のような語り口で回答してください。
-# * 購入(出品会社への問い合わせ)を促してください。
-# * 1)を行った結果がもし多すぎる(100件以上)場合、条件を追加して再検索するように、
-#   もし結果がない(少ない)場合、より広い条件で検索することを促してください。
+# - 50件より多い場合は、よりマッチするもの50件くらいまで絞り込んでください。(画像のあるもの優先で)
 
 #
 # 1. 能力値
@@ -242,10 +236,14 @@ report>>>
       else
         @error_mes = "質問がありません。"
       end
+    # rescue Net::ReadTimeout
+    #   @error = e.message
+    #   @error_mes = "AI処理がタイムアウトしました。\nお手数ですが、再度検索を行ってみてください。"
     rescue StandardError => e
       # @error = e.full_message
+      @time = Time.current - start_time
       @error = e.message
-      @error_mes = e.message
+      @error_mes = e.message if @error_mes.blank?
     end
 
     # if logging?
@@ -288,7 +286,7 @@ report>>>
   end
 
   def set_client
-    @client = OpenAI::Client.new(log_errors: true)
+    @client = OpenAI::Client.new(log_errors: true, request_timeout: 30)
   end
 
   # キーワードから在庫検索
@@ -315,7 +313,8 @@ report>>>
     begin
       @json = @generated_text.to_s.match(/(\{.*?\}|\[.*?\])/m)[0]
     rescue StandardError
-      @error_mes = "すいません。\n質問文に検索できるキーワードがありませんでした。\n\n検索のヒント : 質問に「機械名」「メーカー」「型式」などを含めてみてください。"
+      # @error_mes = "すいません。\n質問文に検索できるキーワードがありませんでした。\n\n検索のヒント : 質問に「機械名」「メーカー」「型式」などを含めてみてください。"
+      @wheres = {}
       return
     end
 
@@ -343,10 +342,11 @@ report>>>
       end
     end
 
-    if @wheres.blank? || @wheres.all? { |_, v| v.blank? }
-      @error_mes = "すいません。\n質問文に検索できるキーワードがありませんでした。\n\n検索のヒント : 質問に「機械名」「メーカー」「能力値」などを含めてみてください。"
-      return
-    end
+    # キーワードがなかった場合、エラーを表示
+    # if @wheres.blank? || @wheres.all? { |_, v| v.blank? }
+    #   @error_mes = "すいません。\n質問文に検索できるキーワードがありませんでした。\n\n検索のヒント : 質問に「機械名」「メーカー」「能力値」などを含めてみてください。"
+    #   return
+    # end
 
     ### search ###
     @machines = Machine.sales
@@ -406,22 +406,32 @@ report>>>
     #   end
     # end
 
-    if @count > PRODUCTS_LIMIT # 画像があるもの優先
-      img_machines = @machines
-        .order(Arel.sql("CASE WHEN machines.top_image IS NULL AND machines.top_img IS NULL THEN 2 ELSE 1 END"))
-        .limit(PRODUCTS_LIMIT)
+    # if @count > PRODUCTS_LIMIT # 画像があるもの優先
+    #   img_machines = @machines
+    #     .order(Arel.sql("CASE WHEN machines.top_image IS NULL AND machines.top_img IS NULL THEN 2 ELSE 1 END"))
+    #     .limit(PRODUCTS_LIMIT)
 
+    #   img_count = img_machines.count
+    #   if img_count.positive?
+    #     @machines = img_machines
+    #     @count = img_count
+    #     @level = 500
+    #   end
+    # end
+
+    if @count > PRODUCTS_LIMIT # 画像があるもの
+      img_machines = @machines.where("machines.top_image IS NOT NULL OR  machines.top_img IS NOT NULL")
       img_count = img_machines.count
       if img_count.positive?
         @machines = img_machines
         @count = img_count
-        @level = 500
+        @level = 600
       end
     end
   rescue StandardError => e
     # @error = e.full_message
     @error = e.message
-    @error_mes = "MAI在庫検索処理でエラーが発生しました。\nお手数ですが、再度検索してみてください。"
+    @error_mes = "MAI在庫検索処理でエラーが発生しました。"
   end
 
   def sort_for_chat(message, machines)
@@ -446,7 +456,7 @@ report>>>
       @sort_array = JSON.parse(@sort_json, symbolize_names: true)
 
       # search
-      @sort_machines = Machine.sales.where(id: @sort_array).order(created_at: :desc)
+      @sort_machines = Machine.sales.where(id: @sort_array).order(model2: :asc, created_at: :desc)
 
       # レポート整理
       @report_text =
@@ -458,7 +468,7 @@ report>>>
     rescue StandardError => e
       # @error = e.full_message
       @error = e.message
-      @error_mes = "MAIレポート生成処理でエラーが発生しました。\nお手数ですが、再度検索してみてください。"
+      @error_mes = "MAIアドバイス生成処理でエラーが発生しました。"
     end
   end
 

@@ -93,10 +93,13 @@ h1 #{@machine.full_name}
         p.small お問い合せフォーム TEL FAXより掲載会社へお問い合せください。
         .row
           .col-6
-            = link_to "/contacts/new?m=#{@machine.id}", class: "btn btn-lg btn-warning", data: { turbo: false } do
+            = link_to "/contacts/new?r=dtl&m=#{@machine.id}", class: "btn btn-lg btn-warning", data: { turbo: false } do
               .fw-bold #{mi(:forward_to_inbox)} 問い合わせ (無料)
               .small お気軽に
           .col-6
+            / .text-danger.fs-4
+            /   = "TEL : "
+            /   == sanitize(@machine.company.contact_tel).gsub(/[0-9-]+/) { |tel| phone_to(tel) }
             .text-danger.fs-4 TEL : #{@machine.company.contact_tel}
             .text-danger.fs-4 FAX : #{@machine.company.contact_fax}
 
@@ -172,7 +175,16 @@ h1 #{@machine.full_name}
     / = @sames.to_sql
     - if @sames.present?
       .
-        h2 この機械と同じ機械はこちら
+        h2 この機械 <strong>#{@machine.model}</strong> と同じ機械はこちら
+        = link_to "/contacts/new?price=1&r=dtl_smd_blk&m[]=#{@machine.id}#{@sames.map { |ma| "&m[]=#{ma.id}" }.join}", class: "ms-2 mt-y btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
+          . #{mi(:forward_to_inbox)} #{@machine.model} <span class="small">(#{@sames.size + 1}件) に一括問い合わせ</span>
+
+        - if @machine.addr1.present?
+          - addr_sames = @sames.where(addr1: @machine.addr1)
+          - if addr_sames.present?
+            = link_to "/contacts/new?price=1&r=dtl_smd_sad_blk&m[]=#{@machine.id}#{addr_sames.map { |ma| "&m[]=#{ma.id}" }.join}", class: "ms-2 my-2 btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
+              . #{mi(:forward_to_inbox)} <strong>#{@machine.addr1}</strong>にある#{@machine.model} <span class="small">(#{addr_sames.size + 1}件) に一括問い合わせ</span>
+
         /** 同じ機械カルーセル  **/
         #samesCarousel.carousel.slide
           .row

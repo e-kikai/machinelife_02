@@ -1,11 +1,11 @@
 - set_meta_tags title: "MAI 在庫検索"
 - breadcrumb :something, "MAI 在庫検索"
 
-- if flash[:message].present?
-  javascript:
-    document.addEventListener("turbo:load", function() {
-      searchButton.click();
-    });
+/ - if flash[:message].present?
+/   javascript:
+/     window.addEventListener("load", function() {
+/       searchButton.click();
+/     });
 
 h1 MAI 在庫検索
 
@@ -24,9 +24,9 @@ h1 MAI 在庫検索
 . data-controller="openai01"
   #form_area.mx-auto.my-3 = render "form"
 
-  / . = link_to 'Edit', "/playground/openai_test01", data: { turbo_stream: true,  turbo_method: :post }
-
   .messages_area.mb-5 data-openai01-target="output"
+    #result_area.d-none
+
     hr
 
     .row.d-none data-openai01-target="loading"
@@ -37,7 +37,3 @@ h1 MAI 在庫検索
 
     .row.d-none data-openai01-target="dummy"
       .ms-auto.me-4.my-3.p-3.rounded-5.bg-primary.text-white.col-8 dummy
-
-    / . ここに結果を表示
-
-  / button data-action="click->openai01#sendMessage" test

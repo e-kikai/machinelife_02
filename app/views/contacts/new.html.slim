@@ -8,6 +8,10 @@ h1 = @title
 
     = render 'layouts/error_messages', obj: f.object
 
+    = hidden_field_tag :r, params[:r]
+
+    / .p-2 = params[:r]
+
     .row.mb-2
       legend.col-4.text-end.col-form-label お問い合わせ先
       .col-8:.form-control-plaintext: ol
@@ -16,7 +20,7 @@ h1 = @title
             li
               = link_to ma.full_name, "/machines/#{ma.id}"
               = " → "
-              = link_to ma.company.company, "/companies/#{ma.company_id}"
+              = link_to ma.company.company_remove_kabu, "/companies/#{ma.company_id}"
 
               = hidden_field_tag "m[]", ma.id
         - elsif @targets&.klass == Company
@@ -77,8 +81,8 @@ h1 = @title
       .col-8
         - ContactForm::RETURN_TYPES.each do |typ|
           .form-check
-            = f.check_box :r, { multiple: true, include_hidden: false, class: "form-check-input" }, typ
-            = f.label :r, typ, class: "form-check-label", value: typ
+            = f.check_box :ret, { multiple: true, include_hidden: false, class: "form-check-input" }, typ
+            = f.label :ret, typ, class: "form-check-label", value: typ
         = f.label :fax, "FAX番号", class: "col-form-label"
         = f.telephone_field :fax, class: "form-control", placeholder: "FAXで連絡を希望される場合"
 

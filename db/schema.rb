@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_15_053948) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_21_062513) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -328,8 +328,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_15_053948) do
     t.text "addr1"
     t.text "user_company"
     t.integer "mailuser_flag"
+    t.string "utag", default: ""
+    t.string "ip", default: ""
+    t.string "host", default: ""
+    t.string "ua", default: ""
+    t.string "referer", default: ""
+    t.string "r", default: "", null: false
     t.index ["company_id"], name: "contacts_company_id_idx"
     t.index ["company_id"], name: "contacts_ix1"
+    t.index ["created_at"], name: "index_contacts_on_created_at"
+    t.index ["machine_id"], name: "index_contacts_on_machine_id"
   end
 
   create_table "d_infos", id: :serial, force: :cascade do |t|
