@@ -6,7 +6,7 @@ Rails.application.routes.draw do
     ### root ###
     root "main#index"
 
-    get "test" => "main#test"
+    get "test", to: redirect("/?test=1")
     get "feed" => "main#feed"
     # get "admin_mail_feed" => "main#admin_mail_feed"
 
@@ -34,6 +34,18 @@ Rails.application.routes.draw do
     get "/news/:target/:date/:week" => "machines#news"
 
     resources :catalogs, only: [:show]
+
+    resources :mai_search, only: [:index, :create] do
+      member do
+        patch :good
+        patch :bad
+      end
+
+      collection do
+        get :help
+        post :search
+      end
+    end
 
     ### admin ###
     namespace :admin do
@@ -96,10 +108,18 @@ Rails.application.routes.draw do
           patch "ignore" => :ignore_update
         end
       end
-      resources :detail_logs, only: [:index]
+      resources :detail_logs, only: [:index] do
+        collection do
+          get :ip_counts
+        end
+      end
       resources :catalog_logs, only: [:index]
       resources :search_logs, only: [:index]
-      resources :mai_search_logs, only: [:index]
+      resources :mai_search_logs, only: [:index] do
+      collection do
+        get :total
+      end
+    end
 
       namespace :catalogs do
         get   :csv

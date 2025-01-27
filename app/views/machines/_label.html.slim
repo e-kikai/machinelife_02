@@ -15,10 +15,10 @@
   /-- PDF --/
   - machine.pdfs_parsed.medias.each do |pdf|
     = link_to pdf.url, rel: :noopener, target: :_blank, class: "btn btn-secondary m-1" do
-      | #{mi(:picture_as_pdf)} PDF : #{pdf.name}
+      | #{mi(:picture_as_pdf)} #{pdf.name}
   - machine.machine_pdfs.each do |pdf|
     = link_to pdf.pdf.url, rel: :noopener, target: :_blank, class: "btn btn-secondary m-1" do
-      | #{mi(:picture_as_pdf)} PDF : #{pdf.name}
+      | #{mi(:picture_as_pdf)} #{pdf.name}
 
   /-- 電子カタログ --/
   - if machine.catalog_id

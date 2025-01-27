@@ -1,0 +1,62 @@
+- set_meta_tags title: "在庫詳細アクセスログ IP集計"
+- breadcrumb :system_something, "在庫詳細アクセスログ IP集計"
+
+h1 在庫詳細アクセスログ IP集計
+
+/* 検索枠 */
+= turbo_frame_tag :detail_log_list do
+  / .row
+  /   .col-11.mx-auto.my-2
+  /     = form_with(url: "/system/detail_logs/", local: true, method: :get, html: { 'data-turbo-frame': :detail_log_list }) do |f|
+  /       .row.g-1.mt-1
+  /         .col-auto
+  /           .input-group.input-group-sm
+  /             = f.label :k, class: "input-group-text" do
+  /               . #{mi(:person)}
+  /             = f.text_field :k, value: params[:k], class: "form-control form-control-sm", placeholder: "IP/host, utagフィルタ"
+
+  /         .col-1
+  /           .input-group.input-group-sm
+  /             = f.label :user_id, class: "input-group-text" do
+  /               . #{mi(:account_circle)}
+  /             = f.number_field :user_id, value: params[:user_id], class: "form-control form-control-sm", placeholder: "user ID"
+
+  /         .col-auto
+  /           .input-group.input-group-sm
+  /             = f.label :start_date, class: "input-group-text" do
+  /               . 日時
+  /             = f.datetime_field :start_date, value: params[:start_date], class: "form-control form-control-sm"
+  /             = f.label :end_date, class: "input-group-text" do
+  /               . 〜
+  /             = f.datetime_field :end_date, value: params[:end_date], class: "form-control form-control-sm"
+
+  /         .col-auto = f.button class: "btn btn-primary btn-sm" do
+  /           . #{mi(:search)} 検索
+  /         .col-auto.ms-auto = link_to "/system/detail_logs", class: "btn btn-sm btn-secondary" do
+  /           . #{mi(:filter_alt_off)} リセット
+
+  /* 検索結果 */
+  / . = @pdetail_logs.to_sql
+  / == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
+
+  .col-9.mx-auto
+    table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+      thead
+        tr.small
+          th scope="col" IP
+          th scope="col" style="" host
+          th scope="col" style="width:100px;border-left-style:double;border-left-width:3px;" アクセス数
+          th scope="col" style="width:100px;" utag数
+          th scope="col" style="width:100px;" 機械ID数
+          / th scope="col" style="width:35px;" 削除
+
+      tbody
+        - @detail_log_count.each do |ip, co|
+            tr
+              td = ip
+              td = @hosts[ip]
+              td.text-end  style="border-left-style:double;border-left-width:3px;" = co
+              td.text-end = @utag_count[ip]
+              td.text-end = @machine_id_count[ip]
+
+  / . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1

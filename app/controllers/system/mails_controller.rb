@@ -3,7 +3,7 @@ class System::MailsController < ApplicationController
     @mails = SystemMail.order(id: :desc)
 
     ### ページャ ###
-    @pagy, @pmails = pagy(@mails, items: 20)
+    @pagy, @pmails = pagy(@mails, limit: 20)
   end
 
   def new

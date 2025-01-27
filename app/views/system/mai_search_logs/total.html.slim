@@ -1,0 +1,89 @@
+- title = @month.present? ? @month.strftime('%Y/%-m') : "全体"
+
+- set_meta_tags title: "MAIログ集計 (#{title})"
+- breadcrumb :system_something, "MAIログ集計 (#{title})"
+
+h1 MAIログ集計 (#{title})
+
+.my-2.col-12.m-auto
+  - if @month.present?
+    . = link_to "← 全体に戻る", "/system/mai_search_logs/total?all=1"
+
+  table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
+    thead
+      tr.small
+        th rowspan="2"
+        th colspan="2" 検索
+        th colspan="5" style="border-left-style:double;border-left-width:3px;" リンク
+        th colspan="5" style="border-left-style:double;border-left-width:3px;" 問い合わせ
+        th colspan="2" style="border-left-style:double;border-left-width:3px;" 評価
+
+      tr
+        th scope="col" style="width: 64px;border-left-style:double;border-left-width:3px;" utag
+        th scope="col" style="width: 64px;" 回数
+        th scope="col" style="width: 64px;border-left-style:double;border-left-width:3px;" utag
+        th scope="col" style="width: 64px;" アドバ
+        th scope="col" style="width: 64px;" 一括
+        th scope="col" style="width: 64px;" カード
+        th scope="col" style="width: 64px;border-left-style:solid;border-left-width:2px;" 合計
+        th scope="col" style="width: 64px;border-left-style:double;border-left-width:3px;" utag
+        th scope="col" style="width: 64px;" アドバ
+        th scope="col" style="width: 64px;" 一括
+        th scope="col" style="width: 64px;" カード
+        th scope="col" style="width: 64px;border-left-style:solid;border-left-width:2px;" 合計
+
+        th scope="col" style="width: 50px;border-left-style:double;border-left-width:3px;"
+          .text-success.m-auto #{mi(:thumb_up_alt)}
+        th scope="col" style="width: 50px;"
+          .text-danger.m-auto #{mi(:thumb_down_alt)}
+
+    tbody
+      - @rows.each do |row|
+
+        tr
+          td.text-end.small
+            - if params[:all].present?
+              = link_to row, "/system/mai_search_logs/total?month=#{row}"
+            - else
+              . class="#{case row.wday when 6; "text-primary" when 0; "text-danger" end }" = l(row, format: :row)
+
+          td.text-end = number_with_delimiter @mai_search_logs_utag_count[row]
+          td.text-end = number_with_delimiter @mai_search_logs_count[row]
+          td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @detail_logs_utag_count[row]
+          td.text-end = number_with_delimiter @detail_logs_adv_count[row]
+          td.text-end = number_with_delimiter @detail_logs_blk_count[row]
+          td.text-end = number_with_delimiter @detail_logs_crd_count[row]
+          td.text-end style="border-left-style:solid;border-left-width:2px;" = @detail_logs_sum_count[row]
+          td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @contacts_utag_count[row]
+          td.text-end = number_with_delimiter @contacts_adv_count[row]
+          td.text-end = number_with_delimiter @contacts_blk_count[row]
+          td.text-end = number_with_delimiter @contacts_crd_count[row]
+          td.text-end style="border-left-style:solid;border-left-width:2px;" = @contacts_sum_count[row]
+          td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @mai_search_logs_good_count[row]
+          td.text-end = number_with_delimiter @mai_search_logs_bad_count[row]
+    thead
+      tr.small
+        th rowspan="2"
+        th colspan="2" 検索
+        th colspan="5" style="border-left-style:double;border-left-width:3px;" リンク
+        th colspan="5" style="border-left-style:double;border-left-width:3px;" 問い合わせ
+        th colspan="2" style="border-left-style:double;border-left-width:3px;" 評価
+
+      tr
+        th scope="col" style="width: 64px;border-left-style:double;border-left-width:3px;" utag
+        th scope="col" style="width: 64px;" 回数
+        th scope="col" style="width: 64px;border-left-style:double;border-left-width:3px;" utag
+        th scope="col" style="width: 64px;" アドバ
+        th scope="col" style="width: 64px;" 一括
+        th scope="col" style="width: 64px;" カード
+        th scope="col" style="width: 64px;border-left-style:solid;border-left-width:2px;" 合計
+        th scope="col" style="width: 64px;border-left-style:double;border-left-width:3px;" utag
+        th scope="col" style="width: 64px;" アドバ
+        th scope="col" style="width: 64px;" 一括
+        th scope="col" style="width: 64px;" カード
+        th scope="col" style="width: 64px;border-left-style:solid;border-left-width:2px;" 合計
+
+        th scope="col" style="width: 50px;border-left-style:double;border-left-width:3px;"
+          .text-success.m-auto #{mi(:thumb_up_alt)}
+        th scope="col" style="width: 50px;"
+          .text-danger.m-auto #{mi(:thumb_down_alt)}

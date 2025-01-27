@@ -71,14 +71,28 @@ h1 マシンライフ 管理者ページ
       .px-3.py-2 = link_to "/system/contacts" do
         . #{mi(:mark_email_unread)} 問い合わせ一覧
 
-      .px-3.py-2 = link_to "/system/detail_logs" do
-        . #{mi(:format_list_numbered_rtl)} 在庫詳細アクセスログ
+      .px-3.py-2
+        = link_to "/system/detail_logs" do
+          | #{mi(:format_list_numbered_rtl)} 在庫詳細アクセスログ
+        |<> |
+        = link_to "/system/detail_logs/ip_counts" do
+          | #{mi(:list_alt)} IP/host集計
 
       .px-3.py-2 = link_to "/system/search_logs" do
         . #{mi(:format_list_numbered_rtl)} 在庫検索ログ
 
       .px-3.py-2 = link_to "/system/catalog_logs" do
         . #{mi(:format_list_numbered_rtl)} 電子カタログアクセスログ
+
+      .px-3.py-2
+        = link_to "/system/mai_search_logs" do
+          | #{mi(:support_agent)} MAI在庫検索ログ
+        |<> |
+        = link_to "/system/mai_search_logs/total?all=1" do
+          | #{mi(:list_alt)} MAI集計
+        |<> |
+        = link_to "/system/mai_search_logs/total" do
+          | #{mi(:date_range)} 今月分
 
       .px-3.py-2
         = link_to "/system/contacts/total?all=1" do

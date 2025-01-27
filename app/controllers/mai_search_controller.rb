@@ -1,4 +1,4 @@
-class Playground::OpenaiTest01Controller < ApplicationController
+class MaiSearchController < ApplicationController
   include Hosts
 
   # before_action :check_env
@@ -30,12 +30,6 @@ MAIは、中古機械・工具業界に精通した、丁寧な口調の優秀�
 工作機械・工具のプロフェッショナルで、専門知識を持っている、
 工場で実際に加工作業を行う技術者や、中古工作機械・工具の販売商社です。
 ".freeze
-
-#   SYSTEM_MESSAGE = "
-# You are a support representative for 'Machine Life' a sales platform for used machine tools and equipment operated by the All Japan Machine Traders' Association (Zenkiren).
-# Zenkiren is a nationwide organization established to modernize distribution and foster collaboration within the machine tool distribution industry. Machine Life provides inventory information on used machines and tools from member companies across the country.
-# Please respond to user inquiries as an industry expert, using clear and polite language.
-# ".freeze
 
   QUERY_MESSAGE = '
 1. messageに回答するためには、マシンライフにあるどんな工作機械・工具が必要かを考えて下さい。
@@ -82,7 +76,7 @@ name model に含まれているkeywordは除外。
 
 ### capacity
 機械・工具の能力数値を単位とともに列挙。範囲の場合はマッチする正規表現を記述。数値ではないものは除外。
-英語表記と日本語表記などを正規表現で併記。例えばインチの場合、(インチ|inch|吋)を併記。
+英語表記と日本語表記などを正規表現で併記。例えばインチの場合(インチ|inch|吋)を併記。
 
 ## 出力例
 ex.1) 大阪近辺で、オークマかアマダの90年代の5尺立型旋盤の型式がLSかods-12で。
@@ -122,18 +116,6 @@ ans.6)
 # "commision": 質問文の内容から試運転が必要かどうかを判別し、true（試運転可）、false（試運転不可）、空白(指定なし)で指定,
 # "nc": 質問文の内容から検索する商品がNC工作機械かどうかを判別し、true（NC工作機械）、false（それ以外の機械・工具）で指定,
 # "keywords": 上記以外のキーワード(能力、仕様、付属品などできるだけたくさん)。すでに上記カラムに入っているkeywordは除外。
-
-#   QUERY_EXP = '
-# オークマかアマダの90年代の5尺立型旋盤で、型式がLSかods-12で。大阪近辺で。
-# '.freeze
-
-#   QUERY_EXP_RES = '
-# {"name": "立旋盤|立型旋盤|縦旋盤|タテセンバン|vertical laser", "maker": "オークマ|アマダ|大隈", "year": "1990|1991|1992|1993|1994|1995|1996|1997|1998|1999", "model": "LS|ODS12", "addr1": "大阪|兵庫|京都|奈良|和歌山", "keywords": "5尺|0.6m|600cm"}
-# '.freeze
-
-#   QUERY_EXP_RES = '
-# {"name": "立旋盤|立型旋盤|縦旋盤|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ|大隈", "year": "199[0-9]", "model": "LS|ODS12", "addr1": "大阪|兵庫|京都|奈良|和歌山"}
-# '.freeze
 
   SORT_QUERY_MESSAGE = "
 ## 処理
@@ -176,23 +158,6 @@ report>>>
 
 # 4. 付属品があるかどうか
 
-# 5. 旋盤の場合
-# 尺と芯間(mm)を相互に変換して、どちらも該当するものを取得。
-
-# 6. NC工作機械か一般工作機械か？
-# NCと明示していない場合は、NCのものは除外。
-
-#   SYSTEM_MESSAGE = '
-# あなたは、AXTORMのNAOKI MAEDAです。
-# 音楽ゲーム、とりわけDDR、クロスビーツ、セブンスコードで有名な、音ゲー界の神です。
-
-# 3月1日でございます、あるよな？、なるほど！なるほど！なるほど！、
-# SEE YOU AGAINやな、確実にゴッ！、がんばってや、デファクトスタンダード、ゲーミフィケーション、
-# などの名言がありますので、ここぞというときにピンポイントに使ってください。
-
-# 適宜改行を入れて、関西弁(北大阪)で返答してください。
-# '.freeze
-
   # KEYWORDSEARCH_COLUMNS_ALL =
   #   %w[
   #     machines.name machines.maker machines.model machines.addr1 machines.model2
@@ -206,16 +171,16 @@ report>>>
   def index; end
 
   def search
-    redirect_to "/playground/openai_test01/", flash: { message: params[:message] }
+    redirect_to "/mai_search/", flash: { message: params[:message] }
   end
 
-  def show
-    machine = Machine.sales.find(params[:id])
+  # def show
+  #   machine = Machine.sales.find(params[:id])
 
-    res = machine_to_json_hash(machine).to_json.gsub(/(\s|\\r|\\n|　)+/, " ")
+  #   res = machine_to_json_hash(machine).to_json.gsub(/(\s|\\r|\\n|　)+/, " ")
 
-    render json: res
-  end
+  #   render json: res
+  # end
 
   def create
     begin
@@ -236,9 +201,6 @@ report>>>
       else
         @error_mes = "質問がありません。"
       end
-    # rescue Net::ReadTimeout
-    #   @error = e.message
-    #   @error_mes = "AI処理がタイムアウトしました。\nお手数ですが、再度検索を行ってみてください。"
     rescue StandardError => e
       # @error = e.full_message
       @time = Time.current - start_time
@@ -282,7 +244,7 @@ report>>>
   end
 
   def check_env
-    # redirect_to "/" if Rails.env.production?
+    redirect_to "/" if Rails.env.production?
   end
 
   def set_client
@@ -341,12 +303,6 @@ report>>>
           .gsub(/9尺|1500mm|1.5m/i, '(9尺|1500mm|1.5m)')
       end
     end
-
-    # キーワードがなかった場合、エラーを表示
-    # if @wheres.blank? || @wheres.all? { |_, v| v.blank? }
-    #   @error_mes = "すいません。\n質問文に検索できるキーワードがありませんでした。\n\n検索のヒント : 質問に「機械名」「メーカー」「能力値」などを含めてみてください。"
-    #   return
-    # end
 
     ### search ###
     @machines = Machine.sales
@@ -495,7 +451,7 @@ report>>>
       registration_date: machine.created_at.strftime("%y/%m/%d %H:%M:%S"),
       access_count: machine.detail_logs.size,
       contact_count: machine.contacts.size,
-      attached_document_PDF: machine.pdfs_parsed.medias.map(&:name)
+      '添付書類': machine.pdfs_parsed.medias.map(&:name)
     }
 
     # capacity

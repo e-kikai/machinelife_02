@@ -2,7 +2,7 @@ class System::ContactsController < System::ApplicationController
   def index
     @contacts = Contact.where(company_id: nil, machine_id: nil).order(id: :desc)
 
-    @pagy, @pcontacts = pagy(@contacts, items: 50)
+    @pagy, @pcontacts = pagy(@contacts, limit: 50)
   end
 
   def all

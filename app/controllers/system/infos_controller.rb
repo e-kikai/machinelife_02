@@ -4,7 +4,7 @@ class System::InfosController < System::ApplicationController
   def index
     @infos = Info.order(id: :desc)
 
-    @pagy, @pinfos = pagy(@infos, items: 50)
+    @pagy, @pinfos = pagy(@infos, limit: 50)
   end
 
   def new

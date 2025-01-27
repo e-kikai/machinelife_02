@@ -8,6 +8,19 @@ class System::DetailLogsController < System::ApplicationController
       .then { |ds| params[:k].present?          ? ds.where_keyword(params[:k]) : ds }
 
     ### ページャ ###
-    @pagy, @pdetail_logs = pagy(@detail_logs, items: 100)
+    @pagy, @pdetail_logs = pagy(@detail_logs, limit: 100)
+  end
+
+  def ip_counts
+    @start_date       = params[:start_date] || 1.week.ago
+    @end_date         = params[:end_date]
+    @detail_logs      = DetailLog.where(created_at: @start_date..@end_date)
+    @hosts            = @detail_logs.distinct.pluck(:ip, :host).to_h
+    @detail_log_count = @detail_logs.group(:ip).order(count: :desc).count
+    @utag_count       = @detail_logs.group(:ip).distinct.count(:utag)
+    @machine_id_count = @detail_logs.group(:ip).distinct.count(:machine_id)
+
+    # ### ページャ ###
+    # @pagy, @pdetail_logs = pagy(@detail_log_count, limit: 100)
   end
 end

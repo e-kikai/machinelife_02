@@ -4,7 +4,7 @@ class Admin::UrikaisController < Admin::ApplicationController
   def index
     @urikais = Urikai.where(company: current_company).order(id: :desc)
 
-    @pagy, @purikais = pagy(@urikais, items: 50)
+    @pagy, @purikais = pagy(@urikais, limit: 50)
   end
 
   def show; end

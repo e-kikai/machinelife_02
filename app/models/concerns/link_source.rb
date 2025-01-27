@@ -87,6 +87,7 @@ module LinkSource
           when %r{^/admin/catalogs/search\?(.*)};  "電子カタログ検索 : #{Regexp.last_match(1)}"
           when %r{^/admin};                        "組合員ページ"
           when %r{^/system};                       "管理者ページ"
+          when %r{^/contacts};                     "問合せ"
           when %r{^(\?|$|/$)};                     "トップページ"
           else; path
           end

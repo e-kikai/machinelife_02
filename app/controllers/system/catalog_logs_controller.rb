@@ -8,6 +8,6 @@ class System::CatalogLogsController < System::ApplicationController
       .then { |cs| params[:k].present?          ? cs.where_keyword(params[:k]) : cs }
 
     ### ページャ ###
-    @pagy, @pcatalog_logs = pagy(@catalog_logs, items: 100)
+    @pagy, @pcatalog_logs = pagy(@catalog_logs, limit: 100)
   end
 end

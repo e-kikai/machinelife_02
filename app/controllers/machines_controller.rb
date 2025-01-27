@@ -88,7 +88,7 @@ class MachinesController < ApplicationController
 
     @news = @news.where(created_at:)
 
-    @pagy, @pnews = pagy(@news, items: 50)
+    @pagy, @pnews = pagy(@news, limit: 50)
 
     # ロギング
     search_path = request.fullpath

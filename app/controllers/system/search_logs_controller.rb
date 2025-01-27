@@ -8,6 +8,6 @@ class System::SearchLogsController < System::ApplicationController
       .then { |cs| params[:k].present?          ? cs.where_keyword(params[:k]) : cs }
 
     ### ページャ ###
-    @pagy, @psearch_logs = pagy(@search_logs, items: 100)
+    @pagy, @psearch_logs = pagy(@search_logs, limit: 100)
   end
 end
