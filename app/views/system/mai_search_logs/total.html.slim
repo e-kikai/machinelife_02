@@ -14,7 +14,7 @@ h1 MAIログ集計 (#{title})
       tr.small
         th rowspan="2"
         th colspan="2" 検索
-        th colspan="5" style="border-left-style:double;border-left-width:3px;" リンク
+        th colspan="4" style="border-left-style:double;border-left-width:3px;" リンク
         th colspan="5" style="border-left-style:double;border-left-width:3px;" 問い合わせ
         th colspan="2" style="border-left-style:double;border-left-width:3px;" 評価
 
@@ -23,7 +23,6 @@ h1 MAIログ集計 (#{title})
         th scope="col" style="width: 64px;" 回数
         th scope="col" style="width: 64px;border-left-style:double;border-left-width:3px;" utag
         th scope="col" style="width: 64px;" アドバ
-        th scope="col" style="width: 64px;" 一括
         th scope="col" style="width: 64px;" カード
         th scope="col" style="width: 64px;border-left-style:solid;border-left-width:2px;" 合計
         th scope="col" style="width: 64px;border-left-style:double;border-left-width:3px;" utag
@@ -51,7 +50,6 @@ h1 MAIログ集計 (#{title})
           td.text-end = number_with_delimiter @mai_search_logs_count[row]
           td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @detail_logs_utag_count[row]
           td.text-end = number_with_delimiter @detail_logs_adv_count[row]
-          td.text-end = number_with_delimiter @detail_logs_blk_count[row]
           td.text-end = number_with_delimiter @detail_logs_crd_count[row]
           td.text-end style="border-left-style:solid;border-left-width:2px;" = @detail_logs_sum_count[row]
           td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @contacts_utag_count[row]
@@ -74,7 +72,6 @@ h1 MAIログ集計 (#{title})
         th scope="col" style="width: 64px;" 回数
         th scope="col" style="width: 64px;border-left-style:double;border-left-width:3px;" utag
         th scope="col" style="width: 64px;" アドバ
-        th scope="col" style="width: 64px;" 一括
         th scope="col" style="width: 64px;" カード
         th scope="col" style="width: 64px;border-left-style:solid;border-left-width:2px;" 合計
         th scope="col" style="width: 64px;border-left-style:double;border-left-width:3px;" utag
