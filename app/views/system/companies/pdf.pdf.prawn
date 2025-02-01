@@ -1,5 +1,7 @@
 prawn_document(filename: "companies_seikyu.pdf") do |pdf|
   @companies.each do |co|
+    # break if co.id != 1
+
     ### 金額計算 ###
     price, title =
       case co.rank
@@ -35,7 +37,33 @@ prawn_document(filename: "companies_seikyu.pdf") do |pdf|
     pdf.line [55.mm, 94.mm], [85.mm, 94.mm]
     pdf.stroke
 
-    pdf.image "app/assets/images/pdf/rank_seikyu_add.png", at: [36.mm, 85.mm], width: 140.mm
+    pdf.image "app/assets/images/pdf/rank_seikyu_add_02.png", at: [36.mm, 85.mm], width: 140.mm
+    pdf.image "app/assets/images/pdf/rank_seikyu_message.png", at: [36.mm, 31.mm], width: 100.mm
+
+    # 追加 : 振込手数料はについて
+    # pdf.bounding_box([100, 200], width: 300, height: 100) do
+    #   stroke_bounds
+    #   stroke_circle [0, 0], 10
+    # end
+    # pdf.fill_color 'FFFFFF'
+    # pdf.rectangle [38.mm, 31.mm], 150.mm, 10.mm
+    # pdf.fill
+
+    # pdf.text_box "※ 振込の場合は、個人名ではなく会社名(屋号)でお願いします。", at: [38.mm, 31.mm], size: 10
+    # pdf.text_box "※ 振込手数料は貴社負担でお願いします。", at: [38.mm, 27.mm], size: 10, inline_format: true
+    # pdf.text('※ 振込の場合は、個人名ではなく')
+    # pdf.font "vendor/assets/fonts/VL-PGothic-Regular.ttf", styles: [:bold]
+
+    # pdf.text('会社名(<sub>屋号</sub>)', color: [22, 55, 79, 30], inline_format: true)
+    # pdf.text('でお願いします')
+
+    # formatted_text_box(
+    #   [
+    #     { text: 'Some bold. ', styles: [:bold] },
+    #     { text: 'Some italic. ', styles: [:italic] },
+    #     { text: 'Bold italic. ', styles: %i[bold italic] },
+    #   ], at: [38.mm, 31.mm], size: 10
+    # )
 
     ### 領収書 ###
     pdf.start_new_page
