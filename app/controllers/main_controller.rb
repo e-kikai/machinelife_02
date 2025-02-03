@@ -17,8 +17,8 @@ class MainController < ApplicationController
 
     @header_full = true
 
-    render :index_02 if params[:test].present? # テスト表示用
-    # render :index_02 # 新トップページ
+    # render :index_02 if params[:test].present? # テスト表示用
+    render :index_02 # 新トップページ
   end
 
   # def test
