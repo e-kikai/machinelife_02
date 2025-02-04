@@ -13,29 +13,32 @@ h1 MAIログ集計 (#{title})
     thead
       tr.small
         th rowspan="2" style="width: 60px;"
-        th colspan="2" style="border-left-style:double;border-left-width:3px;" 検索
+        th colspan="5" style="border-left-style:double;border-left-width:3px;" 検索
         th colspan="5" style="border-left-style:double;border-left-width:3px;" リンク
         th colspan="6 " style="border-left-style:double;border-left-width:3px;" 問い合わせ
         th colspan="2" style="border-left-style:double;border-left-width:3px;" 評価
 
       tr.small
         th scope="col" style="width: 50px;border-left-style:double;border-left-width:3px;" utag人
-        th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 回数
+        th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 0
+        th scope="col" style="width: 50px;" 成功
+        th scope="col" style="width: 50px;" 100 <
+        th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 合計
         th scope="col" style="width: 50px;border-left-style:double;border-left-width:3px;" utag人
-        th.small scope="col" style="width: 68px;border-left-style:solid;border-left-width:2px;" アドバイス
+        th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" adv
         th scope="col" style="width: 50px;" カード
         th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 合計
-        th scope="col" style="width: 84px;" 割合％ <span class="small">(全体)</span>
+        th scope="col" style="width: 80px;" 割合％ <span class="small">(全体)</span>
         th scope="col" style="width: 50px;border-left-style:double;border-left-width:3px;" utag人
-        th.small scope="col" style="width: 68px;border-left-style:solid;border-left-width:2px;" アドバイス
+        th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" adv
         th scope="col" style="width: 50px;" 一括
         th scope="col" style="width: 50px;" カード
         th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 合計
-        th scope="col" style="width: 84px;" 割合％ <span class="small">(全体)</span>
+        th scope="col" style="width: 80px;" 割合％ <span class="small">(全体)</span>
 
-        th scope="col" style="width: 50px;border-left-style:double;border-left-width:3px;"
+        th scope="col" style="width: 24px;border-left-style:double;border-left-width:3px;"
           .text-success.m-auto #{mi(:thumb_up_alt)}
-        th scope="col" style="width: 50px;"
+        th scope="col" style="width: 24px;"
           .text-danger.m-auto #{mi(:thumb_down_alt)}
 
     tbody
@@ -49,15 +52,19 @@ h1 MAIログ集計 (#{title})
               . class="#{case row.wday when 6; "text-primary" when 0; "text-danger" end }" = l(row, format: :row)
 
           td.text-end = number_with_delimiter @mai_search_logs_utag_count[row]
+          td.text-end style="border-left-style:solid;border-left-width:2px;" = number_with_delimiter @mai_search_logs_zero_count[row]
+          td.text-end = number_with_delimiter @mai_search_logs_adv_count[row]
+          td.text-end = number_with_delimiter @mai_search_logs_over_count[row]
           td.text-end style="border-left-style:solid;border-left-width:2px;" = number_with_delimiter @mai_search_logs_count[row]
+
           td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @detail_logs_utag_count[row]
           td.text-end style="border-left-style:solid;border-left-width:2px;" = number_with_delimiter @detail_logs_adv_count[row]
           td.text-end = number_with_delimiter @detail_logs_crd_count[row]
           td.text-end style="border-left-style:solid;border-left-width:2px;" = @detail_logs_sum_count[row]
           td.text-end
             - if @detail_logs_sum_count[row] && @detail_logs_all_count[row]
-              | #{(@detail_logs_sum_count[row].to_f / @detail_logs_all_count[row].to_f * 100).floor(1)}
-              span.small = " (#{@detail_logs_all_count[row]})"
+              | #{(@detail_logs_sum_count[row].to_f / @detail_logs_all_count[row] * 100).floor(0)}
+              span.small = " (#{number_with_delimiter(@detail_logs_all_count[row])})"
 
           td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @contacts_utag_count[row]
           td.text-end style="border-left-style:solid;border-left-width:2px;" = number_with_delimiter @contacts_adv_count[row]
@@ -66,35 +73,38 @@ h1 MAIログ集計 (#{title})
           td.text-end style="border-left-style:solid;border-left-width:2px;" = @contacts_sum_count[row]
           td.text-end
             - if @contacts_sum_count[row] && @contacts_all_count[row]
-              | #{(@contacts_sum_count[row].to_f / @contacts_all_count[row].to_f * 100).floor(1)}
-              span.small = " (#{@contacts_all_count[row]})"
+              | #{(@contacts_sum_count[row].to_f / @contacts_all_count[row] * 100).floor(0)}
+              span.small = " (#{number_with_delimiter(@contacts_all_count[row])})"
 
           td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @mai_search_logs_good_count[row]
           td.text-end = number_with_delimiter @mai_search_logs_bad_count[row]
     thead
       tr.small
         th rowspan="2" style="width: 60px;"
-        th colspan="2" style="border-left-style:double;border-left-width:3px;" 検索
+        th colspan="5" style="border-left-style:double;border-left-width:3px;" 検索
         th colspan="5" style="border-left-style:double;border-left-width:3px;" リンク
         th colspan="6" style="border-left-style:double;border-left-width:3px;" 問い合わせ
         th colspan="2" style="border-left-style:double;border-left-width:3px;" 評価
 
       tr.small
         th scope="col" style="width: 50px;border-left-style:double;border-left-width:3px;" utag人
-        th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 回数
+        th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 0
+        th scope="col" style="width: 50px;" 成功
+        th scope="col" style="width: 50px;" 100 <
+        th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 合計
         th scope="col" style="width: 50px;border-left-style:double;border-left-width:3px;" utag人
-        th.small scope="col" style="width: 68px;border-left-style:solid;border-left-width:2px;" アドバイス
+        th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" adv
         th scope="col" style="width: 50px;" カード
         th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 合計
-        th scope="col" style="width: 84px;" 割合％ <span class="small">(全体)</span>
+        th scope="col" style="width: 80px;" 割合％ <span class="small">(全体)</span>
         th scope="col" style="width: 50px;border-left-style:double;border-left-width:3px;" utag人
-        th.small scope="col" style="width: 68px;border-left-style:solid;border-left-width:2px;" アドバイス
+        th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" adv
         th scope="col" style="width: 50px;" 一括
         th scope="col" style="width: 50px;" カード
         th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 合計
-        th scope="col" style="width: 84px;" 割合％ <span class="small">(全体)</span>
+        th scope="col" style="width: 80px;" 割合％ <span class="small">(全体)</span>
 
-        th scope="col" style="width: 50px;border-left-style:double;border-left-width:3px;"
+        th scope="col" style="width: 24px;border-left-style:double;border-left-width:3px;"
           .text-success.m-auto #{mi(:thumb_up_alt)}
-        th scope="col" style="width: 50px;"
+        th scope="col" style="width: 24px;"
           .text-danger.m-auto #{mi(:thumb_down_alt)}

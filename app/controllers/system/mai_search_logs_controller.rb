@@ -31,11 +31,14 @@ class System::MaiSearchLogsController <System::ApplicationController
       @detail_logs     = @detail_logs_all.where("r LIKE '%mai%'")
       @contacts_all    = Contact.where.not(machine_id: nil).where.not(company_id: nil).group("DATE(contacts.created_at)").where(created_at: @month.in_time_zone.all_month)
       @contacts        = @contacts_all.where("r LIKE '%mai%'")
-
     end
 
-    @mai_search_logs_count     = @mai_search_logs.count
+    @mai_search_logs_count      = @mai_search_logs.count
     @mai_search_logs_utag_count = @mai_search_logs.distinct.count(:utag)
+    @mai_search_logs_zero_count = @mai_search_logs.where(search_count: 0).count
+    @mai_search_logs_adv_count  = @mai_search_logs.where(search_count:  1..100).count
+    @mai_search_logs_over_count = @mai_search_logs.where(search_count: 101..).count
+
     @mai_search_logs_good_count = @mai_search_logs.where(good: true).count
     @mai_search_logs_bad_count  = @mai_search_logs.where(bad: true).count
 
