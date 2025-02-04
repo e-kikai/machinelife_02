@@ -24,6 +24,7 @@ class System::MaiSearchLogsController <System::ApplicationController
       @contacts        = @contacts_all.where("r LIKE '%mai%'")
     else
       @month = params[:month] ? params[:month].to_date : today
+      @rows = @month.all_month.to_a
 
       @mai_search_logs = MaiSearchLog.ignore_hosts.group("DATE(mai_search_logs.created_at)").where(created_at: @month.in_time_zone.all_month)
       @detail_logs_all = DetailLog.ignore_hosts.group("DATE(detail_logs.created_at)").where(created_at: @month.in_time_zone.all_month)
@@ -31,7 +32,6 @@ class System::MaiSearchLogsController <System::ApplicationController
       @contacts_all    = Contact.where.not(machine_id: nil).where.not(company_id: nil).group("DATE(contacts.created_at)").where(created_at: @month.in_time_zone.all_month)
       @contacts        = @contacts_all.where("r LIKE '%mai%'")
 
-      @rows = @month.all_month.to_a
     end
 
     @mai_search_logs_count     = @mai_search_logs.count
