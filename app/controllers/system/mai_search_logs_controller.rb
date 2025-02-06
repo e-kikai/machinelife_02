@@ -6,6 +6,10 @@ class System::MaiSearchLogsController <System::ApplicationController
       .then { |cs| params[:end_date].present?   ? cs.where(created_at: ..params[:end_date]) : cs }
       .then { |cs| params[:user_id].present?    ? cs.where(user_id: params[:user_id]) : cs }
       .then { |cs| params[:k].present?          ? cs.where_keyword(params[:k]) : cs }
+      .then { |cs| params[:filter] == "zero"    ? cs.where(search_count: 0) : cs }
+      .then { |cs| params[:filter] == "over"    ? cs.where(search_count: 101..) : cs }
+      .then { |cs| params[:filter] == "good"    ? cs.where(good: true) : cs }
+      .then { |cs| params[:filter] == "bad"    ? cs.where(bad: true) : cs }
 
     ### ページャ ###
     @pagy, @pmai_search_logs = pagy(@mai_search_logs, limit: 100)
@@ -21,7 +25,6 @@ class System::MaiSearchLogsController <System::ApplicationController
       @detail_logs_all = DetailLog.ignore_hosts.group("to_char(created_at, 'YYYY/MM')")
       @detail_logs     = @detail_logs_all.where("r LIKE '%mai%'")
       @contacts_all    = Contact.where.not(machine_id: nil).where.not(company_id: nil).group("to_char(created_at, 'YYYY/MM')")
-      @contacts        = @contacts_all.where("r LIKE '%mai%'")
     else
       @month = params[:month] ? params[:month].to_date : today
       @rows = @month.all_month.to_a
@@ -30,7 +33,6 @@ class System::MaiSearchLogsController <System::ApplicationController
       @detail_logs_all = DetailLog.ignore_hosts.group("DATE(detail_logs.created_at)").where(created_at: @month.in_time_zone.all_month)
       @detail_logs     = @detail_logs_all.where("r LIKE '%mai%'")
       @contacts_all    = Contact.where.not(machine_id: nil).where.not(company_id: nil).group("DATE(contacts.created_at)").where(created_at: @month.in_time_zone.all_month)
-      @contacts        = @contacts_all.where("r LIKE '%mai%'")
     end
 
     @mai_search_logs_count      = @mai_search_logs.count
@@ -42,6 +44,7 @@ class System::MaiSearchLogsController <System::ApplicationController
     @mai_search_logs_good_count = @mai_search_logs.where(good: true).count
     @mai_search_logs_bad_count  = @mai_search_logs.where(bad: true).count
 
+    @contacts               = @contacts_all.where("r LIKE '%mai%'")
     @contacts_sum_count     = @contacts.count
     @contacts_all_count     = @contacts_all.count
     @contacts_utag_count    = @contacts.distinct.count(:utag)
