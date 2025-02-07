@@ -55,7 +55,8 @@ class Machine < ApplicationRecord
 
   MEDIA_URL = "https://s3-ap-northeast-1.amazonaws.com/machinelife/machine/public/media/machine/".freeze
   NEWS_LIMIT_DEFAULT = 6
-  NEWS_DAY = Time.current.ago(1.day)
+  # NEWS_DAY = Time.current.ago(1.day)
+  NEWS_DAY = Time.current.ago(1.week)
   NEWS_MAIL_DAY = Time.current.ago(1.week)
   NEWS_ADMIN_MAIL_DAY = Time.current.ago(1.day)
 
