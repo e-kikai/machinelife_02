@@ -186,7 +186,6 @@ report>>>
     if kwd.present?
       # @machines = Machine.sales.includes(:contacts, :detail_logs).where(KEYWORD_SEARCH_SQL, kwd)
       @machines = Machine.sales.includes(:contacts, :detail_logs).where("machines.search_keyword ~* ALL(ARRAY[?])", kwd)
-
       @count    = @machines.count
 
       if @count > PRODUCTS_LIMIT # 結果超過(画像のあるもののみ)

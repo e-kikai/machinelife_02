@@ -41,11 +41,6 @@ h1 MAI検索ログ
               = f.radio_button(:filter, :bad, { class: "btn-check", checked: params[:filter] == "bad" })
               = f.label :filter_bad, mi(:thumb_down_alt), class: "btn btn-outline-secondary btn-sm"
 
-            / label.btn.btn-outline-secondary.btn-sm
-            label.btn.btn-outline-dark.btn-sm.py-1
-              = f.radio_button(:filter, :aaaa, { class: "", checked: params[:filter] == "bad" })
-              = " 90年代"
-
           .col-auto = f.button class: "btn btn-primary btn-sm" do
             . #{mi(:search)} 検索
           .col-auto.ms-auto = link_to "/system/mai_search_logs", class: "btn btn-sm btn-secondary" do
@@ -111,6 +106,8 @@ h1 MAI検索ログ
               td = sl.message
               td style="word-break: break-word;"
                 - sl.keywords.gsub(/[{}"]/, '').split(",").each do |col|
+                  .d-inline-block.me-2 #{col},
+                - sl.filters.gsub(/[{}"]/, '').split(",").each do |col|
                   .d-inline-block.me-2 #{col},
               td.text-end = number_with_delimiter(sl.search_level)
               td.text-end = number_with_delimiter(sl.search_count)

@@ -52,8 +52,8 @@ class Playground::OpenaiTest01Controller < ApplicationController
             filters: @mai_search.filters.to_json.strip || "",
             search_count: @mai_search.machines&.count || 0,
             search_level: @mai_search.level || 0,
-            count: @sort_machines&.count || 0,
-            report: @report_text&.strip || "",
+            count: @mai_search.adv_machines&.count || 0,
+            report: @mai_search.advice&.strip || "",
             time: @time || 0,
             error: @error || ""
           }
