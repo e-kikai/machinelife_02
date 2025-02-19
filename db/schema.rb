@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_21_062513) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_19_131959) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -530,13 +530,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_21_062513) do
     t.integer "used_change"
     t.integer "ekikai_price"
     t.virtual "model2", type: :string, as: "regexp_replace(upper(model), '[^A-Z0-9]+'::text, ''::text, 'g'::text)", stored: true
-    t.virtual "maker2", type: :string, as: "TRIM(BOTH FROM regexp_replace(\nCASE\n    WHEN ((maker = '-'::text) OR (maker IS NULL) OR (maker ~ '--|^不明|-,|。|メーカー不明|？|ー'::text)) THEN ''::text\n    WHEN (maker ~ '｜'::text) THEN \"substring\"(maker, '｜(.*?)$'::text)\n    WHEN (maker ~ '[\\/\\,\\(／（\\|、]'::text) THEN \"substring\"(maker, '^(.*?)[\\/\\,\\(／（\\|、]'::text)\n    ELSE maker\nEND, '(合同|有限|株式)会社'::text, ''::text, 'g'::text))", stored: true
     t.string "top_image"
+    t.text "search_keyword", default: ""
+    t.text "search_capacity", default: ""
+    t.virtual "maker2", type: :string, as: "TRIM(BOTH FROM regexp_replace(\nCASE\n    WHEN ((maker = '-'::text) OR (maker IS NULL) OR (maker ~ '--|^不明|-,|。|メーカー不明|？|^ー'::text)) THEN ''::text\n    WHEN (maker ~ '｜'::text) THEN \"substring\"(maker, '｜(.*?)$'::text)\n    WHEN (maker ~ '[\\/\\,\\(／（\\|、]'::text) THEN \"substring\"(maker, '^(.*?)[\\/\\,\\(／（\\|、]'::text)\n    ELSE maker\nEND, '(合同|有限|株式)会社'::text, ''::text, 'g'::text))", stored: true
+    t.index ["addr1"], name: "index_machines_on_addr1"
     t.index ["company_id"], name: "machines_ix4"
     t.index ["created_at"], name: "machines_ix5"
     t.index ["deleted_at"], name: "machines_ix1"
     t.index ["genre_id"], name: "machines_ix2"
     t.index ["maker"], name: "machines_ix3"
+    t.index ["maker2"], name: "index_machines_on_maker2"
+    t.index ["year"], name: "index_machines_on_year"
   end
 
   create_table "mai_search_logs", force: :cascade do |t|
@@ -559,6 +564,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_21_062513) do
     t.string "r", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "filters", default: "", null: false
+    t.index ["message"], name: "index_mai_search_logs_on_message"
     t.index ["user_id"], name: "index_mai_search_logs_on_user_id"
   end
 

@@ -129,8 +129,8 @@ messageの内容にマッチするような機械・工具を抽出し、
 その結果を元に、ユーザが購入する際によりよい選択ができるようにアドバイスをしてください。
 
 1. <machines>の在庫機械・工具のうち、messageの質問内容を解釈し、
-質問にマッチしていない機械・工具を除外して、
-残ったものの「id」を抽出し、JSON形式の配列 ([1,2,3]) で出力してください。
+質問にマッチするものを幅広く列挙し、「id」を抽出してJSON形式の配列 ([1,2,3]) で出力してください。
+50件より多い場合は、よりマッチするもの50件くらいまで絞り込んでください。(画像のあるもの優先で)
 
 2. 1.の結果から、messageの質問から、ユーザに対する購入についてのアドバイスを#{REPORT_LIMIT}文字程度の日本語で作成し「report>>>」以降に記述してください。
 
@@ -147,21 +147,6 @@ messageの内容にマッチするような機械・工具を抽出し、
 report>>>
 2.のアドバイスをここに記述。
 ".freeze
-
-# - 50件より多い場合は、よりマッチするもの50件くらいまで絞り込んでください。(画像のあるもの優先で)
-
-#
-# 1. 能力値
-# 例えば「6尺旋盤」の場合、6尺, 芯間が850mm etc. があるものは残し、5尺,7尺,芯間1000mm,NC旋盤 etc.は除外。
-
-# 2. 本数など
-# 「ドリル3本セット」などは、本数が明記されていないもの、2本などは除外。
-
-# 3. 質問しているものが機械か工具かを判断する
-# 例えば「ドリル」の場合は工具なので、「ドリル研削盤」などの機械は除外。
-# 逆に「旋盤」の場合は機械なので、「旋盤チャック」などの工具は除外。
-
-# 4. 付属品があるかどうか
 
   # KEYWORDSEARCH_COLUMNS_ALL =
   #   %w[
@@ -444,15 +429,11 @@ report>>>
       spec: machine.spec,
       accessory: machine.accessory,
       comment: "#{machine.comment} ",
-      # '試運転可': (machine.commission == 1),
       location: "#{machine.addr1} #{machine.addr2} #{machine.addr3} (#{machine.location})",
       category: machine.xl_genre.xl_genre,
       large_genre: machine.large_genre.large_genre,
       genre: machine.genre.genre,
       capacity: {},
-      # image: machine.top_img.present? || machine.top_image.present?,
-      # youtube: machine.youtube.present?,
-      # catalog: machine.catalog_id.present?
       registration_date: machine.created_at.strftime("%y/%m/%d %H:%M:%S"),
       access_count: machine.detail_logs.size,
       contact_count: machine.contacts.size,

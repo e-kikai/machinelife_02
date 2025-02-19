@@ -7,15 +7,19 @@
 /       searchButton.click();
 /     });
 
-h1 MAI 在庫検索
+h1
+  | MAI 在庫検索
+
+.position-absolute style="right: 8px;top: 40px;" = link_to "/mai_search/contact" do
+    span #{mi(:send)} MAIについてのご意見・ご感想はこちらまで
 
 .row
   .col-10.mx-auto.mt-2
     .
       | 機械・工具に関する質問を入力すると、AIアシスタント <span class="fw-bold text-primary-emphasis">MAI</span> がマシンライフの在庫をおさがしいたします。<br />
-      | さらに、商品選定についてのアドバイスもさせていただきます。
-      = link_to "/mai_search/help", class: "ms-2" do
-        span #{mi(:help)} 詳しくは？ -> MAI在庫検索について
+      | さらに、商品選定についてのアドバイスもさせていただきます。 詳しくは ->
+      = link_to "/mai_search/help" do
+        span #{mi(:help)} MAI在庫検索について
     .mt-1
       | ＜質問の例＞ 「大阪にある滝沢の6尺旋盤、おすすめトップ3は」
 

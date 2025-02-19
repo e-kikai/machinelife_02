@@ -29,6 +29,8 @@
 #  pdfs(PDF(JSON))                :text
 #  price(金額)                    :integer
 #  price_tax                      :integer
+#  search_capacity                :text             default("")
+#  search_keyword                 :text             default("")
 #  spec(仕様)                     :text
 #  top_image                      :string
 #  top_img(トップ画像)            :text
@@ -44,11 +46,14 @@
 #
 # Indexes
 #
-#  machines_ix1  (deleted_at)
-#  machines_ix2  (genre_id)
-#  machines_ix3  (maker)
-#  machines_ix4  (company_id)
-#  machines_ix5  (created_at)
+#  index_machines_on_addr1   (addr1)
+#  index_machines_on_maker2  (maker2)
+#  index_machines_on_year    (year)
+#  machines_ix1              (deleted_at)
+#  machines_ix2              (genre_id)
+#  machines_ix3              (maker)
+#  machines_ix4              (company_id)
+#  machines_ix5              (created_at)
 #
 require "test_helper"
 

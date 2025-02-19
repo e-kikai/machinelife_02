@@ -6,6 +6,7 @@
 #  bad(低評価)                :boolean          default(FALSE), not null
 #  count(最終結果件数)        :integer          default(0), not null
 #  error(エラー)              :text             default(""), not null
+#  filters                    :string           default(""), not null
 #  good(高評価)               :boolean          default(FALSE), not null
 #  host                       :string           default("")
 #  ip                         :string           default("")
@@ -25,6 +26,7 @@
 #
 # Indexes
 #
+#  index_mai_search_logs_on_message  (message)
 #  index_mai_search_logs_on_user_id  (user_id)
 #
 class MaiSearchLog < ApplicationRecord
@@ -34,6 +36,7 @@ class MaiSearchLog < ApplicationRecord
 
   before_save :check_robot
 
-  KEYWORDSEARCH_SQL = %w[ip host utag].map { |c| "coalesce(#{c}, '')" }.join(" || ' ' || ") << " ~* ALL(ARRAY[?])"
-  scope :where_keyword, ->(keyword) { where(KEYWORDSEARCH_SQL, Machine.to_keywords(keyword)) }
+  SEARCH_RANGE_DATE = 1.month
+
+  scope :message_cache, ->(message) { where(message:, created_at: SEARCH_RANGE_DATE.ago..).order(id: :desc) }
 end

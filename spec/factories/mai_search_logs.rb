@@ -6,6 +6,7 @@
 #  bad(低評価)                :boolean          default(FALSE), not null
 #  count(最終結果件数)        :integer          default(0), not null
 #  error(エラー)              :text             default(""), not null
+#  filters                    :string           default(""), not null
 #  good(高評価)               :boolean          default(FALSE), not null
 #  host                       :string           default("")
 #  ip                         :string           default("")
@@ -25,6 +26,7 @@
 #
 # Indexes
 #
+#  index_mai_search_logs_on_message  (message)
 #  index_mai_search_logs_on_user_id  (user_id)
 #
 FactoryBot.define do

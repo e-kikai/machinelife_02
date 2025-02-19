@@ -20,7 +20,7 @@ h1 = @title
   .row.g-0.my-1.p-1.border.border-success.small
     .col-2.fw-bold #{mi(:filter_alt)} メーカー
     = render partial: "filtering_checkbox", collection: @fc_makers[0..9], as: :d
-    - if @fc_genres[10].present?
+    - if @fc_makers[10].present?
       .col-2 = link_to "#maker_idsCol", data: { 'bs-toggle': :collapse } do
         | #{mi(:more_horiz)} もっと表示
       #maker_idsCol.collapse.row.g-0

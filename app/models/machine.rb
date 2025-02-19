@@ -29,6 +29,8 @@
 #  pdfs(PDF(JSON))                :text
 #  price(金額)                    :integer
 #  price_tax                      :integer
+#  search_capacity                :text             default("")
+#  search_keyword                 :text             default("")
 #  spec(仕様)                     :text
 #  top_image                      :string
 #  top_img(トップ画像)            :text
@@ -44,14 +46,19 @@
 #
 # Indexes
 #
-#  machines_ix1  (deleted_at)
-#  machines_ix2  (genre_id)
-#  machines_ix3  (maker)
-#  machines_ix4  (company_id)
-#  machines_ix5  (created_at)
+#  index_machines_on_addr1   (addr1)
+#  index_machines_on_maker2  (maker2)
+#  index_machines_on_year    (year)
+#  machines_ix1              (deleted_at)
+#  machines_ix2              (genre_id)
+#  machines_ix3              (maker)
+#  machines_ix4              (company_id)
+#  machines_ix5              (created_at)
 #
 class Machine < ApplicationRecord
   include SoftDelete
+
+  before_save :update_search_keywords
 
   MEDIA_URL = "https://s3-ap-northeast-1.amazonaws.com/machinelife/machine/public/media/machine/".freeze
   NEWS_LIMIT_DEFAULT = 6
@@ -76,13 +83,20 @@ class Machine < ApplicationRecord
     no_desc: ["管理番号 : 降順", [Arel.sql("coalesce(no, '') = '' ASC"), { no: :desc }]]
   }.freeze
 
+  # KEYWORDSEARCH_COLUMNS =
+  #   %w[
+  #     machines.no machines.name machines.maker machines.model machines.year machines.addr1
+  #     machines.model2 machines.maker2
+  #     makers.maker_master genres.genre
+  #   ].freeze
+  # KEYWORDSEARCH_SQL = KEYWORDSEARCH_COLUMNS.map { |c| "coalesce(#{c}, '')" }.join(" || ' ' || ") << " ~* ALL(ARRAY[?])"
   KEYWORDSEARCH_COLUMNS =
     %w[
-      machines.no machines.name machines.maker machines.model machines.year machines.addr1
-      machines.model2 machines.maker2
-      makers.maker_master genres.genre
+      machines.name machines.maker machines.model machines.addr1 machines.model2
+      machines.addr2 machines.addr3 machines.location
+      machines.spec machines.comment machines.accessory
     ].freeze
-  KEYWORDSEARCH_SQL = KEYWORDSEARCH_COLUMNS.map { |c| "coalesce(#{c}, '')" }.join(" || ' ' || ") << " ~* ALL(ARRAY[?])"
+  KEYWORDSEARCH_SQL = "concat_ws('', #{KEYWORDSEARCH_COLUMNS.join(', ')}) ~* ALL(ARRAY[?])".freeze
 
   belongs_to :company
   belongs_to :genre
@@ -117,6 +131,9 @@ class Machine < ApplicationRecord
   scope :where_model2, ->(model) { where("machines.model2 ~* ?", to_model2(model)) }
 
   scope :where_keyword, ->(keyword) { where(KEYWORDSEARCH_SQL, to_keywords(keyword)) }
+  # scope :where_keyword, ->(keyword) { merge(Machine.where("machines.name LIKE ?", "%#{keyword}%").or(Machine.where("machines.maker LIKE ?", "%#{keyword}%"))) }
+
+  scope :with_images, -> { where("machines.top_image IS NOT NULL OR  machines.top_img IS NOT NULL") }
 
   ### value ###
   composed_of :top_img_media, class_name: "Media", mapping: [%i[top_img file]], constructor: ->(top_img) { Media.new(top_img, MEDIA_URL) }
@@ -157,7 +174,7 @@ class Machine < ApplicationRecord
   end
 
   def self.to_model2(model)
-    NKF.nkf('-wXZ', model).upcase.gsub(/[^A-Z0-9]*/, "").strip
+    NKF.nkf('-wXZ', model.to_s).upcase.gsub(/[^A-Z0-9]*/, "").strip
   end
 
   def sames
@@ -202,5 +219,39 @@ class Machine < ApplicationRecord
 
   def top_image_thumb(noimage: Media::NOTHING_URL)
     top_image&.thumb&.url || top_img_media.thumbnail(noimage:)
+  end
+
+  ######
+
+  # 能力値を開く
+  def capacities
+    res = {}
+    if genre.capacity_label.present?
+      val = capacity.present? ? "#{ActiveSupport::NumberHelper.number_to_rounded(capacity, strip_insignificant_zeros: true)}#{genre.capacity_unit}" : nil
+      res[genre.capacity_label] = val if val.present?
+    end
+
+    others_hash.each_value do |other|
+      res[other[:label]] = other[:disp] if other[:disp].present?
+    end
+
+    res
+  end
+
+  # 能力検索用キーワード整形
+  def to_search_capacity
+    "#{name} #{Machine.to_model2(model.to_s)} #{spec} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}"
+  end
+
+  # キーワード検索用キーワード整形
+  def to_search_keyword
+    "#{name} #{maker} #{model} #{myear} #{addr1} #{addr2} #{addr3} #{location} #{spec} #{comment} #{accessory} #{Machine.to_model2(model.to_s)} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}"
+  end
+
+  def update_search_keywords
+    self.search_capacity = to_search_capacity
+    self.search_keyword  = to_search_keyword
+
+    true
   end
 end

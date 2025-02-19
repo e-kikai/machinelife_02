@@ -10,6 +10,15 @@
         . 検索レベル:#{@level} 処理時間:#{@time}sec 途中件数:#{number_with_delimiter(@machines&.count)}件
         . = @error
 
+      .mx-auto.text-muted.small
+        / . = @machines.where.not(maker2: "").group("COALESCE(makers.maker_master, machines.maker2)").order(count: :desc).limit(100).count
+        / . = @machines.where.not(addr1: "").group(:addr1).order(count: :desc).count.map { |k, v| ["#{k} (#{v})", k] }
+        / . = @machines.where.not(year: "").group(:year, "left(year, 4)").order(year: :asc).count
+
+        . = @machines.where.not(maker2: "").group("COALESCE(makers.maker_master, machines.maker2)").order(count: :desc).limit(20).count
+        . = @machines.where.not(addr1: "").group(:addr1).order(count: :desc).count
+        . = @machines.where.not(year: "").group("left(year, 3)").count
+
     .row
       / エラー発生
       - if @error_mes.present?
@@ -68,8 +77,8 @@
 
         - if @mai_search_log.present?
           .row
-            .my-2.small.text-end.col-10
-              | #{mi(:support_agent)} MAIの検索結果・アドバイスは、ご満足いただけましたか？
+            .my-1.small.text-end.col-10
+              | #{mi(:support_agent)} MAI 在庫検索はご満足いただけましたか？
               span id="good_area_#{@mai_search_log.id}" = render "good", mai_search_log: @mai_search_log
 
         .row

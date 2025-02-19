@@ -28,7 +28,7 @@ h1 MAI検索ログ
 
           .col-auto
             / = params
-            .input-group.input-group-sm
+            .btn-group.btn-group-sm
               = f.label :aaaa, mi(:filter_alt), class: "input-group-text"
               = f.radio_button(:filter, nil, { class: "btn-check", checked: params[:filter].blank? })
               = f.label :filter, "-", class: "btn btn-outline-secondary btn-sm"
@@ -40,6 +40,11 @@ h1 MAI検索ログ
               = f.label :filter_good, mi(:thumb_up_alt), class: "btn btn-outline-secondary btn-sm"
               = f.radio_button(:filter, :bad, { class: "btn-check", checked: params[:filter] == "bad" })
               = f.label :filter_bad, mi(:thumb_down_alt), class: "btn btn-outline-secondary btn-sm"
+
+            / label.btn.btn-outline-secondary.btn-sm
+            label.btn.btn-outline-dark.btn-sm.py-1
+              = f.radio_button(:filter, :aaaa, { class: "", checked: params[:filter] == "bad" })
+              = " 90年代"
 
           .col-auto = f.button class: "btn btn-primary btn-sm" do
             . #{mi(:search)} 検索
