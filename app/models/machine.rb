@@ -120,7 +120,9 @@ class Machine < ApplicationRecord
 
   ### scope ###
   scope :includes_all, -> { includes(:company, :genre, :large_genre, :xl_genre, :maker_m, :machine_pdfs) }
-  scope :sales, -> { includes_all.where(companies: { deleted_at: nil, rank: Company::MACHINE_RANK_RATIO.. }, view_option: [nil, :negotiation]) }
+  scope :sales_status, -> { where(companies: { deleted_at: nil, rank: Company::MACHINE_RANK_RATIO.. }, view_option: [nil, :negotiation]) }
+  scope :sales, -> { includes_all.sales_status }
+  scope :mai_search_sales, -> { includes(:company, :maker_m).sales_status }
 
   scope :only_machines, -> { where(large_genre: { xl_genre_id: XlGenre::MACHINE_IDS }) }
   scope :only_tools, -> { where.not(large_genre: { xl_genre_id: XlGenre::MACHINE_IDS }) }
@@ -253,5 +255,9 @@ class Machine < ApplicationRecord
     self.search_keyword  = to_search_keyword
 
     true
+  end
+
+  def self.reset_keyword
+    sales.where(search_keyword: "").find_each(&:save)
   end
 end

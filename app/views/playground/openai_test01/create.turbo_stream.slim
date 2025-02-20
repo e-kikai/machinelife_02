@@ -32,7 +32,8 @@
           - if @mai_search.machines.blank?
             | ご質問、絞り込みにマッチする機械・工具はありませんでした。
           - else
-            | ご質問マッチする機械・工具が多いためアドバイスが生成できませんでした。(#{number_with_delimiter(@mai_search.machines&.count)}件)
+            | ご質問マッチする機械・工具が多いためアドバイスが生成できませんでした。
+            = " (約#{number_with_delimiter(@mai_search.count.floor(Math.log10(@mai_search.count).to_i * -1))}件)"
 
           h6.mt-2.fw-bold 条件を追加して、さらに絞り込む
           .p-3.rounded-3.bg-white.text-black
@@ -93,8 +94,9 @@
       / 検索結果多すぎ
       - elsif @mai_search.advice.blank?
         .ms-4.p-3.rounded-5.bg-warning.text-white.col-10
-          | #{mi(:support_agent)} 質問マッチする機械・工具が多いためアドバイスが生成できませんでした。(#{number_with_delimiter(@mai_search.machines&.count)}件)<br />
-          | ご質問に条件を追加して、絞り込みを行ってみてください。<br /><br />
+          | #{mi(:support_agent)} 質問マッチする機械・工具が多いためアドバイスが生成できませんでした。
+          = " (約#{number_with_delimiter(@mai_search.count.floor(Math.log10(@mai_search.count).to_i * -1))}件)"
+          | <br />ご質問に条件を追加して、絞り込みを行ってみてください。<br /><br />
           | <strong>MAIからの絞り込みヒント</strong><br />
           ul
             li より詳しい機械・工具名 : 「プレス」 -> 「油圧プレス」

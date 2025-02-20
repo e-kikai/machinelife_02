@@ -185,15 +185,20 @@ report>>>
 
     if kwd.present?
       # @machines = Machine.sales.includes(:contacts, :detail_logs).where(KEYWORD_SEARCH_SQL, kwd)
-      @machines = Machine.sales.includes(:contacts, :detail_logs).where("machines.search_keyword ~* ALL(ARRAY[?])", kwd)
+      @machines = Machine.mai_search_sales.where("machines.search_keyword ~* ALL(ARRAY[?])", kwd)
       @count    = @machines.count
 
-      if @count > PRODUCTS_LIMIT # 結果超過(画像のあるもののみ)
-        @machines = @machines.with_images
-        @count    = @machines.count
-        @wheres[:kwd] = kwd
-        @level       += 1600
-      elsif @count.positive? # 結果あり
+      # if @count > PRODUCTS_LIMIT # 結果超過(画像のあるもののみ)
+      #   @machines = @machines.with_images
+      #   @count    = @machines.count
+      #   @wheres[:kwd] = kwd
+      #   @level       += 1600
+      # elsif @count.positive? # 結果あり
+      #   @wheres[:kwd] = kwd
+      #   @level       += 1000
+      # end
+
+      if @count.positive? # 結果あり
         @wheres[:kwd] = kwd
         @level       += 1000
       end
@@ -246,7 +251,7 @@ report>>>
       end
 
       ### search ###
-      @machines = Machine.sales.includes(:contacts, :detail_logs)
+      @machines = Machine.mai_search_sales
 
       @machines = @machines.where("machines.maker ~* ?", @wheres[:maker])         if @wheres[:maker].present? # メーカー
       # @machines = @machines.where("machines.addr1 ~* ?", "^(#{@wheres[:addr1]})") if @wheres[:addr1].present? # 在庫場所
@@ -287,12 +292,14 @@ report>>>
     return if @count.zero? # (フィルタリング前の)検索結果が0場合、スキップ
 
     ### フィルタリング候補 ###
-    @filtering = true
-    @filtering_makers     = @machines.where.not('makers.maker_master': [nil, '']).group("makers.maker_master").order(count: :desc).limit(18).count
-    @filtering_addr1s     = @machines.where.not(addr1: [nil, '']).group(:addr1).order(count: :desc).limit(18).count
-    @filtering_years      = @machines.where.not(year: [nil, '']).group("left(year, 3)").count
-    @filtering_capacities = @machines.where.not(capacity: [nil, 0]).where.not('genres.capacity_unit': [nil, ""])
-      .group(:capacity, "genres.capacity_unit").order(capacity_unit: :asc, capacity: :asc).count
+    if @count > PRODUCTS_LIMIT
+      @filtering = true
+      @filtering_makers     = @machines.where.not('makers.maker_master': [nil, '']).group("makers.maker_master").order(count: :desc).limit(18).count
+      @filtering_addr1s     = @machines.where.not(addr1: [nil, '']).group(:addr1).order(count: :desc).limit(18).count
+      @filtering_years      = @machines.where.not(year: [nil, '']).group("left(year, 3)").count
+      @filtering_capacities = @machines.includes(:genre).where.not(capacity: [nil, 0]).where.not('genres.capacity_unit': [nil, ""])
+        .group(:capacity, "genres.capacity_unit").order(capacity_unit: :asc, capacity: :asc).count
+    end
 
     ### フィルタリング処理 ###
     if @filters.present?
@@ -388,7 +395,9 @@ report>>>
 
   # 機械情報のJSON変換
   def machines_json
-    @machines.map { |ma| MaiSearch.to_json_hash(ma) }.to_json
+    # @machines.includes(:company, :genre, :large_genre, :xl_genre, :machine_pdfs, :contacts, :detail_logs)
+    @machines.includes(:company, :genre, :large_genre, :xl_genre, :contacts, :detail_logs)
+      .map { |ma| MaiSearch.to_json_hash(ma) }.to_json
   end
 
   private
