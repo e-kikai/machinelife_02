@@ -291,15 +291,7 @@ report>>>
 
     return if @count.zero? # (フィルタリング前の)検索結果が0場合、スキップ
 
-    ### フィルタリング候補 ###
-    if @count > PRODUCTS_LIMIT
-      @filtering = true
-      @filtering_makers     = @machines.where.not('makers.maker_master': [nil, '']).group("makers.maker_master").order(count: :desc).limit(18).count
-      @filtering_addr1s     = @machines.where.not(addr1: [nil, '']).group(:addr1).order(count: :desc).limit(18).count
-      @filtering_years      = @machines.where.not(year: [nil, '']).group("left(year, 3)").count
-      @filtering_capacities = @machines.includes(:genre).where.not(capacity: [nil, 0]).where.not('genres.capacity_unit': [nil, ""])
-        .group(:capacity, "genres.capacity_unit").order(capacity_unit: :asc, capacity: :asc).count
-    end
+    pre_machines = @machines
 
     ### フィルタリング処理 ###
     if @filters.present?
@@ -313,9 +305,17 @@ report>>>
       @level   += 10_000
     end
 
-    return if @count.zero? || @count > PRODUCTS_LIMIT # 検索結果が0、超過の場合、スキップ
-
-    generate_advice
+    ### フィルタリング候補(検索結果が0、超過の場合、アドバイススキップ) ###
+    if @count.zero? || @count > PRODUCTS_LIMIT
+      @filtering = true
+      @filtering_makers     = pre_machines.where.not('makers.maker_master': [nil, '']).group("makers.maker_master").order(count: :desc).limit(18).count
+      @filtering_addr1s     = pre_machines.where.not(addr1: [nil, '']).group(:addr1).order(count: :desc).limit(18).count
+      @filtering_years      = pre_machines.where.not(year: [nil, '']).group("left(year, 3)").count
+      @filtering_capacities = pre_machines.includes(:genre).where.not(capacity: [nil, 0]).where.not('genres.capacity_unit': [nil, ""])
+        .group(:capacity, "genres.capacity_unit").order(capacity_unit: :asc, capacity: :asc).count
+    else
+      generate_advice
+    end
   rescue StandardError => e
     raise e.full_message
     # raise "MAI在庫検索処理でエラーが発生しました。"
@@ -409,7 +409,7 @@ report>>>
 
   # 旧キーワード検索
   def to_legacy_keywords(keyword)
-    NKF.nkf('-wXZ', ignore_keyword(keyword)).upcase.gsub(%r{[　]}, " ").gsub(%r{[-/:-@\[-~]}, "").split(/[[:space:]]/)
+    NKF.nkf('-wXZ', ignore_keyword(keyword)).upcase.gsub(/[　]/, " ").gsub(%r{[-/:-@\[-~]}, "").split(/[[:space:]]/)
       .map { |k| Maker.makers_keyword(k) }
       .map { |k| nc_keyword(capacity_keyword(k)).gsub(/[ー-]$/, '') }
       .compact_blank

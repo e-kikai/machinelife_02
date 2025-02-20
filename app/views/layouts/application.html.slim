@@ -61,7 +61,7 @@ html lang="ja"
             /     = button_tag type: :submit, class: "btn btn-primary btn-md" do
             /         | #{mi(:search)} 検索
 
-            = form_with url: "/playground/openai_test01/search", method: :post, data: { turbo: false } do |f|
+            = form_with url: "/mai_search/search", method: :post, data: { turbo: false } do |f|
               .input-group.border.border-primary.border-2.rounded-pill.shadow-sm
                 .input-group-text.bg-white.border-0.rounded-start-pill.text-black-50 #{mi(:search)}
                 = f.text_field :message, placeholder: "", class: "form-control border-0 rounded-end-pill shadow-none", id: :message_field, required: true, data: { openai01_target: "textarea" }
