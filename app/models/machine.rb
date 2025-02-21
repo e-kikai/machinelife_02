@@ -83,18 +83,20 @@ class Machine < ApplicationRecord
     no_desc: ["管理番号 : 降順", [Arel.sql("coalesce(no, '') = '' ASC"), { no: :desc }]]
   }.freeze
 
+  ### 会員ページでの在庫キーワード検索 ###
   # KEYWORDSEARCH_COLUMNS =
   #   %w[
   #     machines.no machines.name machines.maker machines.model machines.year machines.addr1
   #     machines.model2 machines.maker2
   #     makers.maker_master genres.genre
   #   ].freeze
-  # KEYWORDSEARCH_SQL = KEYWORDSEARCH_COLUMNS.map { |c| "coalesce(#{c}, '')" }.join(" || ' ' || ") << " ~* ALL(ARRAY[?])"
+
   KEYWORDSEARCH_COLUMNS =
     %w[
-      machines.name machines.maker machines.model machines.addr1 machines.model2
+      machines.no machines.name machines.maker machines.model machines.addr1 machines.model2
       machines.addr2 machines.addr3 machines.location
       machines.spec machines.comment machines.accessory
+      makers.maker_master genres.genre
     ].freeze
   KEYWORDSEARCH_SQL = "concat_ws('', #{KEYWORDSEARCH_COLUMNS.join(', ')}) ~* ALL(ARRAY[?])".freeze
 
@@ -242,12 +244,12 @@ class Machine < ApplicationRecord
 
   # 能力検索用キーワード整形
   def to_search_capacity
-    "#{name} #{Machine.to_model2(model.to_s)} #{spec} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}"
+    "#{name} #{Machine.to_model2(model.to_s)} #{spec} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}".strip
   end
 
   # キーワード検索用キーワード整形
   def to_search_keyword
-    "#{name} #{maker} #{model} #{myear} #{addr1} #{addr2} #{addr3} #{location} #{spec} #{comment} #{accessory} #{Machine.to_model2(model.to_s)} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}"
+    "#{no} #{name} #{maker} #{model} #{myear} #{addr1} #{addr2} #{addr3} #{location} #{spec} #{comment} #{accessory} #{Machine.to_model2(model.to_s)} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}".strip
   end
 
   def update_search_keywords
@@ -258,6 +260,6 @@ class Machine < ApplicationRecord
   end
 
   def self.reset_keyword
-    sales.where(search_keyword: "").find_each(&:save)
+    sales.find_each(&:save)
   end
 end
