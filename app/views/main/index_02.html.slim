@@ -21,7 +21,7 @@ ul.nav.nav-underline.m-3.mb-2
           = link_to "/mai_search/help", class: "ms-2" do
             span #{mi(:help)} 詳しくは？ -> MAI在庫検索について
         .mt-1
-          | ＜質問の例＞ 「大阪にある滝沢の6尺旋盤、おすすめトップ3は」
+          | 例えば... 「大阪にある滝沢の6尺旋盤、おすすめトップ3は」「関東にある60Tプレス」などなど
 
       . = form_with url: "/mai_search/search", method: :post, data: { turbo: false } do |f|
         .col-10.mx-auto.my-4

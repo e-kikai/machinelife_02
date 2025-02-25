@@ -1,5 +1,6 @@
 class Playground::OpenaiTest01Controller < ApplicationController
   include Hosts
+  # include ActionController::Live
 
   # before_action :check_env
   before_action :set_mai_search_log, only: [:good, :bad]
@@ -21,7 +22,14 @@ class Playground::OpenaiTest01Controller < ApplicationController
 
   def create
     start_time = Time.current # 処理速度計測
+
+    # response.headers['Content-Type'] = 'text/event-stream'
+    # response.headers['Cache-Control'] = 'no-cache'
+    # response.headers['X-Accel-Buffering'] = 'no'
+
     @message = params[:message]&.strip
+
+    # render turbo_stream.append("test", partial: "message", locals: { message: @message }).to_s
 
     begin
       # 追加フィルタリング条件
@@ -60,6 +68,8 @@ class Playground::OpenaiTest01Controller < ApplicationController
         )
       )
     end
+  # ensure
+  #   response.stream.close
   end
 
   def good

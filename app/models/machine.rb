@@ -249,7 +249,7 @@ class Machine < ApplicationRecord
 
   # キーワード検索用キーワード整形
   def to_search_keyword
-    "#{no} #{name} #{maker} #{model} #{myear} #{addr1} #{addr2} #{addr3} #{location} #{spec} #{comment} #{accessory} #{Machine.to_model2(model.to_s)} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}".strip
+    "#{NKF.nkf('-wXZ', no.to_s).upcase.gsub(/[[:punct:]]/, '')} #{name} #{maker} #{model} #{myear} #{addr1} #{addr2} #{addr3} #{location} #{spec} #{comment} #{accessory} #{Machine.to_model2(model.to_s)} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}".strip
   end
 
   def update_search_keywords
@@ -261,5 +261,6 @@ class Machine < ApplicationRecord
 
   def self.reset_keyword
     sales.find_each(&:save)
+    ActiveRecord::Base.connection.execute "VACUUM FULL ANALYZE machines"
   end
 end

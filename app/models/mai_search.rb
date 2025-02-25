@@ -1,7 +1,7 @@
 class MaiSearch
   PRODUCTS_LIMIT  = 120
   RESULT_LIMIT    = 60
-  REPORT_LIMIT    = 300
+  REPORT_LIMIT    = 200
   REQUEST_TIMEOUT = 30
 
   IGNORE_WORDS = /\|?(切削工具|不明|工作機械|測定工具|中古)\|?/
@@ -75,7 +75,7 @@ name model に含まれているkeywordは除外。
 年式をピンポイントで指定する場合は、min_yearとmax_yearを同一値にする。
 
 ### addr1
-日本の都道府県を抽出し出力。
+日本の都道府県を「都道府県」付き(東京都、大阪府など)で抽出し出力。
 複数可。都市名は都道府県に変換。
 関西や関東など、地域が入力されている場合は、それに含まれる都道府県。
 〇〇近辺(周辺、近郊など)の場合、周辺都道府県も含めて出力。
@@ -90,7 +90,7 @@ name model に含まれているkeywordは除外。
 ex.1) 大阪近辺で、オークマかアマダの90年代の5尺立型旋盤の型式がLSかods-12で。
 
 ans.1)
-{"name": "((立||立型|縦)旋盤))|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ|大隈", "min_year": "1990", "max_year": "1999", "model": "LS|ODS12", "addr1": "大阪府", "capacity": "5尺"}
+{"name": "((立||立型|縦)旋盤))|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ", "min_year": "1990", "max_year": "1999", "model": "LS|ODS12", "addr1": "大阪府", "capacity": "5尺"}
 
 ex.2) ナガセのSGW-63
 
@@ -245,15 +245,17 @@ report>>>
         end
 
         ### キーワード整形 ###
-        @wheres[:name]     = nc_keyword(@wheres[:name])                       if @wheres[:name].present? # 機械名(NC)
-        @wheres[:maker]    = Maker.makers_keyword(@wheres[:maker].split('|')) if @wheres[:maker].present? # メーカー
-        @wheres[:capacity] = capacity_keyword(@wheres[:capacity])             if @wheres[:capacity].present? # 能力
+        @wheres[:name] = nc_keyword(@wheres[:name]) if @wheres[:name].present? # 機械名(NC)
+        makers = Maker.search_makers(@wheres[:maker].split('|')) if @wheres[:maker].present? # メーカー
+        @wheres[:capacity] = capacity_keyword(@wheres[:capacity]) if @wheres[:capacity].present? # 能力
       end
 
       ### search ###
       @machines = Machine.mai_search_sales
 
-      @machines = @machines.where("machines.maker ~* ?", @wheres[:maker])         if @wheres[:maker].present? # メーカー
+      # @machines = @machines.where("machines.maker ~* ?", maker_masters)           if @wheres[:maker].present? # メーカー
+      @machines.where(maker: makers)                                              if @wheres[:maker].present?
+      @machines = @machines.where(maker: makers)                                  if makers.present? # メーカー
       # @machines = @machines.where("machines.addr1 ~* ?", "^(#{@wheres[:addr1]})") if @wheres[:addr1].present? # 在庫場所
       @machines = @machines.where(addr1: @wheres[:addr1].split("|"))              if @wheres[:addr1].present? # 在庫場所
       @machines = @machines.where("machines.name ~* ?", "(#{@wheres[:name]})")    if @wheres[:name].present? # 機械名
@@ -409,7 +411,7 @@ report>>>
 
   # 旧キーワード検索
   def to_legacy_keywords(keyword)
-    NKF.nkf('-wXZ', ignore_keyword(keyword)).upcase.gsub(/[　]/, " ").gsub(%r{[-/:-@\[-~]}, "").split(/[[:space:]]/)
+    NKF.nkf('-wXZ', ignore_keyword(keyword)).upcase.gsub(/[　]/, " ").gsub(/[[:punct:]]/, "").split(/[[:space:]]/)
       .map { |k| Maker.makers_keyword(k) }
       .map { |k| nc_keyword(capacity_keyword(k)).gsub(/[ー-]$/, '') }
       .compact_blank

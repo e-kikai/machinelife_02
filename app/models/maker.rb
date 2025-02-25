@@ -14,11 +14,14 @@
 #  makers_ix3  (maker_kana)
 #
 class Maker < ApplicationRecord
-  scope :search_master_maker, ->(kwd) { where(maker: kwd).or(where(maker_master: kwd)).or(where(maker_kana: kwd)).select(:maker_master) }
+  scope :search_master_maker, ->(kwd) { format_kwd(kwd); where(maker: kwd).or(where(maker_master: kwd)).or(where(maker_kana: kwd)).distinct.select(:maker_master) }
 
   def self.search_makers(kwd)
+    kwd = format_kwd(kwd) # 整形
+
     if kwd.present?
-      Maker.where(maker_master: search_master_maker(kwd)).pluck(:maker_master, :maker).push(kwd).flatten.map { |m| m.gsub(/\(.*\)/, '').strip.split("｜") }.flatten.uniq.compact_blank
+      where(maker_master: search_master_maker(kwd)).pluck(:maker_master, :maker).push(kwd)
+        .flatten.map { |m| m.gsub(/\(.*\)/, '').strip.split("｜") }.flatten.uniq.compact_blank
     else
       []
     end
@@ -26,5 +29,9 @@ class Maker < ApplicationRecord
 
   def self.makers_keyword(kwd)
     search_makers(kwd).join('|')
+  end
+
+  def self.format_kwd(kwd)
+    Array(kwd).map { |ma| ma.gsub(/(製)$/, "") } # 整形
   end
 end
