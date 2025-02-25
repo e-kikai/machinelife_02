@@ -3,16 +3,16 @@
 /-- 検索枠 --/
 
 ul.nav.nav-underline.m-3.mb-2
-  li.nav-item role="presentation"
+  li.nav-item.h5.px-2 role="presentation"
     button#pills-mai-tab.nav-link.active  data-bs-toggle="pill" data-bs-target="#pills-mai" type="button" role="tab" aria-controls="pills-mai" aria-selected="true"
-      | #{mi(:support_agent)} MAI 在庫検索
-  li.nav-item role="presentation"
+      | <span class="text-primary-emphasis">#{mi(:support_agent)}</span> MAI 在庫検索
+  li.nav-item.h5.px-2 role="presentation"
     button#pills-genre-tab.nav-link  data-bs-toggle="pill" data-bs-target="#pills-genre" type="button" role="tab" aria-controls="pills-genre" aria-selected="false"
-      | #{mi(:category)} ジャンル検索
+      | <span class="text-success">#{mi(:category)}</span> ジャンル検索
 
 .tab-content.my-3
   #pills-mai.tab-pane.fade.show.active role="tabpanel" aria-labelledby="pills-mai-tab" tabindex="0"
-    h2 #{mi(:support_agent)} こんにちは。マシンライフのAIアシスタント <span class="fw-bold text-primary-emphasis">MAI</span> です。
+    h2 <span class="text-primary-emphasis">#{mi(:support_agent)}</span> こんにちは。マシンライフのAIアシスタント <span class="fw-bold text-primary-emphasis">MAI</span> です。
     .row
       .col-10.mx-auto.mt-2
         .
@@ -25,7 +25,7 @@ ul.nav.nav-underline.m-3.mb-2
 
       . = form_with url: "/mai_search/search", method: :post, data: { turbo: false } do |f|
         .col-10.mx-auto.my-4
-          .fw-bold.small.ms-5 #{mi(:support_agent)} ↓ どんな機械・工具をおさがしですか？ ↓
+          .fw-bold.small.ms-5 <span class="text-primary-emphasis">#{mi(:support_agent)}</span> ↓ どんな機械・工具をおさがしですか？ ↓
           .input-group.border.border-primary.border-2.rounded-pill.shadow-sm
             .input-group-text.bg-white.border-0.rounded-start-pill.text-black-50 #{mi(:search)}
             = f.text_field :message, placeholder: "", class: "form-control border-0 py-2 rounded-end-pill shadow-none", id: :message_field, required: true, data: { openai01_target: "textarea" }

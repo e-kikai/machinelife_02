@@ -245,8 +245,7 @@ report>>>
         end
 
         ### キーワード整形 ###
-        @wheres[:name] = nc_keyword(@wheres[:name]) if @wheres[:name].present? # 機械名(NC)
-        makers = Maker.search_makers(@wheres[:maker].split('|')) if @wheres[:maker].present? # メーカー
+        @wheres[:name]     = nc_keyword(@wheres[:name]) if @wheres[:name].present? # 機械名(NC)
         @wheres[:capacity] = capacity_keyword(@wheres[:capacity]) if @wheres[:capacity].present? # 能力
       end
 
@@ -254,8 +253,11 @@ report>>>
       @machines = Machine.mai_search_sales
 
       # @machines = @machines.where("machines.maker ~* ?", maker_masters)           if @wheres[:maker].present? # メーカー
-      @machines.where(maker: makers)                                              if @wheres[:maker].present?
-      @machines = @machines.where(maker: makers)                                  if makers.present? # メーカー
+      if @wheres[:maker].present? # メーカー
+        makers = Maker.search_makers(@wheres[:maker].split('|'))
+        @machines = @machines.where(maker: makers) if makers.present?
+      end
+
       # @machines = @machines.where("machines.addr1 ~* ?", "^(#{@wheres[:addr1]})") if @wheres[:addr1].present? # 在庫場所
       @machines = @machines.where(addr1: @wheres[:addr1].split("|"))              if @wheres[:addr1].present? # 在庫場所
       @machines = @machines.where("machines.name ~* ?", "(#{@wheres[:name]})")    if @wheres[:name].present? # 機械名
