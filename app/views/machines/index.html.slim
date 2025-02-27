@@ -54,14 +54,15 @@ h1 = @title
 = turbo_frame_tag :machine_list do
   / . = @pmachines.to_sql
 
+  .row
+    .col-2.small 検索結果 : #{number_with_delimiter @count} 件
+    .col == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
+
   = form_with(url: "/contacts/new", local: true, method: :get, html: { data: { turbo: false } }) do |f|
-    .row
-      .col-2
-        .small 検索結果 : #{number_with_delimiter @count} 件
-        = f.hidden_field :r, value: :lst_blk
-        . = f.button class: "btn btn-warning btn-sm"
-          | #{mi(:mark_email_read)} まとめて問合せ
-      .col == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
+    .position-relative
+      = f.hidden_field :r, value: :lst_blk
+      . = f.button class: "btn btn-warning btn-sm position-absolute", style: "top:-30px;"
+        | #{mi(:mark_email_read)} まとめて問合せ
 
     table.table.table-bordered.align-middle.table-hover.table-striped.table-sm.small
       thead
