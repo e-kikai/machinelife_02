@@ -26,7 +26,8 @@ while f = ARGV.shift
   when "-d"; debug = true # デバッグモードに設定する
   when "-o"; log_out = true # ログを標準出力に切り替える
   when "-u"; update = true # 更新
-  # when /-d(\d+)$/; depth = $1.to_i # クロール深度を指定する
+  when "-i"; images = true # 画像のみ更新
+    # when /-d(\d+)$/; depth = $1.to_i # クロール深度を指定する
   when /-s([a-zA-Z0-9]+)$/; sites << Regexp.last_match(1); # 指定されたサイトだけを解析する
   else puts "illegal opiton #{f}"
   end
@@ -66,7 +67,9 @@ threads = sites.filter_map do |o|
     #### 既存機械UID一覧を取得 ####
     log.info("#{crawler.company}: クロールサイト情報を取得します")
     # 更新を行うかどうか
-    u = update ? "?update=1" : ""
+    u  = ""
+    u += update ? "?update=1" : ""
+    u += images ? "?images=1" : ""
 
     # クローラ深度(以降削除されてしまうため、未使用)
     # crawler.depth = depth if depth != nil

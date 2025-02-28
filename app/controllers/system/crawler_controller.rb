@@ -8,6 +8,7 @@ class System::CrawlerController < ApplicationController
     @machines = @company.machines.where.not(used_id: nil)
 
     @machines = @machines.where.not(used_change: nil) if params[:update].present?
+    @machines = @machines.with_images                 if params[:images].present?
     @used_ids = @machines.pluck(:used_id)
 
     render json: @used_ids

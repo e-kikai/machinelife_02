@@ -78,13 +78,13 @@ class Base
       end
 
       temp = {
-        :uid   => uid,
-        :no    => (m%'td:nth(4)').text.f,
-        :name  => (m%'td:nth(5)').text.f,
-        :maker => (m%'td:nth(6)').text.f,
-        :model => (m%'td:nth(8)').text.f,
-        :year  => (m%'td:nth(7)').text.f,
-        :spec  => '',
+        uid:,
+        no: (m%'td:nth(4)').text.f,
+        name: (m%'td:nth(5)').text.f,
+        maker: (m%'td:nth(6)').text.f,
+        model: (m%'td:nth(8)').text.f,
+        year: (m%'td:nth(7)').text.f,
+        spec: ''
       }
       temp[:hint] = temp[:name].gsub(/\((.*?)\)$/, '')
 
@@ -136,10 +136,10 @@ class Base
   # Param:: String uri 取得するURI
   # Return:: self
   #
-  def getpage(uri, retcount=@retnum)
+  def getpage(uri, retcount = @retnum)
     @p = @a.get(uri)
     self
-  rescue StandardError => e
+  rescue StandardError
     if (retcount -= 1).positive?
       sleep @retslp
       @log.warn("retry #{retcount} : #{uri}")
@@ -208,7 +208,7 @@ class Base
   # Return:: self
   #
   def send_error
-    return false if @error.length == 0
+    return false if @error.length.zero?
 
     # # メールサーバ設定
     # Mail.defaults do
@@ -233,7 +233,7 @@ class Base
     # mail.body = "#{@company}の同期クローラで#{@error.length}件のエラーが発生しました。 #{nowtime}\n\n\n" + @error.join("\n\n==============================\n\n")
     # mail.deliver!
 
-    return true
+    true
   end
 
   #
@@ -244,7 +244,7 @@ class Base
   def append_quere(de)
     # クロールキューにURIを追加
     uri = @a.page.uri
-    (@a.page/"a").each do |a|
+    (@a.page / "a").each do |a|
       href = join_uri(uri, a[:href])
       if check_uri(href)
         @q << [href, de]
@@ -326,9 +326,9 @@ end
 #
 class MyParser
   def self.parse(thing, url = nil,
-                 encoding = nil,
-                 options = Nokogiri::XML::ParseOptions::DEFAULT_HTML,
-                 &block)
+                encoding = nil,
+                options = Nokogiri::XML::ParseOptions::DEFAULT_HTML,
+                &block)
     thing = NKF.nkf("-wZX--cp932", thing)
     http = Nokogiri::HTML.parse(thing, url, encoding, options, &block)
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_19_131959) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_27_125028) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -533,14 +533,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_19_131959) do
     t.string "top_image"
     t.text "search_keyword", default: ""
     t.text "search_capacity", default: ""
-    t.virtual "maker2", type: :string, as: "TRIM(BOTH FROM regexp_replace(\nCASE\n    WHEN ((maker = '-'::text) OR (maker IS NULL) OR (maker ~ '--|^不明|-,|。|メーカー不明|？|^ー'::text)) THEN ''::text\n    WHEN (maker ~ '｜'::text) THEN \"substring\"(maker, '｜(.*?)$'::text)\n    WHEN (maker ~ '[\\/\\,\\(／（\\|、]'::text) THEN \"substring\"(maker, '^(.*?)[\\/\\,\\(／（\\|、]'::text)\n    ELSE maker\nEND, '(合同|有限|株式)会社'::text, ''::text, 'g'::text))", stored: true
+    t.virtual "maker2", type: :string, as: "TRIM(BOTH FROM regexp_replace(regexp_replace(\nCASE\n    WHEN ((maker = '-'::text) OR (maker IS NULL) OR (maker ~ '--|^不明|-,|。|メーカー不明|？|^ー'::text)) THEN ''::text\n    WHEN (maker ~ '｜'::text) THEN \"substring\"(maker, '｜(.*?)$'::text)\n    WHEN (maker ~ '[\\/\\,\\(／（\\|、]'::text) THEN \"substring\"(maker, '^(.*?)[\\/\\,\\(／（\\|、]'::text)\n    ELSE maker\nEND, '((合同|有限|株式)会社)|(((鉄|鐵)工|工(作|業)|(製|制)作)所?)'::text, ''::text, 'g'::text), '([ァ-ヴ])\\-'::text, '\\1ー'::text))", stored: true
     t.index ["addr1"], name: "index_machines_on_addr1"
     t.index ["company_id"], name: "machines_ix4"
     t.index ["created_at"], name: "machines_ix5"
     t.index ["deleted_at"], name: "machines_ix1"
     t.index ["genre_id"], name: "machines_ix2"
     t.index ["maker"], name: "machines_ix3"
-    t.index ["maker2"], name: "index_machines_on_maker2"
     t.index ["year"], name: "index_machines_on_year"
   end
 
