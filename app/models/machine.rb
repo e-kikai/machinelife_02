@@ -46,13 +46,14 @@
 #
 # Indexes
 #
-#  index_machines_on_addr1  (addr1)
-#  index_machines_on_year   (year)
-#  machines_ix1             (deleted_at)
-#  machines_ix2             (genre_id)
-#  machines_ix3             (maker)
-#  machines_ix4             (company_id)
-#  machines_ix5             (created_at)
+#  index_machines_on_addr1   (addr1)
+#  index_machines_on_maker2  (maker2)
+#  index_machines_on_year    (year)
+#  machines_ix1              (deleted_at)
+#  machines_ix2              (genre_id)
+#  machines_ix3              (maker)
+#  machines_ix4              (company_id)
+#  machines_ix5              (created_at)
 #
 class Machine < ApplicationRecord
   include SoftDelete

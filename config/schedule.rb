@@ -40,7 +40,7 @@ unless rails_env == "staging" # stagingではクローラは廻さない
   end
 
   every :day, at: '4:00 am' do
-    command "#{crawler_path}/crawler_main.rb -skobayashi"
+    command "#{crawler_path}/crawler_main.rb -skobayashi -i"
   end
 
   # every 1.minute do

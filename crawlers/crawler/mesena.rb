@@ -36,7 +36,7 @@ class Mesena < Base
     (@p/'article').each do |m|
       begin
         #### 売約済みをスキップ ####
-        next if m%'.sold-out'
+        next if m % '.sold-out'
 
         #### 既存情報の場合スキップ ####
         detail_uri = (m%'h1.loop-title a:nth(1)')[:href]
@@ -50,11 +50,11 @@ class Mesena < Base
 
         temp = {
           :uid   => uid,
-          :no    => (p2%'.single-list li:nth(1)').text.f.gsub(/^(.*\:)/, ''),
-          :name  => (p2%'.single-list li:nth(2)').text.f.gsub(/^(.*\:)/, ''),
-          :maker => (p2%'.single-list li:nth(3)').text.f.gsub(/^(.*\:)/, ''),
-          :model => (p2%'.single-list li:nth(4)').text.f.gsub(/^(.*\:)/, ''),
-          :year  => (p2%'.single-list li:nth(6)').text.f.gsub(/^(.*\:)/, '').gsub(/[^0-9]/, ''),
+          :no    => (p2%'.single-list li:nth(1)').text.f.gsub(/^(.*\:)/, '').strip,
+          :name  => (p2%'.single-list li:nth(2)').text.f.gsub(/^(.*\:)/, '').strip,
+          :maker => (p2%'.single-list li:nth(3)').text.f.gsub(/^(.*\:)/, '').strip,
+          :model => (p2%'.single-list li:nth(4)').text.f.gsub(/^(.*\:)/, '').strip,
+          :year  => (p2%'.single-list li:nth(6)').text.f.gsub(/^(.*\:)/, '').gsub(/[^0-9]/, '').strip,
           :location => "本社",
 
           :used_imgs => [],
