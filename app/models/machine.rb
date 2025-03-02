@@ -58,7 +58,8 @@
 class Machine < ApplicationRecord
   include SoftDelete
 
-  before_save :update_search_keywords
+  before_update :update_search_keywords
+  after_create :save
 
   MEDIA_URL = "https://s3-ap-northeast-1.amazonaws.com/machinelife/machine/public/media/machine/".freeze
   NEWS_LIMIT_DEFAULT = 6
@@ -245,19 +246,18 @@ class Machine < ApplicationRecord
 
   # 能力検索用キーワード整形
   def to_search_capacity
-    "#{name} #{Machine.to_model2(model.to_s)} #{spec} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}".strip
+    # "#{name} #{Machine.to_model2(model.to_s)} #{spec} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}".strip
+    "#{name} #{model2} #{spec} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}".strip
   end
 
   # キーワード検索用キーワード整形
   def to_search_keyword
-    "#{NKF.nkf('-wXZ', no.to_s).upcase.gsub(/[[:punct:]]/, '')} #{name} #{maker} #{model} #{myear} #{addr1} #{addr2} #{addr3} #{location} #{spec} #{comment} #{accessory} #{Machine.to_model2(model.to_s)} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}".strip
+    "#{NKF.nkf('-wXZ', no.to_s).upcase.gsub(/[[:punct:]]/, '')} #{name} #{maker} #{model} #{myear} #{addr1} #{addr2} #{addr3} #{location} #{spec} #{comment} #{accessory} #{model2} #{maker2} #{maker_m.try(:maker_master)} #{capacities.map { |k, v| "#{k}:#{v}" }.join(' ')}".strip
   end
 
   def update_search_keywords
     self.search_capacity = to_search_capacity
     self.search_keyword  = to_search_keyword
-
-    true
   end
 
   def self.reset_keyword

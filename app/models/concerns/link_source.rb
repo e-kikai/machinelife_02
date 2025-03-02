@@ -4,7 +4,8 @@ module LinkSource
   included do
     before_save :check_robot
 
-    scope :ignore_hosts, -> { where.not(host: IGNORE_HOSTS) }
+    # scope :ignore_hosts, -> { where.not(host: IGNORE_HOSTS) }
+    scope :ignore_hosts, -> { where("host !~* ?", "^(#{IGNORE_HOSTS.join('|')})").where("ip !~* ?", "^(#{IGNORE_IPS.join('|')})") }
   end
 
   ROBOTS = /(goo|google|yahoo|naver|ahrefs|msnbot|bot|crawl|amazonaws|rate-limited-proxy)/i
@@ -37,7 +38,8 @@ module LinkSource
       # MAI
       "mai" => "MAI", "adv" => "アドバイス"
     }.freeze
-  IGNORE_HOSTS = %w[mcnam.rsglab.com].freeze
+  IGNORE_HOSTS = %w[mcnam.rsglab.com v22024].freeze
+  IGNORE_IPS   = %w[219.145. 47.82. 222.90.].freeze
 
   ### リンク元の生成 ###
   def link_source
