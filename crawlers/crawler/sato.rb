@@ -9,7 +9,6 @@ require  File.dirname(__FILE__) + '/base'
 
 # クローラクラス
 class Sato < Base
-
   #
   # コンストラクタ
   # Param:  Hash site クロール対象サイト情報
@@ -51,15 +50,15 @@ class Sato < Base
           :maker => (m%'td:nth(4)').text.f,
           :year  => (m%'td:nth(5)').text.f,
           :spec  => (m%'td:nth(6)').text.f,
-          :location => '本社',
+          :location => '本社'
         }
 
         # 機械名(ヒント)
-        if (m%'td:nth(2)').text.f != ''
-          temp[:name]  = (m%'td:nth(2)').text.f
-          temp[:model] = (m%'td:nth(3)').text.f
+        if (m%'td:nth(2)').text.f == '' || (m%'td:nth(2)').text.f == '-'
+          temp[:name]  = (m % 'td:nth(3)').text.f
         else
-          temp[:name]  = (m%'td:nth(3)').text.f
+          temp[:name]  = (m % 'td:nth(2)').text.f
+          temp[:model] = (m % 'td:nth(3)').text.f
         end
         temp[:hint] = temp[:name]
 
