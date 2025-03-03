@@ -65,7 +65,7 @@ class Yuushi < Base
           when "コメント"; temp[:comment] = td
           end
 
-          temp[:hint] = temp[:name].gsub(/(（.*)$/, "")
+          temp[:hint] = temp[:name].gsub(/([\s(（].*)$/, "")
         end
 
         next if temp[:maker].include?("●")

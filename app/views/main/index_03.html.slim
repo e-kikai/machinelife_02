@@ -1,0 +1,171 @@
+- set_meta_tags description: "全機連会員120社以上の中古機械・工具検索を中心に、電子カタログ、Web入札会など工作機械に関する様々な情報を掲載。"
+
+/-- 検索枠 --/
+
+/ ul.nav.nav-underline.m-3.mb-2
+/   li.nav-item.h5.px-2 role="presentation"
+/     button#pills-mai-tab.nav-link.active  data-bs-toggle="pill" data-bs-target="#pills-mai" type="button" role="tab" aria-controls="pills-mai" aria-selected="true"
+/       | <span class="text-primary-emphasis">#{mi(:support_agent)}</span> MAI 在庫検索
+/   li.nav-item.h5.px-2 role="presentation"
+/     button#pills-genre-tab.nav-link  data-bs-toggle="pill" data-bs-target="#pills-genre" type="button" role="tab" aria-controls="pills-genre" aria-selected="false"
+/       | <span class="text-success">#{mi(:category)}</span> ジャンル検索
+
+/ .tab-content.my-3
+.
+  #pills-mai.tab-pane.fade.show.active role="tabpanel" aria-labelledby="pills-mai-tab" tabindex="0"
+  .
+    / h2 <span class="text-primary-emphasis">#{mi(:support_agent)}</span> こんにちは。マシンライフのAIアシスタント <span class="fw-bold text-primary-emphasis">MAI</span> です。
+    / h2 <span class="text-primary-emphasis">#{mi(:support_agent)}</span> <span class="fw-bold text-primary-emphasis">MAI</span> 在庫検索 - 機械・工具に関する質問から、AIアシスタント <span class="fw-bold text-primary-emphasis">MAI</span> がマシンライフの在庫をおさがしいたします。
+    / .row
+    /   .col-10.mx-auto.mt-2
+    /     .
+    /       / | 機械・工具に関する質問を入力すると、わたくし <span class="fw-bold text-primary-emphasis">MAI</span> がマシンライフの在庫をおさがしいたします。<br />
+    /       | さらに、商品選定についてのアドバイスもさせていただきます。
+    /       = link_to "/mai_search/help", class: "ms-2" do
+    /         span #{mi(:help)} 詳しくは？ -> MAI在庫検索について
+    /     .mt-1
+    /       | 例えば... 「大阪にある滝沢の6尺旋盤」「関東にある90年代製100Tプレス」などなど
+
+    /   . = form_with url: "/mai_search/search", method: :post, data: { turbo: false } do |f|
+    /     .col-10.mx-auto.my-4
+    /       .fw-bold.small.ms-5 <span class="text-primary-emphasis">#{mi(:support_agent)}</span> ↓ どんな機械・工具をおさがしですか？ ↓
+    /       = form_with url: "/mai_search/search", method: :post, data: { turbo: false } do |f|
+    /         .input-group.border.border-primary.border-2.rounded-pill.shadow-sm
+    /           .input-group-text.bg-white.border-0.rounded-start-pill.text-black-50 #{mi(:search)}
+    /           = f.text_field :message, placeholder: "", class: "form-control border-0 rounded-end-pill shadow-none", id: :message_field, required: true, data: { openai01_target: "textarea" }
+    /           = f.button type: :submit, id: :searchButton, value: :model, class: "btn btn-primary border-0 border-start rounded-end-pill", data: { openai01_target: "button" } do
+    /             span.show-when-enabled #{mi(:search)} MAI 在庫検索
+    /             span.show-when-disabled
+    /               span.spinner-border.spinner-border-sm.me-2 role="status" aria-hidden="true"
+    /               | MAIが検索中
+          / .input-group.border.border-primary.border-2.rounded-pill.shadow-sm
+          /   .input-group-text.bg-white.border-0.rounded-start-pill.text-black-50 #{mi(:search)}
+          /   = f.text_field :message, placeholder: "", class: "form-control border-0 py-2 rounded-end-pill shadow-none", id: :message_field, required: true, data: { openai01_target: "textarea" }
+
+          / . = f.button type: :submit, value: :model, class: "btn btn-primary d-block mx-auto mt-4 mb-2" do
+          /   span.show-when-enabled #{mi(:search)} MAI 在庫検索
+          /   span.show-when-disabled
+          /     span.spinner-border.spinner-border-sm.me-2 role="status" aria-hidden="true"
+          /     | MAIが検索しています
+
+      / . = render "/mai_search/info"
+
+  / #pills-genre.tab-pane.fade role="tabpanel" aria-labelledby="pills-genre-tab" tabindex="0"
+  .pt-1
+    .row.gx-2
+      .col-9
+        h2 <span class="text-success">#{mi(:category)}</span> 中古機械ジャンル検索
+        .row.gx-1
+          - @xl_genres.each do |xg|
+            .col-4.p-1
+              .dropdown
+                button.btn.btn-light.border.w-100.rounded-1.px-0 type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                  | #{xg.xl_genre} (#{number_with_delimiter(@counts_by_xl_genre[xg.id])})
+                ul.dropdown-menu.dd_lg
+                  - xg.large_genres.each do |lg|
+                    - if @counts_by_large_genre[lg.id].present?
+                      li = link_to "/machines/large_genre/#{lg.id}", class: "dropdown-item" do
+                        | #{lg.large_genre}
+                        small.text-danger = " (#{number_with_delimiter(@counts_by_large_genre[lg.id])})"
+
+      .col-3
+        h2 #{mi(:pin_drop)} 在庫地域検索
+        = form_tag "/machines", method: :get do
+          .input-group.my-2
+            select.form-select.form-select-sm name="k" require="require" onchange="location.href = '/machines/addr1/' + this.value;"
+              option ▼ 都道府県を選択 ▼
+              - @states.each do |st|
+                - if @counts_by_state[st.state].present?
+                  option value=st.state #{st.state} (#{number_with_delimiter(@counts_by_state[st.state])})
+                - else
+                  option value=st.state disabled="disabled" #{st.state}
+            / = button_tag type: :submit, class: "btn btn-primary btn-sm" do
+            /   | #{mi(:search)} 検索
+
+        h2 #{mi(:abc)} キーワード検索
+        .my-1 = form_tag "/machines", method: :get do
+          / label.small for="k_mo" 型式・管理番号 etc.
+          .input-group
+            = text_field_tag :k, "", placeholder: "型式・管理番号 etc.", class: "form-control form-control-sm", id: :k_mo, required: true
+            = hidden_field_tag :r, :kmo
+            = button_tag type: :submit, value: :model, class: "btn btn-primary btn-sm" do
+              | #{mi(:search)} 検索
+
+        / .my-1 = form_tag "/machines", method: :get do
+        /   label.small for="k_ma" メーカー
+        /   .input-group
+        /     = text_field_tag :k, "", placeholder: "例 : オークマ", class: "form-control form-control-sm", id: :k_ma, required: true
+        /     = hidden_field_tag :r, :kma
+        /     = button_tag type: :submit, value: :maker, class: "btn btn-primary btn-sm" do
+        /       | #{mi(:search)} 検索
+  .pt-3
+    h2 <span class="text-primary-emphasis">#{mi(:support_agent)}</span> <span class="fw-bold text-primary-emphasis">MAI</span> 在庫検索 - 機械・工具に関する質問から、AIアシスタント <span class="fw-bold text-primary-emphasis">MAI</span> がマシンライフの在庫をおさがしいたします。
+    .row
+      .col-10.mx-auto.mt-2
+        .
+          / | 機械・工具に関する質問を入力すると、わたくし <span class="fw-bold text-primary-emphasis">MAI</span> がマシンライフの在庫をおさがしいたします。<br />
+          | さらに、商品選定についてのアドバイスもさせていただきます。
+          = link_to "/mai_search/help", class: "ms-2" do
+            span #{mi(:help)} 詳しくは？ -> MAI在庫検索について
+        .mt-1
+          | 例えば... 「大阪にある滝沢の6尺旋盤」「関東にある90年代製100Tプレス」などなど
+
+      . = form_with url: "/mai_search/search", method: :post, data: { turbo: false } do |f|
+        .col-10.mx-auto.my-4
+          .fw-bold.small.ms-5 <span class="text-primary-emphasis">#{mi(:support_agent)}</span> ↓ どんな機械・工具をおさがしですか？ ↓
+          = form_with url: "/mai_search/search", method: :post, data: { turbo: false } do |f|
+            .input-group.border.border-primary.border-2.rounded-pill.shadow-sm
+              .input-group-text.bg-white.border-0.rounded-start-pill.text-black-50 #{mi(:search)}
+              = f.text_field :message, placeholder: "", class: "form-control border-0 rounded-end-pill shadow-none", id: :message_field, required: true, data: { openai01_target: "textarea" }
+              = f.button type: :submit, id: :searchButton, value: :model, class: "btn btn-primary border-0 border-start rounded-end-pill", data: { openai01_target: "button" } do
+                span.show-when-enabled #{mi(:search)} MAI 在庫検索
+                span.show-when-disabled
+                  span.spinner-border.spinner-border-sm.me-2 role="status" aria-hidden="true"
+                  | MAIが検索中
+
+      . = render "/mai_search/info"
+
+/-- 入札会バナー枠 --/
+.row.my-2.gx-0
+  - @bidinfos.each do |bi|
+    - next if bi.banner_image.blank?
+
+    .col-3.text-center = link_to bi.uri, onclick: "ga('send', 'event', 'banner', 'bid', #{bi.bid_name}, 1, true);", rel: :noopener, target: :_blank do
+      = image_tag bi.banner_image.url, alt: bi.bid_name, style: "width: 240px;"
+
+  / .col-3.text-center = link_to "https://www.magnescale.com/jp/info/drocampaign2023/", onclick: "ga('send', 'event', 'banner', 'bid', 'マグネスケール', 1, true);", rel: :noopener, target: :_blank do
+  /   = image_tag "banner/DRO_BD.gif", alt: "マグネスケール"
+  / .col-3.text-center = link_to "/bid/schedule", onclick: "ga('send', 'event', 'banner', 'bid', 'bid_schedule', 1, true);" do
+  /   = image_tag "banner/bid_2023.png", alt: "2023年度Web入札会スケジュール"
+  .col-3.text-center = link_to "/helps/banner", onclick: "ga('send', 'event', 'banner', 'bid', 'ad_rec', 1, true);" do
+    = image_tag "banner/rec_02.gif", alt: "広告バナー募集中"
+  .col-3.text-center = link_to "https://twitter.com/zenkiren", onclick: "ga('send', 'event', 'banner', 'bid', 'twitter', 1, true);", rel: :noopener, target: :_blank do
+    = image_tag "banner/twitter.png", alt: "x"
+
+/-- 新着 --/
+h2
+  .row
+    .col-auto <span class="text-warning">#{mi(:info_outline)}</span> 新着中古機械
+    .col-auto.ms-auto
+      .d-inline-block.mx-2 = link_to "/feed.rss" do
+        | #{mi(:rss_feed)} 新着RSS
+      .d-inline-block.mx-2 = link_to "/news/machines" do
+        | #{mi(:keyboard_double_arrow_right)} 新着中古機械一覧
+      .d-inline-block.mx-2 = link_to "/news/tools" do
+        | #{mi(:keyboard_double_arrow_right)} 新着中古工具一覧
+
+.row.gx-0
+  - @news.each_with_index do |ma, i|
+    .col-6 class=((i % 4).in?([1, 2]) ? "bg-light" : "bg-white")
+      .py-1.ps-4
+        = link_to "/machines/#{ma.id}" do
+          = image_tag ma.top_image_thumb, alt: ma.full_name, class: "news_thumbnail float-start me-4"
+
+        .text-danger #{mi(:more_time)} #{ma.elapsed}
+        . = link_to "#{ma.full_name} #{ma.myear} : #{ma.company.company_remove_kabu}", "/machines/#{ma.id}"
+
+/-- 大バナー枠 --/
+.row.gx-0.my-2
+  - Bidinfo::BOTTOM_BANNERS.shuffle.each do |ba|
+    .col.text-center = link_to ba[2], rel: :noopener, target: :_blank, onClick: "ga('send', 'event', 'banner', 'half', '#{ba[0]}', 1, true);" do
+      = image_tag "#{Bidinfo::MEDIA_URL}#{ba[1]}", alt: ba[0]

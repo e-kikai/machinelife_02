@@ -122,7 +122,7 @@ class MachinesController < ApplicationController
     @pagy, @pmachines = pagy(@machines.order_by_key(params[:sort]))
 
     ### フィルタリング項目 ###
-    @filtering_genres = @machines.group("machines.genre_id", "genres.genre").order(count: :desc, genre_id: :asc).limit(100).count
+    @filtering_genres = @machines.group("machines.genre_id", "genres.genre", 'genres.order_no').order('genres.order_no': :asc, count: :desc, genre_id: :asc).count
     @filtering_makers = @machines.where.not(maker2: ["", nil]).group("COALESCE(makers.maker_master, machines.maker2)").order(count: :desc).limit(100).count
     @filtering_addr1s = @machines.where.not(addr1: ["", nil]).group(:addr1).order(count: :desc).count.map { |k, v| ["#{k} (#{v})", k] }
 
