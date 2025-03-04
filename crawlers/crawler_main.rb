@@ -27,6 +27,7 @@ while f = ARGV.shift
   when "-o"; log_out = true # ログを標準出力に切り替える
   when "-u"; update = true # 更新
   when "-i"; images = true # 画像のみ更新
+  when "-n"; nongenre = true # ジャンルがない390のもののみ
     # when /-d(\d+)$/; depth = $1.to_i # クロール深度を指定する
   when /-s([a-zA-Z0-9]+)$/; sites << Regexp.last_match(1); # 指定されたサイトだけを解析する
   else puts "illegal opiton #{f}"
@@ -70,6 +71,7 @@ threads = sites.filter_map do |o|
     u  = ""
     u += update ? "?update=1" : ""
     u += images ? "?images=1" : ""
+    u += "?nongenre=1" if nongenre
 
     # クローラ深度(以降削除されてしまうため、未使用)
     # crawler.depth = depth if depth != nil
