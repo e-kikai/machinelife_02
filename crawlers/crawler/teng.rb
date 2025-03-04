@@ -39,7 +39,7 @@ class Teng < Base
     @p.search('ul.usedlist li').filter_map do |m|
       ### 名前に「売約済」が入っていたらスキップ ###
       name = m.at('p:nth(3)').text.f.gsub(/NEW/i, '')
-      next if name.match?(/売約|機械名/)
+      next if name.match?(/売約|売却済|機械名/)
 
       ### 既存情報の場合スキップ ###
       detail_uri = join_uri(@p.uri, m.%('p:nth(3) a')[:href])

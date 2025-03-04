@@ -58,8 +58,8 @@
 class Machine < ApplicationRecord
   include SoftDelete
 
+  after_create  :save
   before_update :update_search_keywords
-  after_create :save
 
   MEDIA_URL = "https://s3-ap-northeast-1.amazonaws.com/machinelife/machine/public/media/machine/".freeze
   NEWS_LIMIT_DEFAULT = 6
