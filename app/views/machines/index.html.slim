@@ -4,10 +4,11 @@
 
 - breadcrumb @bread[0], @bread[1]
 
-h1 = @title
+h1 #{@title}
 
 /-- フィルタリング --/
 = form_with(url: request.fullpath, local: true, method: :get, html: { 'data-turbo-frame': :machine_list, id: :filtering_from }) do |f|
+  = f.hidden_field :k, value: params[:k]
   .row.g-0.my-1.p-1.border.border-success.small
     .col-2.fw-bold #{mi(:filter_alt)} ジャンル
     = render partial: "filtering_checkbox", collection: @fc_genres[0..9], as: :d

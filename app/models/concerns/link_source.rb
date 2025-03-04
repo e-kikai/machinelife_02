@@ -39,7 +39,7 @@ module LinkSource
       "mai" => "MAI", "adv" => "アドバイス"
     }.freeze
   IGNORE_HOSTS = %w[mcnam.rsglab.com v22024].freeze
-  IGNORE_IPS   = %w[219.145. 47.82. 222.90.].freeze
+  IGNORE_IPS   = %w[219.145. 47.82. 222.90. 47.238.13.].freeze
 
   ### リンク元の生成 ###
   def link_source

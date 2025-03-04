@@ -103,8 +103,8 @@ class MachinesController < ApplicationController
 
   def search_filtering
     ### ナビゲーションデフォルト ###
-    @bread = [:something, "検索結果"]
-    @title = "検索結果"
+    @title = params[:k].present? ? "「#{params[:k]}」 検索結果" : "検索結果"
+    @bread = [:something, @title]
 
     ### 検索・フィルタリング処理 ###
     @machines = Machine.sales

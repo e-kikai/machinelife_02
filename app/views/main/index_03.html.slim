@@ -69,7 +69,7 @@
                         small.text-danger = " (#{number_with_delimiter(@counts_by_large_genre[lg.id])})"
 
       .col-3
-        h2 #{mi(:pin_drop)} 在庫地域検索
+        h2 <span class="text-success-emphasis">#{mi(:pin_drop)}</span> 在庫地域検索
         = form_tag "/machines", method: :get do
           .input-group.my-2
             select.form-select.form-select-sm name="k" require="require" onchange="location.href = '/machines/addr1/' + this.value;"
@@ -82,8 +82,8 @@
             / = button_tag type: :submit, class: "btn btn-primary btn-sm" do
             /   | #{mi(:search)} 検索
 
-        h2 #{mi(:abc)} キーワード検索
-        .my-1 = form_tag "/machines", method: :get do
+        h2.mt-4 <span class="text-success-emphasis">#{mi(:abc)}</span> キーワード検索
+        .my-2 = form_tag "/machines", method: :get do
           / label.small for="k_mo" 型式・管理番号 etc.
           .input-group
             = text_field_tag :k, "", placeholder: "型式・管理番号 etc.", class: "form-control form-control-sm", id: :k_mo, required: true
@@ -108,7 +108,7 @@
           = link_to "/mai_search/help", class: "ms-2" do
             span #{mi(:help)} 詳しくは？ -> MAI在庫検索について
         .mt-1
-          | 例えば... 「大阪にある滝沢の6尺旋盤」「関東にある90年代製100Tプレス」などなど
+          | 例えば... 「大阪にある滝沢の6尺旋盤」「関東にある90年代製100Tプレス」etc...
 
       . = form_with url: "/mai_search/search", method: :post, data: { turbo: false } do |f|
         .col-10.mx-auto.my-4
