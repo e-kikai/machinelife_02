@@ -71,7 +71,7 @@ threads = sites.filter_map do |o|
     u  = ""
     u += update ? "?update=1" : ""
     u += images ? "?images=1" : ""
-    u += "?nongenre=1" if nongenre
+    u += nongenre ? "?nongenre=1" : ""
 
     # クローラ深度(以降削除されてしまうため、未使用)
     # crawler.depth = depth if depth != nil
