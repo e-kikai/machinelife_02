@@ -9,7 +9,8 @@ class System::CrawlerController < ApplicationController
 
     @machines = @machines.where.not(used_change: nil) if params[:update].present?
     @machines = @machines.with_images                 if params[:images].present?
-    @machines = @machines.where.not(genre_id: 390)    if params[:nongenre].present?
+    # @machines = @machines.where.not(genre_id: 390)    if params[:nongenre].present?
+    @machines = @machines.where(addr1: [nil, ''])    if params[:nongenre].present?
 
     @used_ids = @machines.pluck(:used_id)
 
