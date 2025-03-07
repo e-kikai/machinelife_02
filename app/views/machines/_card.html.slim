@@ -1,11 +1,12 @@
-.card = link_to "/machines/#{machine.id}?r=crd_#{r}", target: :_blank, rel: :noopener do
+.card.bg-light.bg-opacity-50.border-dark.border-1.shadow-sm = link_to "/machines/#{machine.id}?r=crd_#{r}", target: :_blank, rel: :noopener do
   .ratio.ratio-1x1 = image_tag machine.top_image_url, class: "card-img-top object-fit-cover"
-  .card-body.p-1.bg-light.overflow-y-hidden style="height:5rem;"
-    - titles.each do |t|
-      - if t.present?
-        .d-inline-block> = t
+  .card-body.py-1.px-2.overflow-y-hidden style="height:5rem;"
+    .card-text
+      - titles.each do |t|
+        - if t.present?
+          .d-inline-block> = t
 
-  .position-absolute.start-0.text-white.px-1.m-1.small style="background:rgb(0 0 0 / .75);bottom:72px;" ID:#{machine.id}
-  .position-absolute style="bottom:76px;right:4px;"
+  .position-absolute.start-0.text-white.py-0.px-1.m-1.small style="background:rgb(0 0 0 / .75);bottom:78px;" ID:#{machine.id}
+  .position-absolute style="bottom:82px;right:4px;"
     = link_to "/contacts/new?r=crd_#{r}&m=#{machine.id}", class: "btn btn-sm btn-warning border-white px-1", data: { turbo: false }, target: :_blank, rel: :noopener do
       . #{mi(:forward_to_inbox)} 問合せ

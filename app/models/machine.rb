@@ -138,7 +138,7 @@ class Machine < ApplicationRecord
   scope :where_keyword, ->(keyword) { where(KEYWORDSEARCH_SQL, to_keywords(keyword)) }
   # scope :where_keyword, ->(keyword) { merge(Machine.where("machines.name LIKE ?", "%#{keyword}%").or(Machine.where("machines.maker LIKE ?", "%#{keyword}%"))) }
 
-  scope :with_images, -> { where("machines.top_image IS NOT NULL OR machines.top_img IS NOT NULL") }
+  scope :with_images, -> { where("(machines.top_image IS NOT NULL AND machines.top_image <> '') OR (machines.top_img IS NOT NULL AND machines.top_img <> '')") }
   scope :without_images, -> { where(top_image: nil).where(top_img: nil) }
 
   ### value ###

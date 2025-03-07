@@ -54,7 +54,7 @@ class Kobayashi < Base
 
       # 「新品」表記の削除
       name = m.at('td:nth(2)').text.f
-      hint = name.gsub(/(新品|一山|1山|未使用品|大量入荷|中!|各種|[0-9]+本$|他$|セット$)/, "").f
+      hint = name.gsub(/(新品|一山|1山|未使用品|大量入荷|中!|価格表|お問い合わせはこちら！|下さい|各種|[0-9]+本$|他$|セット$)/, "").f
 
       #### ディープクロール ####
       # detail_uri = join_uri(@p.uri, m.at('td:nth(1) a')[:href])
@@ -104,6 +104,23 @@ class Kobayashi < Base
         temp[:spec]    = temp[:spec].delete(@comment).f
         temp[:comment] = @comment
       end
+
+      # location
+      case temp[:location]
+      when /東日本マシンプラザ/
+        temp[:addr1] = "群馬県"
+        temp[:addr2] = "館林市"
+        temp[:addr3] = "赤生田本町3831番地2"
+      when /マシンプラザ本庄/
+        temp[:addr1] = "埼玉県"
+        temp[:addr2] = "本庄市"
+        temp[:addr3] = "児玉秋山907"
+      when /\((.*[都道府県])(.*)\)/
+        temp[:addr1] = Regexp.last_match(1)
+        temp[:addr2] = Regexp.last_match(2)
+      end
+
+      temp[:location] = temp[:location].gsub(/\(.*[都道府県].*\)/, '')
 
       # 主能力
       if /旋盤/ =~ temp[:name] && /NC/ !~ temp[:name]
