@@ -32,6 +32,7 @@ $body-color: $gray-800 !default;
 // Fonts
 
 // stylelint-disable-next-line value-keyword-case
-$font-family-sans-serif: "Helvetica Neue", "Helvetica", "Hiragino Sans",
-  "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo", sans-serif !default;
+$font-family-sans-serif: "Noto Sans JP", "Helvetica Neue", "Helvetica",
+  "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo",
+  sans-serif !default;
 $headings-font-weight: 400 !default;
