@@ -41,22 +41,22 @@
               = f.hidden_field :mai_search_log_id, value: @mai_search_log.id
               = f.hidden_field :message, value: @mai_search.message, data: { openai01_target: "re_text" }, class: "re_message"
               - if @mai_search.filtering_makers.length > 1
-                .small
-                  strong.small #{mi(:filter_alt)} メーカー
+                .small.ms-1
+                  strong.small #{mi(:business)} メーカー
                 - @mai_search.filtering_makers.each_key do |k|
                   = f.check_box("f[maker]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:maker]&.include?(k) }, k, nil)
                   = f.label "f[maker]", k, { value: k, class: "btn btn-outline-info btn-sm m-1 rounded-pill py-0", style: "min-width:78px;" }
 
               - if @mai_search.filtering_addr1s.length > 1
-                .small.mt-1
-                  strong.small  #{mi(:filter_alt)} 在庫場所
+                .small.ms-1.mt-1
+                  strong.small  #{mi(:pin_drop)} 在庫場所
                 - @mai_search.filtering_addr1s.each_key do |k|
                   = f.check_box("f[addr1]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:addr1]&.include?(k) }, k, nil)
                   = f.label "f[addr1]", k, { value: k, class: "btn btn-outline-primary btn-sm m-1 rounded-pill py-0", style: "min-width:78px;" }
 
               - if @mai_search.filtering_years.length.positive?
-                .small.mt-1
-                  strong.small #{mi(:filter_alt)} 年式
+                .small.mt-1.ms-1
+                  strong.small #{mi(:calendar_month)} 年式
                 - (1900..Time.current.year).step(10) do |year|
                   - if @mai_search.filtering_years.key?((year / 10).to_s)
                     = f.check_box("f[year]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:year]&.include?(year.to_s) }, year, nil)
@@ -65,14 +65,22 @@
                       small 年代
 
               - if @mai_search.filtering_capacities.length.positive?
-                .small.mt-1
-                  strong.small  #{mi(:filter_alt)} 能力
-                - @mai_search.filtering_capacities.each_key do |k|
-                  - cap = "#{number_with_precision(k[0], strip_insignificant_zeros: true)}#{k[1]}"
-                  = f.check_box("f[capacity]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:capacity]&.include?(cap) }, cap, nil)
-                  = f.label "f[capacity]", cap, { value: cap, class: "btn btn-outline-dark btn-sm m-1 rounded-pill py-0", style: "min-width:48px;" } do
-                    = number_with_precision(k[0], strip_insignificant_zeros: true)
-                    small = k[1]
+                / .small.mt-1
+                /   strong.small  #{mi(:filter_alt)} 能力
+                / - @mai_search.filtering_capacities.each_key do |k|
+                /   - cap = "#{number_with_precision(k[0], strip_insignificant_zeros: true)}#{k[1]}"
+                /   = f.check_box("f[capacity]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:capacity]&.include?(cap) }, cap, nil)
+                /   = f.label "f[capacity]", cap, { value: cap, class: "btn btn-outline-dark btn-sm m-1 rounded-pill py-0", style: "min-width:48px;" } do
+                /     = number_with_precision(k[0], strip_insignificant_zeros: true)
+                /     small = k[1]
+                -  @mai_search.filtering_capacities.keys.group_by { |k| [k[2], k[1]] }.each do |label, arr|
+                  .small.mt-1.ms-1
+                    strong.small  #{mi(:build)} #{label[0]} (#{label[1]})
+                  - arr.each do |k|
+                    - cap = "#{number_with_precision(k[0], strip_insignificant_zeros: true)}#{k[1]}"
+                    = f.check_box("f[capacity]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:capacity]&.include?(cap) }, cap, nil)
+                    = f.label "f[capacity]", cap, { value: cap, class: "btn btn-outline-dark btn-sm my-1 ms-1 rounded-2 p-0", style: "min-width:44px;" } do
+                      = number_with_precision(k[0], strip_insignificant_zeros: true)
 
               .mt-3 = f.button type: :submit, id: :searchButton, value: :model, class: "btn btn-primary", data: { openai01_target: "button" } do
                 span.show-when-enabled #{mi(:search)} 絞り込み条件を追加して、再検索

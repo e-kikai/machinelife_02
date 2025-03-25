@@ -82,12 +82,25 @@ class Teng < Base
             temp[:location] =
               case ndata
               when /成田第一/; 'TEN成田第1倉庫'
-              when /成田第二/; 'TEN成田第2倉庫'
+              when /成田第二|第2/; 'TEN成田第2倉庫'
               when /成田第三/; 'TEN成田第3倉庫'
+              when /成田第四|成田第4/; 'TEN成田第4倉庫'
               when /HUB/; 'TEN成田HUB-WORKS'
-              when /山梨/; 'TEN山梨'
+              when /山梨|鳴沢/; 'TEN山梨'
+              when /熊本/; 'TEN九州'
+              when /本社/; '本社'
               else ndata
               end
+
+            if ndata.match?(/朝倉/)
+              temp[:addr1] = "群馬県"
+              temp[:addr2] = "伊勢崎市"
+              temp[:addr3] = "田部井町3-200-1"
+            elsif ndata.match?(/大阪/)
+              temp[:addr1] = "大阪府"
+              temp[:addr2] = "東大阪市"
+              temp[:addr3] = "宝町15-10"
+            end
           when '付属品'; temp[:accessory] = ndata
           when '価格(万円)'; temp[:price] = ndata
           when '現状'; temp[:spec] += " | 現状:#{ndata}"

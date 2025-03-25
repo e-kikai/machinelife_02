@@ -61,8 +61,8 @@ class Okabeosaka < Base
           location: location,
           addr1:    "大阪府",
           addr2:    "東大阪市",
-
-          used_imgs: [],
+          addr3:    "本庄西2丁目4-38",
+          used_imgs: []
         }
 
         #### ディープクロール ####

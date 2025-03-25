@@ -117,7 +117,6 @@ ex.6) 関西にある山崎のNC立フライス、2005年以降。
 ans.6)
 {"name": "NCフライス|NC立フライス", "name2": "NC立フライス", "maker": "ヤマザキ", "model": "", "min_year": "2005", "addr1": "大阪府|兵庫県|京都府|奈良県|和歌山県", "capacity": ""}
 
-
 ex.7) 1995年以降の60トンプレス、アマダで大阪にあるもの
 
 ans.7)
@@ -148,6 +147,7 @@ messageの内容にマッチするような機械・工具を抽出し、
 - 登録されている機械・工具は、特に注釈がない限り中古一点ものです。
 - 個別の機械・工具に関する情報は「[ID:id maker name model]」を表記。
 - 読みやすいように適宜整形・改行を。
+- 挨拶などの前段、後段は除外し、本題のみ記述してください。
 
 ## 出力フォーマット
 [1, 2, 3, 4]
@@ -317,7 +317,7 @@ report>>>
       @filtering_addr1s     = pre_machines.where.not(addr1: [nil, '']).group(:addr1).order(count: :desc).limit(18).count
       @filtering_years      = pre_machines.where.not(year: [nil, '']).group("left(year, 3)").count
       @filtering_capacities = pre_machines.includes(:genre).where.not(capacity: [nil, 0]).where.not('genres.capacity_unit': [nil, ""])
-        .group(:capacity, "genres.capacity_unit").order(capacity_unit: :asc, capacity: :asc).count
+        .group(:capacity, "genres.capacity_unit", "genres.capacity_label").order(capacity_label: :asc, capacity_unit: :asc, capacity: :asc).count
     else
       generate_advice
     end
@@ -335,7 +335,7 @@ report>>>
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: system_message },
-          { role: "user", content: @message }
+          { role: "user", content: "#{@message} #{@filters.values}" }
         ],
         temperature: 0
       }
