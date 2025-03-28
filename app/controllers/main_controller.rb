@@ -6,6 +6,11 @@ class MainController < ApplicationController
 
     @news = machines.only_machines.news
 
+    if session[:utag].present?
+      @histories = Machine.sales.joins(:detail_logs).where(detail_logs: { utag: session[:utag] })
+        .order("detail_logs.created_at" => :desc).limit(50)
+    end
+
     @xl_genres             = XlGenre.order(:order_no).includes(:large_genres)
     @counts_by_xl_genre    = machines.joins(:xl_genre).group("xl_genres.id").count
     @counts_by_large_genre = machines.joins(:large_genre).group("large_genres.id").count

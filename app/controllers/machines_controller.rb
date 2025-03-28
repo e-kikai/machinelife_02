@@ -50,6 +50,7 @@ class MachinesController < ApplicationController
 
     @sames     = @machine.sames.sales.order(created_at: :desc)
     @nitamonos = @machine.nitamonos.sales.order("machine_nitamonos.norm").limit(15)
+    @nears     = @machine.nears(session[:utag]).sales.order(created_at: :desc).limit(15) if session[:utag].present?
 
     # ロギング
     if logging? && params[:id] != session[:before_machine_id]

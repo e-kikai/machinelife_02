@@ -143,4 +143,4 @@
         .row
           - @mai_search.adv_machines.each do |ma|
             .col-1.p-1 style="width:20%;"
-              = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker2, ma.name, ma.model, ma.myear, ma.addr1], r: :mai_src }
+              = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker2, ma.name, ma.model, ma.myear, ma.addr1, ma.addr2], r: :mai_src }

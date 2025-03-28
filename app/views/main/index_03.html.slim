@@ -110,8 +110,7 @@
         .mt-1
           | 例えば... 「大阪にある滝沢の6尺旋盤」「関東にある90年代製100Tプレス」etc...
 
-      . = form_with url: "/mai_search/search", method: :post, data: { turbo: false } do |f|
-        .col-10.mx-auto.my-4
+        .mx-auto.my-4
           .fw-bold.small.ms-5 <span class="text-primary-emphasis">#{mi(:support_agent)}</span> ↓ どんな機械・工具をおさがしですか？ ↓
           = form_with url: "/mai_search/search", method: :post, data: { turbo: false } do |f|
             .input-group.border.border-primary.border-2.rounded-pill.shadow-sm
@@ -169,3 +168,23 @@ h2
   - Bidinfo::BOTTOM_BANNERS.shuffle.each do |ba|
     .col.text-center = link_to ba[2], rel: :noopener, target: :_blank, onClick: "ga('send', 'event', 'banner', 'half', '#{ba[0]}', 1, true);" do
       = image_tag "#{Bidinfo::MEDIA_URL}#{ba[1]}", alt: ba[0]
+
+- if @histories.present?
+  .my-2
+    h2 #{mi(:history)} 閲覧履歴
+    /** 閲覧履歴カルーセル  **/
+    #historiesCarousel.carousel.slide
+      .row
+        .carousel-inner style="width:88%;margin:auto;"
+          - @histories.each_slice(5).with_index do |mas, i|
+            .carousel-item class=(:active if i.zero?)
+              .row.gx-2
+                - mas.each do |ma|
+                  .col-1.p-1 style="width:20%;"
+                    = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker2, ma.name, ma.model, ma.myear, ma.addr1, ma.addr2], r: :hst }
+
+        button.carousel-control-prev type="button" data-bs-target="#historiesCarousel" data-bs-slide="prev" style="width:6%;"
+          | #{mi(:arrow_back_ios, "text-dark fs-1 fw-bolder")}
+
+        button.carousel-control-next type="button" data-bs-target="#historiesCarousel" data-bs-slide="next" style="width:6%;"
+          | #{mi(:arrow_forward_ios, "text-dark fs-1 fw-bolder")}

@@ -11,7 +11,7 @@ module LinkSource
   ROBOTS = /(goo|google|yahoo|naver|ahrefs|msnbot|bot|crawl|amazonaws|rate-limited-proxy)/i
   KWDS   =
     {
-      "smd" => "同じ型式", "nmr" => "似た機械", "sge" => "同ジャンル", "hst" => "閲覧履歴", "sad" => "同じ都道府県",
+      "smd" => "同じ型式", "nmr" => "似た機械", "sge" => "同ジャンル", "hst" => "閲覧履歴", "sad" => "同じ都道府県", "nru" => "似たユーザ",
 
       # トップページキーワード検索
       "kma" => "メーカー", "kmo" => "型式",

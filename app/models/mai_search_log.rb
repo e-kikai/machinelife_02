@@ -36,7 +36,7 @@ class MaiSearchLog < ApplicationRecord
 
   before_save :check_robot
 
-  SEARCH_RANGE_DATE = 1.month
+  SEARCH_RANGE_DATE = 3.days
   BORDER_DATETIME   = "2025/2/20 2:00".freeze
 
   scope :message_cache, ->(message) { where(message:, created_at: SEARCH_RANGE_DATE.ago..).where(created_at: BORDER_DATETIME.in_time_zone..).order(id: :desc) }

@@ -58,14 +58,14 @@ h1 #{@company.company} 会社情報
           . #{@company.addr.to_s}
         dt.col-3 お問い合わせ
         dd.col-9
-          .text-danger.fs-4 TEL : #{@company.contact_tel}
+          .text-danger.fs-4 #{mi(:call)} TEL : #{@company.contact_tel}
           .
             |
               ご連絡の際に、<br />
-              「中古機械情報 マシンライフを見て」<br />
+              「<span class="fw-bold h6">中古機械情報 マシンライフを見て</span>」<br />
               とお伝え下さい
-          .text-danger.fs-4 FAX : #{@company.contact_fax}
-          . = link_to "/contacts/new?r=com_dtl&c=#{@company.id}", class: "btn btn-warning btn-sm", data: { turbo: false } do
+          .text-danger.fs-4 #{mi(:fax)} FAX : #{@company.contact_fax}
+          . = link_to "/contacts/new?r=com_dtl&c=#{@company.id}", class: "btn btn-warning btn-md my-2", data: { turbo: false } do
             | #{mi(:forward_to_inbox)} メールフォームから問合せ
         dt.col-3 担当者
         dd.col-9 = @company.officer

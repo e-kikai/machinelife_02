@@ -68,6 +68,8 @@ class Machine < ApplicationRecord
   NEWS_MAIL_DAY = Time.current.ago(1.week)
   NEWS_ADMIN_MAIL_DAY = Time.current.ago(1.day)
 
+  NEAR_DAY = Time.current.ago(1.week)
+
   DEFAULT_SORT =
     [
       "xl_genres.order_no", "large_genres.order_no", "genres.order_no",
@@ -189,6 +191,11 @@ class Machine < ApplicationRecord
     else
       Machine.none
     end
+  end
+
+  def nears(utag)
+    near_utags = DetailLog.where(machine_id: id, created_at: NEAR_DAY..).where.not(utag: [utag, nil]).select(:utag)
+    Machine.where(id: DetailLog.where(utag: near_utags, created_at: NEAR_DAY..).select(:machine_id))
   end
 
   def others_hash
