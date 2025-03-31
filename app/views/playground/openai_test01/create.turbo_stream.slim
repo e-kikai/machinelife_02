@@ -7,6 +7,7 @@
     - if Rails.env.development?
       .mx-auto.text-muted.small
         . = simple_format(h(@mai_search.wheres.to_s.strip))
+        / . = simple_format(h(@mai_search.specs.to_s.strip))
         . 検索レベル:#{@mai_search.level} 処理時間:#{@time}sec 途中件数:#{number_with_delimiter(@mai_search.machines&.count)}件
         . = @error
 
@@ -36,27 +37,27 @@
             = " (約#{number_with_delimiter(@mai_search.count.floor(Math.log10(@mai_search.count).to_i * -1))}件)"
 
           h6.mt-2.fw-bold 条件を追加して、さらに絞り込む
-          .p-3.rounded-3.bg-white.text-black
+          .p-3.rounded-3.bg-white.text-black.g-1
             = form_with url: "/playground/openai_test01", method: :post, data: { turbo_stream: true, action: "submit->openai01#sendMessage" } do |f|
               = f.hidden_field :mai_search_log_id, value: @mai_search_log.id
               = f.hidden_field :message, value: @mai_search.message, data: { openai01_target: "re_text" }, class: "re_message"
               - if @mai_search.filtering_makers.length > 1
-                .small
-                  strong.small #{mi(:filter_alt)} メーカー
+                .small.ms-1
+                  strong.small #{mi(:business)} メーカー
                 - @mai_search.filtering_makers.each_key do |k|
                   = f.check_box("f[maker]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:maker]&.include?(k) }, k, nil)
-                  = f.label "f[maker]", k, { value: k, class: "btn btn-outline-info btn-sm m-1 rounded-pill py-0", style: "min-width:78px;" }
+                  = f.label "f[maker]", k, { value: k, class: "btn btn-outline-info btn-sm m-1 rounded-pill py-0", style: "min-width:60px;" }
 
               - if @mai_search.filtering_addr1s.length > 1
-                .small.mt-1
-                  strong.small  #{mi(:filter_alt)} 在庫場所
+                .small.ms-1.mt-1
+                  strong.small  #{mi(:pin_drop)} 在庫場所
                 - @mai_search.filtering_addr1s.each_key do |k|
                   = f.check_box("f[addr1]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:addr1]&.include?(k) }, k, nil)
                   = f.label "f[addr1]", k, { value: k, class: "btn btn-outline-primary btn-sm m-1 rounded-pill py-0", style: "min-width:78px;" }
 
               - if @mai_search.filtering_years.length.positive?
-                .small.mt-1
-                  strong.small #{mi(:filter_alt)} 年式
+                .small.mt-1.ms-1
+                  strong.small #{mi(:calendar_month)} 年式
                 - (1900..Time.current.year).step(10) do |year|
                   - if @mai_search.filtering_years.key?((year / 10).to_s)
                     = f.check_box("f[year]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:year]&.include?(year.to_s) }, year, nil)
@@ -65,14 +66,23 @@
                       small 年代
 
               - if @mai_search.filtering_capacities.length.positive?
-                .small.mt-1
-                  strong.small  #{mi(:filter_alt)} 能力
-                - @mai_search.filtering_capacities.each_key do |k|
-                  - cap = "#{number_with_precision(k[0], strip_insignificant_zeros: true)}#{k[1]}"
-                  = f.check_box("f[capacity]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:capacity]&.include?(cap) }, cap, nil)
-                  = f.label "f[capacity]", cap, { value: cap, class: "btn btn-outline-dark btn-sm m-1 rounded-pill py-0", style: "min-width:48px;" } do
-                    = number_with_precision(k[0], strip_insignificant_zeros: true)
-                    small = k[1]
+                / .small.mt-1
+                /   strong.small  #{mi(:filter_alt)} 能力
+                -  @mai_search.filtering_capacities.keys.group_by { |k| [k[2], k[1]] }.each do |label, arr|
+                  .small.mt-1.ms-1
+                    strong.small  #{mi(:build)} #{label[0]} (#{label[1]})
+                  - arr.each do |k|
+                    - cap = "#{number_with_precision(k[0], strip_insignificant_zeros: true)}#{k[1]}"
+                    = f.check_box("f[capacity]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:capacity]&.include?(cap) }, cap, nil)
+                    = f.label "f[capacity]", cap, { value: cap, class: "btn btn-outline-dark btn-sm my-1 ms-1 rounded-2 p-0", style: "min-width:44px;" } do
+                      = number_with_precision(k[0], strip_insignificant_zeros: true)
+                      / small = k[1]
+                / - @mai_search.filtering_capacities.each_key do |k|
+                /   - cap = "#{number_with_precision(k[0], strip_insignificant_zeros: true)}#{k[1]}"
+                /   = f.check_box("f[capacity]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:capacity]&.include?(cap) }, cap, nil)
+                /   = f.label "f[capacity]", cap, { value: cap, class: "btn btn-outline-dark btn-sm m-1 rounded-pill py-0", style: "min-width:48px;" } do
+                /     = number_with_precision(k[0], strip_insignificant_zeros: true)
+                /     small = k[1]
 
               .mt-3 = f.button type: :submit, id: :searchButton, value: :model, class: "btn btn-primary", data: { openai01_target: "button" } do
                 span.show-when-enabled #{mi(:search)} 絞り込み条件を追加して、再検索
@@ -108,12 +118,12 @@
       / 検索結果
       - else
         .ms-4.p-3.rounded-5.bg-success.text-white.col-10
-          . #{mi(:support_agent)} #{number_with_delimiter(@mai_search.adv_machines&.count)} 件 の機械・工具がマッチしました。
+          .my-2 #{mi(:support_agent)} #{number_with_delimiter(@mai_search.adv_machines&.count)} 件 の機械・工具がマッチしました。
 
           - if @mai_search.advice.present?
-            h6.mt-2.fw-bold MAIからのアドバイス
+            h6.mt-2.fw-bold MAIからの商品選定アドバイス
             .p-3.rounded-3.bg-white.text-black
-              p == sanitize(@mai_search.advice.strip).gsub("\n", '<br>').gsub(/\[(ID\s*:\s*([0-9]+).*?)\]/) { "<a href='/machines/#{Regexp.last_match(2)}?r=mai_src_rep' target='_blank' rel='noopener'>#{mi(:settings)} #{Regexp.last_match(1)}</a><a class='btn btn-xs btn-warning px-1 ms-1 me-2' data-turbo='false' target='_blank' rel='noopener' href='/contacts/new?r=mai_src_adv&m=#{Regexp.last_match(2)}'>#{mi(:forward_to_inbox)} 問合せ</a>" }
+              p == sanitize(@mai_search.advice.strip).gsub("\n", '<br>').gsub(/\[\[(.*?)\]\]/) { " <strong class='text-info'>#{Regexp.last_match(1)}</strong> " }.gsub(/\[(ID\s*:\s*([0-9]+).*?)\]/) { "<a href='/machines/#{Regexp.last_match(2)}?r=mai_src_rep' target='_blank' rel='noopener'>#{mi(:settings)} #{Regexp.last_match(1)}</a><a class='btn btn-xs btn-warning px-1 ms-1 me-2' data-turbo='false' target='_blank' rel='noopener' href='/contacts/new?r=mai_src_adv&m=#{Regexp.last_match(2)}'>#{mi(:forward_to_inbox)} 問合せ</a>" }
 
               / - ids = @mai_search.advice.scan(/ID\s*:\s*([0-9]+)/).flatten
               / - if ids.present?
@@ -134,5 +144,15 @@
                   . #{mi(:forward_to_inbox)} #{gm.first.model} <span class="small">(#{gm.size}件) に一括問い合わせ</span>
         .row
           - @mai_search.adv_machines.each do |ma|
-            .col-1.p-1 style="width:20%;"
-              = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker2, ma.name, ma.model, ma.myear, ma.addr1], r: :mai_src }
+            .col-1.p-1.pb-2 style="width:20%;" data-model=ma.model2 data-year=ma.year
+              = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker2, ma.name, ma.model, ma.myear, ma.addr1, ma.addr2], r: :mai_src }
+
+              / 能力枠
+              - spec = []
+              - @mai_search.specs.each do |k, sp|
+                - if sp[ma.id.to_s.to_sym].present?
+                  - spec << "#{k}: #{sp[ma.id.to_s.to_sym]} "
+              - if spec.present?
+                .bg-info.text-white.small.px-2.py-1.z-3.position-relative.rounded-bottom-1.border-bottom-1 style="margin-top:-6px;"
+                  - spec.each do |sp|
+                    . = sp.strip

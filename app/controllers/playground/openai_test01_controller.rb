@@ -15,7 +15,7 @@ class Playground::OpenaiTest01Controller < ApplicationController
   def show
     machine = Machine.sales.find(params[:id])
 
-    res = MaiSearch.to_mai_json_hash(machine).to_json.gsub(/(\s|\\r|\\n|　)+/, " ")
+    res = MaiSearchDev.to_mai_json_hash(machine).to_json.gsub(/(\s|\\r|\\n|　)+/, " ")
 
     render json: res
   end
@@ -36,7 +36,7 @@ class Playground::OpenaiTest01Controller < ApplicationController
       filters = params[:f].present? ? params.require(:f).permit(maker: [], addr1: [], year: [], capacity: []).to_h : {}
 
       if @message.present?
-        @mai_search = MaiSearch.new(message: @message, filters:)
+        @mai_search = MaiSearchDev.new(message: @message, filters:)
         @mai_search.call
       else
         @error_mes = "質問がありません。"
