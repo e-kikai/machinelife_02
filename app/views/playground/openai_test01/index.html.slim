@@ -1,12 +1,6 @@
 - set_meta_tags title: "MAI 在庫検索"
 - breadcrumb :something, "MAI 在庫検索"
 
-/ - if flash[:message].present?
-/   javascript:
-/     window.addEventListener("load", function() {
-/       searchButton.click();
-/     });
-
 h1 MAI 在庫検索
 
 .row
@@ -16,24 +10,21 @@ h1 MAI 在庫検索
       | さらに、商品選定についてのアドバイスもさせていただきます。
       = link_to "/playground/openai_test01/help", class: "ms-2" do
         span #{mi(:help)} 詳しくは？ -> MAI在庫検索について
-    / .mt-1
-    /   | ＜質問の例＞ 「大阪にある滝沢の6尺旋盤、おすすめトップ3は」
 
-/ = render "info"
-
-. data-controller="openai01"
+. data-controller="mai-search"
   #form_area.mx-auto.my-3 = render "form"
 
-  .messages_area.mb-5 data-openai01-target="output"
-    #result_area.d-none
+  .messages_area.mb-5 data-mai-search-target="output"
+    #result_area
 
-    hr.border-1.opacity-75.mx-2 style="border-style:outset;margin:2rem 0;"
+    hr.border-2.opacity-75.mx-2 style="border-style:outset;margin:2rem 0;"
 
-    .row.d-none data-openai01-target="loading"
-      .my-3.ms-4.p-3.rounded-5.bg-success.text-white.col-6
-        .spinner-grow.text-white.spinner-grow-sm
-          span.visually-hidden Loading...
-        span.ms-2 検索中です。しばらくお待ち下さい。
+    template data-mai-search-target="loading"
+      .row
+        .my-3.ms-4.p-3.rounded-5.bg-success.text-white.col-6
+          .spinner-grow.text-white.spinner-grow-sm
+            span.visually-hidden Loading...
+          span.ms-2 検索中です。しばらくお待ち下さい。
 
-    .row.d-none data-openai01-target="dummy"
-      .ms-auto.me-4.my-3.p-3.rounded-5.bg-primary.text-white.col-8 dummy
+      .row
+        .ms-auto.me-4.my-3.p-3.rounded-5.bg-primary.text-white.col-8 dummy

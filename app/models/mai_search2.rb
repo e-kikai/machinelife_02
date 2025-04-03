@@ -1,4 +1,4 @@
-class MaiSearchDev
+class MaiSearch2
   PRODUCTS_LIMIT  = 120
   RESULT_LIMIT    = 60
   REPORT_LIMIT    = 300
@@ -6,25 +6,6 @@ class MaiSearchDev
 
   IGNORE_WORDS = /\|?(切削工具|不明|工作機械|測定工具|中古)\|?/
   NC_WORDS     = /旋盤|フライス|研削|研磨|ボール|自動|彫刻|中ぐり/
-
-#   SYSTEM_MESSAGE = "
-# ## あなたの役割
-# あなたは「全日本機械業連合会（全機連）」が運営する、中古工作機械・工具の販売サイト「マシンライフ」のAIアシスタント「MAI」です。
-# MAIは、中古機械・工具業界に精通した、丁寧な口調の優秀な美少女眼鏡秘書です。
-# 中古機械・工具のプロフェッショナルの言葉を使って商品提案を行ってください。
-
-# ## マシンライフとは
-# 全機連が運営する、中古工作機械・工具の売買をサポートするオンラインプラットフォームです。
-# 機械産業に携わる企業が中古機械を売買する場として利用されており、特に中古市場の活性化や効率的な流通を目的としています。
-
-# ## あなたの目的
-# ユーザの質問に対して、マシンライフの在庫情報から適切かつ具体的な機械・工具を提案し、
-# ユーザに、マシンライフの機械・工具を購入(出品会社への問い合わせ)するように促すことです。
-
-# ## 対象ユーザ
-# 工作機械・工具のプロフェッショナルで、専門知識を持っている、
-# 工場で実際に加工作業を行う技術者や、中古工作機械・工具の販売商社です。
-# ".freeze
 
   SYSTEM_MESSAGE = "
 あなたは「全日本機械業連合会（全機連）」が運営する、中古工作機械・工具の販売サイト「マシンライフ」のAIアシスタント「MAI」です。
@@ -34,95 +15,6 @@ MAIは、中古機械・工具に精通した丁寧な口調の美人眼鏡秘�
 彼らの質問に対し、マシンライフの在庫情報から適切な機械・工具を提案し、購入の意思決定をサポートしてください。
 ".freeze
 
-#   QUERY_MESSAGE = '
-# 1. messageに回答するためには、マシンライフにあるどんな工作機械・工具が必要かを考えて下さい。
-
-# 2. その機械・工具をRDBから検索するためのキーワードを抽出してください。
-# - 正規表現で検索処理を行うので、類義語ごとに|区切りで列挙して下さい。
-# - 金額、値段については当サイト上では提示していないため、条件から除外。
-# - 単語末尾のカタカナの「ー」は除去してください。
-
-# ## 出力フォーマット
-# messageから、以下のRDBのcolumn項目を出力して下さい。
-# columnにkeywordがない場合は、何も記述せず空白にして下さい。
-
-# ## column
-# ### name
-# 機械・工具の一般名称を抽出。
-# 数値のcapacityや maker、model に含まれるkeywordは除外。
-# 表記ゆれ・別表記を含めた正規表現を作成して下さい。
-
-# ### name2
-# 機械・工具の一般名称。こちらはあいまい検索せずに、これというもの1つだけ,
-
-# ### maker
-# 機械・工具のメーカー会社名の固有名詞部分。
-# name model に含まれているkeywordは除外。
-
-# ### model
-# 機械・工具の型式を半角英数字大文字で。
-# 全角、小文字などは半角英数字大文字に変換、それ以外の文字種、記号や漢字カナは除外。
-# 能力値(100Tのような数字と単位)は後述のcapacityに入れるため除外。
-
-# ### min_year
-# 西暦数字4桁の年式の範囲の最小値。
-
-# ### max_year
-# 西暦数字4桁の年式の範囲の最大値。
-# 年式をピンポイントで指定する場合は、min_yearとmax_yearを同一値にする。
-
-# ### addr1
-# 日本の都道府県を「都道府県」付き(東京都、大阪府など)で抽出し出力。
-# 複数可。都市名は都道府県に変換。
-# 関西や関東など、地域が入力されている場合は、それに含まれる都道府県。
-# 〇〇近辺(周辺、近郊など)の場合、周辺都道府県も含めて出力。
-# 既に maker name に含まれている単語は除外)。
-# 多すぎる場合は(全国、など)の場合は空白。
-
-# ### capacity
-# 機械・工具の能力数値を単位とともに列挙。範囲の場合はマッチする正規表現を記述。数値ではないものは除外。
-# 英語表記と日本語表記などを正規表現で併記。例えばインチの場合(インチ|inch|吋)を併記。
-
-# ## 出力例
-# ex.1) 大阪近辺で、オークマかアマダの90年代の5尺立型旋盤の型式がLSかods-12で。
-
-# ans.1)
-# {"name": "((立||立型|縦)旋盤))|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ", "min_year": "1990", "max_year": "1999", "model": "LS|ODS12", "addr1": "大阪府", "capacity": "5尺"}
-
-# ex.2) ナガセのSGW-63
-
-# ans.2)
-# {"name": "", "name2": "", "maker": "ナガセ|長瀬", "model": "SGW63", "addr1": "", "capacity": ""}
-
-# ex.3) 東京近郊でアマダ製バンドソー250mm
-
-# ans.3)
-# {"name": "バンドソ|帯鋸|バンドノコ", "name2": "バンドソ", "maker": "アマダ", "model": "", "addr1": "東京都|千葉県|埼玉県|神奈川県", "capacity": "(250(mm|ミリメートル|粍))"}
-
-# ex.4) 大阪にある7.5kwパッケージコンプレッサー、アネスト岩田製
-
-# ans.4)
-# {"name": "((パッケージ|パッケージ型)コンプレッサ)|コンプレッサ", "name2": "パッケージコンプレッサ", "maker": "岩田", "model": "", "addr1": "大阪府", "capacity": "(7.5(kw|キロワット))"}
-
-# ex.5) 大阪周辺にある相澤鐵工所1990年製の1000mm以上のメカシャーリング。
-
-# ans.5)
-# {"name": "シャーリング|メカシャー", "name2": "シャーリング", "maker": "相澤", "model": "", "min_year": "1990", "max_year": "1990, "addr1": "大阪府|兵庫県|京都府|奈良県|和歌山県", "capacity": "([1-9][0-9][0-9][0-9](mm|ミリメートル|粍))"}
-
-# ex.6) 関西にある山崎のNC立フライス、2005年以降。
-
-# ans.6)
-# {"name": "NCフライス|NC立フライス", "name2": "NC立フライス", "maker": "ヤマザキ", "model": "", "min_year": "2005", "addr1": "大阪府|兵庫県|京都府|奈良県|和歌山県", "capacity": ""}
-
-# ex.7) 1995年以降の60トンプレス、アマダで大阪にあるもの
-
-# ans.7)
-# {"name": "プレス", "name2": "NC立フライス", "maker": "アマダ", "model": "", "min_year": "1995", "addr1": "大阪府", "capacity": "60(T|トン)"}
-# '.freeze
-
-# "nc": 質問文の内容から検索する商品がNC工作機械かどうかを判別し、true（NC工作機械）、false（それ以外の機械・工具）で指定,
-# "keywords": 上記以外のキーワード(能力、仕様、付属品などできるだけたくさん)。すでに上記カラムに入っているkeywordは除外。
-
   QUERY_MESSAGE = '
 ## 指示
 1. ユーザーの入力から、適切な機械・工具を特定してください。
@@ -130,13 +22,14 @@ MAIは、中古機械・工具に精通した丁寧な口調の美人眼鏡秘�
 3. 出力は**固定JSONフォーマット**で作成してください。
 
 ## 出力フォーマット (JSON)
-- name: 機械・工具の一般名称（表記ゆれ・別表記を正規表現で列挙）
+- name: 機械・工具の一般名称（表記ゆれ・略称などを正規表現で列挙）
 - name2: 機械・工具の一般名称（あいまい検索なし、単一の名称）
 - maker: メーカー名の固有名詞部分
 - model: 型式（半角英数字大文字に統一）
 - min_year / max_year: 年式（西暦4桁、範囲指定可能）
-- addr1: 都道府県名（「都道府県」付き）
-- addr2: 市区町村名
+- addr1: 都道府県名、正式名称で列挙
+- addr2: 市区町村名、正式名称で列挙
+- min_date / max_date: 登録日（フォーマット:YYYY/MM/DD、範囲指定可能）
 - capacity: 能力数値（正規表現）
 - img: 画像付きの機械を探す場合は、1
 - youtube: 動画付きの機械を探す場合は、1
@@ -173,10 +66,13 @@ ans.8)
 {"name": "旋盤", "name2": "旋盤", "maker": "滝沢", "min_year": "1995", "addr1": "大阪府", "capacity": "6尺", "commission": "1"}
 
 ## ルール
-- name では類義語を | で並べる (例: バンドソ|帯鋸|バンドノコ)
+  ' + "- 今日の日付は#{Time.zone.today}" + '
+- name では類義語を | で並べる (例: バンドソ|帯鋸|バンドノコ)、単語末尾のーは除去。
+- name では個性を表す重要な要素(油圧プレスの油圧、石定盤の石、など)は、必ずマッチするようにしてください。
 - capacity は正規表現化 (例: ([1-9][0-9][0-9][0-9](mm|ミリメートル|粍)))
-- maker は固有名詞のみ、model に含まれる部分は除外
-- addr1 は正式名称で列挙: 近隣県も含める（例: 東京都|千葉県|埼玉県|神奈川県）
+- maker は固有名詞のみ、
+- addr1 は maker に含まれる部分は除外
+- min_data、max_date、「新着」はmin_date:1週間前の日付,max_date:今日を取得、ピンポイントな日付はmaxとmin同一の日付を取得
 - 値のない項目は出力しないでください。
 '.freeze
 
@@ -185,27 +81,24 @@ ans.8)
 <machines>は、マシンライフの在庫機械・工具からmessageの内容で検索した結果です。
 以下の内容をJSON形式で出力してください。
 
-1. 検索結果の機械情報のうち、messageの検索内容を解釈し、
-検索条件にマッチするものの「id」を"ids"に列挙してください。
-条件にマッチするかは、広めにとってください。全くマッチしていないもののみ除外してください。
+1. 検索結果の機械情報のうち、messageの検索条件に全然マッチしていないゴミ情報の「id」を"ids"に列挙してください。
 
-2.  <machines>からユーザが購入する際の商品選定基準になる項目を重要な順に最大2項目まで考えてください。
-- 年式、型式は、選定基準の項目からは除外してください。
+2.  <machines>からユーザが購入する際の商品選定基準になる項目を最大2項目まで考えてください。
+- 年式、型式は、選定基準には含めないでください。
 
-3. 選定基準の項目についての説明、選定方法を、200文字程度まででアドバイスを"report"に記述してください。
+3. 選定基準の項目についての説明、具体的な選定方法アドバイスを200文字程度までで"report"に記述してください。
 - 選定項目の部分は[[項目]]としてください。
+- message内に質問があれば、回答してください。
 
 4. <machines>の在庫機械・工具のIDごとに、選定基準の項目の値を"specs"に出力してください。
-- 年式、型式は、選定基準の項目からは除外してください。
 - 機械情報は出品会社各社が自由に入力するため、記述方法がバラバラです。
 例えば、
   - 「300mmハイトゲージ」のように機械名に含まれている場合
   - 型式、仕様に数値だけ記述されている
-  - 項目名があいまいなもの(加工能力と切断能力、項目名なし、オープンハイトをOHなど略称)
-などたくさんあるので、考慮して各項目の数値を取りこぼしなきようできるだけ幅広く取得してください。
-- 各項目で単位表記を統一してください(例 : 「T」「トン」「t」はすべて 「T」に統一)。単位のないものは補完してください。
-- 値がないもの不明なものは、同じ型式の機械から類推する、あなたの知っている情報から補完するなどしてください。
-それでもない場合は除外してください。
+  - 項目名があいまいなもの(加工能力と切断能力、項目名なし、オープンハイトをOH、ストロークをSなど略称)
+これらを考慮して、各項目の数値を取りこぼしなきよう幅広く取得してください。
+- 各項目で単位表記を統一してください(例 : 「T」「トン」「t」「ton」はすべて 「T」に統一)。単位のないものは補完してください。
+- 値がないもの不明なものは除外してください。
 
 ## 出力フォーマット
 {
@@ -213,12 +106,12 @@ ans.8)
 "report": "3.のアドバイスをここに記述",
 "specs":
 {
-"主軸回転数": {
-"231381": "75~3600rpm",
-"284232": "75~3600rpm",
-"307832": "3600rpm"
+"選定項目A": {
+"231381": "120mm",
+"284232": "500mm",
+"307832": "360mm"
 },
-"能力": {
+"選定項目B": {
 "231385": "60T",
 "284299": "30T",
 "307882": "100T"
@@ -226,58 +119,13 @@ ans.8)
 }
 '.freeze
 
-# 2. 1.の結果から、messageの質問から、ユーザに対する購入についてのアドバイスを#{REPORT_LIMIT}文字程度の日本語で作成し「report>>>」以降に記述してください。
-
-# ## アドバイス内容
-# - 購入する際の選定方法、具体的な選定項目、用途や適した作業、複数の商品を比較して差異の説明、おすすめ商品とその理由 etc。
-# - ユーザに機械・工具を購入(出品会社への金額についての問い合わせ)してもらえるよう、具体的、専門的、実践的、かつ魅力的な解説・提案。
-# - 登録されている機械・工具は、特に注釈がない限り中古一点ものです。
-# - 個別の機械・工具に関する情報は「[ID:id maker name model]」を表記。
-# - 挨拶などの前段、後段は削除して本題のみ記述してください。
-# - 読みやすいように適宜整形・改行を。
-
-#   SORT_QUERY_MESSAGE = '
-# <machines>は、マシンライフの在庫機械・工具からmessageの内容で検索した結果です。
-
-# ## 指示
-# 1. <machines>の在庫機械・工具のうち、**messageの検索条件に全然マッチしていないもの**の「ID]を列挙し「JSON形式の配列」で出力してください。
-# 2.  <machines>の在庫機械・工具からユーザが購入するための商品選定基準を考えて、120文字程度でアドバイスしてください。
-# (挨拶などの前段、後段は除外し、本題のみ記述してください)
-# 3. 商品選定の具体的な選定項目(能力、仕様、付属品、状態、用途、制御系、搬入条件、機種、画像・動画の有無など)を
-# 2~6項目くらい列挙。(年式、メーカー、都道府県は除外)
-# それらの項目についてフィルタリングするための選択肢を列挙してください。
-# (取りこぼしなくすべて、昇順ソート、表記揺れや単位違いがあれば丸めてください)
-# さらに、その選択肢に当てはまる機械・工具のIDを取りこぼしなく列挙して、昇順にソートしてjson形式で出力で出力してください。
-
-# ## 出力フォーマット例
-# >> ignores
-# [55,66,7]
-
-# >> info
-# (どのように商品選別をしたらよいかの説明)
-
-# >> results
-# {
-#   "ストローク長": {
-#     "150mm": [285704, 276051],
-#     "250mm": [280029],
-#     "300mm": [245887],
-#     "350mm": [314335],
-#     "400mm": [227391]
-#   },
-#   "能力": {
-#   "0.1kw": [243048],
-#   "0.2kw": [175226],
-#   "0.75kw": [269610, 276356],
-#   "1.5kw": [174008, 276360],
-#   "2.2kw": [250369, 276354, 313316]
-#   }
-# }
-# '.freeze
+# 1. 検索結果の機械情報のうち、messageの検索内容を解釈し、
+# 検索条件にマッチするものの「id」を"ids"に列挙してください。
+# 条件にマッチするかは、広めにとってください。全くマッチしていないもののみ除外してください。
 
   attr_reader(
     :message, :count, :level, :wheres, :machines, :advice, :adv_machines,
-    :filtering_makers, :filtering_addr1s, :filtering_years, :filtering_capacities, :filtering, :filters, :specs
+    :filtering_makers, :filtering_addr1s, :filtering_years, :filtering_capacities, :filtering, :filters, :specs , :spec_labels
   )
 
   def initialize(message: "", filters: {})
@@ -301,7 +149,7 @@ ans.8)
 
   def call
     # 質問文が英数字だけのとき
-    kwd = MaiSearchDev.to_model_keywords(@message)
+    kwd = MaiSearch2.to_model_keywords(@message)
 
     if kwd.present? && kwd.join =~ /^[0-9A-Z\s]*$/
       @machines = Machine.mai_search_sales.where("machines.search_keyword ~* ALL(ARRAY[?])", kwd)
@@ -314,7 +162,7 @@ ans.8)
     end
 
     # ### 旧キーワード検索 ###
-    # kwd = MaiSearchDev.to_legacy_keywords(@message)
+    # kwd = MaiSearch2.to_legacy_keywords(@message)
 
     # if kwd.present?
     #   # @machines = Machine.sales.includes(:contacts, :detail_logs).where(KEYWORD_SEARCH_SQL, kwd)
@@ -350,7 +198,7 @@ ans.8)
       ### 過去ログがあれば、キーワードキャッシュ取得 ###
       if mai_search_log = MaiSearchLog.message_cache(@message).first
         where_json = mai_search_log.keywords
-        @wheres = JSON.parse(MaiSearchDev.ignore_keyword(where_json || "{}"), symbolize_names: true)
+        @wheres = JSON.parse(MaiSearch2.ignore_keyword(where_json || "{}"), symbolize_names: true)
 
         @level += 1
       end
@@ -372,14 +220,14 @@ ans.8)
 
         begin
           where_json = generated_text.to_s.match(/(\{.*?\}|\[.*?\])/m)[0]
-          @wheres = JSON.parse(MaiSearchDev.ignore_keyword(where_json), symbolize_names: true) # JSONパース(除外ワード処理)
+          @wheres = JSON.parse(MaiSearch2.ignore_keyword(where_json), symbolize_names: true) # JSONパース(除外ワード処理)
         rescue StandardError
           @wheres = {}
         end
 
         ### キーワード整形 ###
-        @wheres[:name]     = MaiSearchDev.nc_keyword(@wheres[:name])                      if @wheres[:name].present? # 機械名(NC)
-        @wheres[:capacity] = MaiSearchDev.capacity_keyword(@wheres[:capacity])            if @wheres[:capacity].present? # 能力
+        @wheres[:name]     = MaiSearch2.nc_keyword(@wheres[:name])                      if @wheres[:name].present? # 機械名(NC)
+        @wheres[:capacity] = MaiSearch2.capacity_keyword(@wheres[:capacity])            if @wheres[:capacity].present? # 能力
         @wheres[:maker]    = Maker.search_makers(@wheres[:maker].split('|')) if @wheres[:maker].present? # メーカー
       end
 
@@ -398,6 +246,8 @@ ans.8)
       @machines = @machines.where("machines.name ~* ?", "(#{@wheres[:name]})")    if @wheres[:name].present? # 機械名
       @machines = @machines.where(year: ..@wheres[:max_year])                     if @wheres[:max_year].present? # 年式(最大)
       @machines = @machines.where(year: @wheres[:min_year]..)                     if @wheres[:min_year].present? # 年式(最小)
+      @machines = @machines.where(created_at: ..@wheres[:max_date])               if @wheres[:max_date].present? # 年式(最大)
+      @machines = @machines.where(created_at: @wheres[:min_date]..)               if @wheres[:min_date].present? # 年式(最小)
       @machines = @machines.where("machines.model2 ~* ?", @wheres[:model])        if @wheres[:model].present? # 型式
       @machines = @machines.where("machines.search_capacity ~* ?", "(^|[^0-9])+(#{@wheres[:capacity]})") if @wheres[:capacity].present? # 能力
 
@@ -451,8 +301,8 @@ ans.8)
     ### フィルタリング候補(検索結果が0、超過の場合、アドバイススキップ) ###
     if @count.zero? || @count > PRODUCTS_LIMIT
       @filtering = true
-      @filtering_makers     = pre_machines.where.not('makers.maker_master': [nil, '']).group("makers.maker_master").order(count: :desc).limit(18).count
-      @filtering_addr1s     = pre_machines.where.not(addr1: [nil, '']).group(:addr1).order(count: :desc).limit(19).count
+      @filtering_makers     = pre_machines.where.not('makers.maker_master': [nil, '']).group("makers.maker_master").order(count: :desc).limit(19).count
+      @filtering_addr1s     = pre_machines.where.not(addr1: [nil, '']).group(:addr1).order(count: :desc).limit(18).count
       @filtering_years      = pre_machines.where.not(year: [nil, '']).group("left(year, 3)").count
       @filtering_capacities = pre_machines.includes(:genre).where.not(capacity: [nil, 0]).where.not('genres.capacity_unit': [nil, ""])
         .group(:capacity, "genres.capacity_unit", "genres.capacity_label").order(capacity_label: :asc, capacity_unit: :asc, capacity: :asc).count
@@ -483,46 +333,42 @@ ans.8)
     )
 
     begin
-      # # 結果から、ID一覧を取得
-      # sort_array_text = response.dig("choices", 0, "message", "content")
-      # sort_json = sort_array_text.to_s.match(/(\{.*?\}|\[.*?\])/m)[0]
-      # sort_array = JSON.parse(sort_json, symbolize_names: true)
-
-      # # search
-      # @adv_machines = Machine.sales.where(id: sort_array).order(model2: :asc, created_at: :desc)
-
-      # # @adv_machines = @machines.order(model2: :asc, created_at: :desc)
-
-      # # レポート整理
-      # @advice = (sort_array_text.match(/report>>>(.*?)(specs>>>)?$/)[1] || sort_array_text).gsub('。', "。\n")
-
-      # @specs =
-      #   if sort_array_text =~ /specs>>>(.*)/m
-      #     # JSON.parse(Regexp.last_match(1), symbolize_names: true) # JSONパース
-      #     sort_array_text.match(/report>>>(.*?)(specs>>>)?$/)
-      #   else
-      #     {}
-      #   end.to_h { |k, v| [k, v.compact] }.to_h
-      # sort_array = JSON.parse(sort_json, symbolize_names: true)
-
       # 結果から、ID一覧を取得
       json_text = response.dig("choices", 0, "message", "content")
       json = JSON.parse(json_text, symbolize_names: true)
 
       # search
-      @adv_machines =
-        if json[:ids].present?
-          Machine.sales.where(id: json[:ids]).order(model2: :asc, created_at: :desc)
-        else
-          @machines.order(model2: :asc, created_at: :desc)
-        end
+      # @adv_machines =
+      #   if json[:ids].present?
+      #     Machine.sales.where(id: json[:ids]).order(model2: :asc, created_at: :desc)
+      #   else
+      #     @machines.order(model2: :asc, created_at: :desc)
+      #   end
       # @adv_machines = @machines.order(model2: :asc, created_at: :desc)
+
+      @adv_machines = @machines.order(model2: :asc, created_at: :desc)
+      @adv_machines = @adv_machines.where.not(id: json[:ids]) if json[:ids].present?
 
       # レポート整理
       @advice = (json[:report].presence || sort_array_text).gsub('。', "。\n")
 
-      # レポート整理
-      @specs = (json[:specs].presence || {}).transform_values { |v| v.reject { |_, v2| v2.blank? || v2 == "不明" || v2 == "-" } }
+      # 項目整理
+      specs_temp = (json[:specs].presence || {})
+        .transform_values { |v| v.reject { |_, v2| v2.blank? || v2 == "不明" || v2 == "-" } }
+
+      @spec_labels = specs_temp.keys
+
+      @specs = {}
+      @spec_labels.each_with_index do |label, i|
+        # @adv_machines.each do |ma|
+        #   @specs[ma.id.to_s.to_i] ||= []
+        #   @specs[ma.id.to_s.to_i][i] = v
+        # end
+        specs_temp[label].each do |id, v|
+          @specs[id.to_s.to_i] ||= []
+          @specs[id.to_s.to_i][i] = v
+        end
+      end
     rescue StandardError => e
       # @error = e.full_message
       @error = e.message
@@ -535,18 +381,18 @@ ans.8)
     res = {
       id: machine.id,
       name: machine.name,
-      maker: machine.maker,
+      # maker: machine.maker,
       model: machine.model,
-      year: machine.myear,
+      # year: machine.myear,
       spec: machine.spec,
       accessory: machine.accessory,
       comment: "#{machine.comment} ",
-      location: "#{machine.addr1} #{machine.addr2} #{machine.addr3} (#{machine.location})",
+      # location: "#{machine.addr1} #{machine.addr2} #{machine.addr3} (#{machine.location})",
       # category: machine.xl_genre.xl_genre,
       # large_genre: machine.large_genre.large_genre,
       # genre: machine.genre.genre,
       capacity: machine.capacities,
-      registration_date: machine.created_at.strftime("%y/%m/%d %H:%M:%S"),
+      # registration_date: machine.created_at.strftime("%y/%m/%d %H:%M:%S"),
       # access_count: machine.detail_logs.size,
       # contact_count: machine.contacts.size
       # "添付PDF": machine.pdfs_parsed.medias.map(&:name)
