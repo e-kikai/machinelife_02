@@ -81,7 +81,7 @@ class Admin::MachinesController < Admin::ApplicationController
         :top_image, :top_image_delete,
         :used_change,
         images: [], imgs_delete: [], images_delete: [], images_cancel: [],
-        pdfs: [], pdfs_filename: [], pdfs_name: [], pdfs_delete: [], pdfs_cancel: [],
+        pdfs: [], pdfs_filename: [], pdfs_name: [], pdfs_delete: [], pdfs_cancel: [], old_pdfs_delete: [],
         machine_pdfs: [:name, :deleted_at]
       ).tap do |wl|
         wl[:others]   = params[:others].permit! if params[:others].present?

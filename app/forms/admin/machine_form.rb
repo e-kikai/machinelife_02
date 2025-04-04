@@ -34,6 +34,7 @@ class Admin::MachineForm < FormBase
   attribute :pdfs_cancel, default: []
   attribute :pdfs_rename, default: []
   attribute :pdfs_rename_id, default: []
+  attribute :old_pdfs_delete, default: []
 
   attribute :imgs_delete, default: []
 
@@ -68,6 +69,13 @@ class Admin::MachineForm < FormBase
 
     # 旧画像削除
     machine.imgs = (imgs_parsed.datas - imgs_delete).to_json if imgs_delete.present?
+
+    # 旧PDF削除
+    if old_pdfs_delete.present?
+      pdf_datas = pdfs_parsed.datas
+      old_pdfs_delete.each { |k| pdf_datas.delete(k.to_s.to_sym) }
+      machine.pdfs = pdf_datas.to_json
+    end
 
     # 保存
     machine.update!(slice(SLICE_ATTRS).merge({ changed_at: Time.current, others: others.to_json }))
