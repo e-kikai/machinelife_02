@@ -45,7 +45,7 @@ class Bidinfo < ApplicationRecord
     ['平井鈑金機工', 'ad_hirai.png', 'http://www.hiraibankin.com/'],
     ['楠本機械', 'ad_kusumoto.png', 'https://kusumotokikai.co.jp/'],
     ['三和精機', 'ad_sanwa_02.gif', 'https://sanwa-seiki.jp/'],
-    ['堀川機械', 'ad_horikawa.png', 'https://horikawakikai.e-kikai.com/'],
+    # ['堀川機械', 'ad_horikawa.png', 'https://horikawakikai.e-kikai.com/'],
     ['アイダエンジニアリング株式会社 中古機グループ', 'ad_aida.gif', 'https://www.aida.co.jp/products/used.html'],
     ['新明和機工', 'ad_smk.gif', 'http://www.k-smk.co.jp/'],
     ['伊吹産業', 'ad_ibuki.png', 'http://www.ibuki-in.co.jp/'],
