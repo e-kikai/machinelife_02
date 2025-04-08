@@ -15,7 +15,7 @@ h1 MAIログ集計 (#{title})
         th rowspan="2" style="width: 60px;"
         th colspan="5" style="border-left-style:double;border-left-width:3px;" 検索
         th colspan="5" style="border-left-style:double;border-left-width:3px;" リンク
-        th colspan="6 " style="border-left-style:double;border-left-width:3px;" 問い合わせ
+        th colspan="7 " style="border-left-style:double;border-left-width:3px;" 問い合わせ
         th colspan="2" style="border-left-style:double;border-left-width:3px;" 評価
 
       tr.small
@@ -35,6 +35,7 @@ h1 MAIログ集計 (#{title})
         th scope="col" style="width: 50px;" カード
         th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 合計
         th scope="col" style="width: 72px;" 割合％<span class="small text-secondary"> :全体</span>
+        th scope="col" style="width: 50px;" exs
 
         th scope="col" style="width: 24px;border-left-style:double;border-left-width:3px;"
           .text-success.m-auto #{mi(:thumb_up_alt)}
@@ -75,6 +76,7 @@ h1 MAIログ集計 (#{title})
             - if @contacts_sum_count[row] && @contacts_all_count[row]
               | #{(@contacts_sum_count[row].to_f / @contacts_all_count[row] * 100).floor(1)}
               span.small.text-secondary = " :#{number_with_delimiter(@contacts_all_count[row])}"
+          td.text-end = number_with_delimiter @contacts_exs_count[row]
 
           td.text-end style="border-left-style:double;border-left-width:3px;" = number_with_delimiter @mai_search_logs_good_count[row]
           td.text-end = number_with_delimiter @mai_search_logs_bad_count[row]
@@ -83,7 +85,7 @@ h1 MAIログ集計 (#{title})
         th rowspan="2" style="width: 60px;"
         th colspan="5" style="border-left-style:double;border-left-width:3px;" 検索
         th colspan="5" style="border-left-style:double;border-left-width:3px;" リンク
-        th colspan="6" style="border-left-style:double;border-left-width:3px;" 問い合わせ
+        th colspan="7" style="border-left-style:double;border-left-width:3px;" 問い合わせ
         th colspan="2" style="border-left-style:double;border-left-width:3px;" 評価
 
       tr.small
@@ -103,6 +105,7 @@ h1 MAIログ集計 (#{title})
         th scope="col" style="width: 50px;" カード
         th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 合計
         th scope="col" style="width: 72px;" 割合％<span class="small text-secondary"> :全体</span>
+        th scope="col" style="width: 50px;" exs
 
         th scope="col" style="width: 24px;border-left-style:double;border-left-width:3px;"
           .text-success.m-auto #{mi(:thumb_up_alt)}

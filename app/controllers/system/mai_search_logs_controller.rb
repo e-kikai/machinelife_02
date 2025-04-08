@@ -57,5 +57,19 @@ class System::MaiSearchLogsController <System::ApplicationController
     @detail_logs_utag_count = @detail_logs.distinct.count(:utag)
     @detail_logs_adv_count  = @detail_logs.where("r LIKE '%adv%'").count
     @detail_logs_crd_count  = @detail_logs.where("r LIKE '%crd%'").count
+
+    # 詳細から3時間以内に問い合わせ(MAIから直接を除く)
+    sql = <<SQL.squish
+  EXISTS(
+    SELECT 1
+    FROM detail_logs dl
+    WHERE dl.utag = contacts.utag
+    AND dl.machine_id = contacts.machine_id
+    AND dl.created_at BETWEEN contacts.created_at - INTERVAL '3 hours' AND contacts.created_at
+    AND dl.r LIKE '%mai%'
+  )
+SQL
+
+    @contacts_exs_count = @contacts_all.where.not("r LIKE '%mai%'").where(sql).count
   end
 end
