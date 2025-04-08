@@ -1,4 +1,4 @@
-class MaiSearch2
+class MaiSearchB02
   PRODUCTS_LIMIT  = 120
   RESULT_LIMIT    = 60
   REPORT_LIMIT    = 300
@@ -149,7 +149,7 @@ ans.8)
 
   def call
     # 質問文が英数字だけのとき
-    kwd = MaiSearch2.to_model_keywords(@message)
+    kwd = self.class.to_model_keywords(@message)
 
     if kwd.present? && kwd.join =~ /^[0-9A-Z\s]*$/
       @machines = Machine.mai_search_sales.where("machines.search_keyword ~* ALL(ARRAY[?])", kwd)
@@ -162,7 +162,7 @@ ans.8)
     end
 
     # ### 旧キーワード検索 ###
-    # kwd = MaiSearch2.to_legacy_keywords(@message)
+    # kwd = self.class.to_legacy_keywords(@message)
 
     # if kwd.present?
     #   # @machines = Machine.sales.includes(:contacts, :detail_logs).where(KEYWORD_SEARCH_SQL, kwd)
@@ -198,7 +198,7 @@ ans.8)
       ### 過去ログがあれば、キーワードキャッシュ取得 ###
       if mai_search_log = MaiSearchLog.message_cache(@message).first
         where_json = mai_search_log.keywords
-        @wheres = JSON.parse(MaiSearch2.ignore_keyword(where_json || "{}"), symbolize_names: true)
+        @wheres = JSON.parse(self.class.ignore_keyword(where_json || "{}"), symbolize_names: true)
 
         @level += 1
       end
@@ -220,14 +220,14 @@ ans.8)
 
         begin
           where_json = generated_text.to_s.match(/(\{.*?\}|\[.*?\])/m)[0]
-          @wheres = JSON.parse(MaiSearch2.ignore_keyword(where_json), symbolize_names: true) # JSONパース(除外ワード処理)
+          @wheres = JSON.parse(self.class.ignore_keyword(where_json), symbolize_names: true) # JSONパース(除外ワード処理)
         rescue StandardError
           @wheres = {}
         end
 
         ### キーワード整形 ###
-        @wheres[:name]     = MaiSearch2.nc_keyword(@wheres[:name])                      if @wheres[:name].present? # 機械名(NC)
-        @wheres[:capacity] = MaiSearch2.capacity_keyword(@wheres[:capacity])            if @wheres[:capacity].present? # 能力
+        @wheres[:name]     = self.class.nc_keyword(@wheres[:name])                      if @wheres[:name].present? # 機械名(NC)
+        @wheres[:capacity] = self.class.capacity_keyword(@wheres[:capacity])            if @wheres[:capacity].present? # 能力
         @wheres[:maker]    = Maker.search_makers(@wheres[:maker].split('|')) if @wheres[:maker].present? # メーカー
       end
 
@@ -381,13 +381,13 @@ ans.8)
     res = {
       id: machine.id,
       name: machine.name,
-      # maker: machine.maker,
+      maker: machine.maker,
       model: machine.model,
-      # year: machine.myear,
+      year: machine.myear,
       spec: machine.spec,
       accessory: machine.accessory,
       comment: "#{machine.comment} ",
-      # location: "#{machine.addr1} #{machine.addr2} #{machine.addr3} (#{machine.location})",
+      location: "#{machine.addr1} #{machine.addr2} #{machine.addr3} (#{machine.location})",
       # category: machine.xl_genre.xl_genre,
       # large_genre: machine.large_genre.large_genre,
       # genre: machine.genre.genre,
@@ -415,7 +415,7 @@ ans.8)
     # @machines.includes(:company, :genre, :large_genre, :xl_genre, :machine_pdfs, :contacts, :detail_logs)
     # @machines.includes(:company, :genre, :large_genre, :xl_genre, :contacts, :detail_logs)
     @machines.includes(:company)
-      .map { |ma| MaiSearch.to_json_hash(ma) }.to_json
+      .map { |ma| self.class.to_json_hash(ma) }.to_json
   end
 
   # 旧キーワード検索

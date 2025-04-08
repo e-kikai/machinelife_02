@@ -178,12 +178,3 @@
                     - @mai_search.specs[ma.id].each_with_index do |v, i|
                       - if v.present?
                         . #{@mai_search.spec_labels[i]}: #{v}
-
-                / - spec = []
-                / - @mai_search.specs.each do |k, sp|
-                /   - if sp[ma.id.to_s.to_sym].present?
-                /     - spec << "#{k}: #{sp[ma.id.to_s.to_sym]} "
-                / - if spec.present?
-                /   .text-white.bg-info.small.px-2.py-1.z-3.position-relative.rounded-bottom-1.border.border-1.border-dark.border-top-0.shadow-sm style="margin-top:-6px;"
-                /     - spec.each do |sp|
-                /       . = sp.strip

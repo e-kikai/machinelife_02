@@ -9,7 +9,7 @@ export default class extends Controller {
     }
   }
 
-  sendMessage() {
+  sendMessage(event) {
     // message
     let temp    = this.loadingTarget.content;
     let mes     = temp.children[1].cloneNode(true);
@@ -19,23 +19,22 @@ export default class extends Controller {
     let input = this.textareaTarget;
     let re_message = targetElement.querySelector(".re_message");
 
-    let content = '<i class="material-icons" aria-hidden="true">search</i> ';
-
     // フィルタリング
     if (re_message) {
-      content += re_message.value;
-      content += '<br /><i class="material-icons" aria-hidden="true">filter_alt</i> ';
+      mes.querySelector(".kwd").innerHTML = re_message.value;
 
+      let content = "";
       let selects = targetElement.querySelectorAll("input[type=checkbox]:checked");
       selects.forEach((ckb) => {
         content += " " + ckb.value;
       });
+      mes.querySelector(".fil").innerHTML = content;
+      mes.querySelector(".filtering_area").style.display = "block";
     } else {
-      // フォームから
-      content += input.value;
+      mes.querySelector(".kwd").innerHTML = input.value;
+      mes.querySelector(".filtering_area").style.display = "none";
     }
 
-    mes.lastChild.innerHTML = content;
     this.outputTarget.prepend(mes);
 
     input.readOnly = true;

@@ -10,28 +10,27 @@ h1
 .row
   .col-10.mx-auto.mt-2
     .
-      | 機械・工具に関する質問を入力すると、AIアシスタント <span class="fw-bold text-primary-emphasis">MAI</span> がマシンライフの在庫をおさがしいたします。<br />
-      | さらに、商品選定についてのアドバイスもさせていただきます。 詳しくは ->
-      = link_to "/mai_search/help" do
-        span #{mi(:help)} MAI在庫検索について
-    / .mt-1
-    /   | ＜質問の例＞ 「大阪にある滝沢の6尺旋盤、おすすめトップ3は」
+      | 機械・工具に関する質問を入力すると、AIアシスタント<span class="mx-1 h5 fw-bold">MAI</span>がマシンライフの在庫をおさがしいたします。<br />
+      | さらに、商品選定についてのアドバイスもさせていただきます。
+      = link_to "/mai_search/help", class: "ms-2" do
+        span #{mi(:help)} 詳しくは？ -> MAI在庫検索について
 
-/ = render "info"
-
-. data-controller="openai01"
+. data-controller="mai-search"
   #form_area.mx-auto.my-2 = render "form"
 
-  .messages_area.mb-5 data-openai01-target="output"
+  .messages_area.mb-5 data-mai-search-target="output"
     #result_area.d-none
 
     hr.border-1.opacity-75.mx-2 style="border-style:outset;margin:2rem 0;"
 
-    .row.d-none data-openai01-target="loading"
-      .my-3.ms-4.p-3.rounded-5.bg-success.text-white.col-6
-        .spinner-grow.text-white.spinner-grow-sm
-          span.visually-hidden Loading...
-        span.ms-2 検索中です。しばらくお待ち下さい。
+    template data-mai-search-target="loading"
+      .row
+        .my-3.ms-4.p-3.rounded-5.bg-success.text-white.col-6
+          .spinner-grow.text-white.spinner-grow-sm
+            span.visually-hidden Loading...
+          span.ms-2 検索中です。しばらくお待ち下さい。
 
-    .row.d-none data-openai01-target="dummy"
-      .ms-auto.me-4.my-3.p-3.rounded-5.bg-primary.text-white.col-8 dummy
+      .row
+        .ms-auto.me-4.my-3.p-3.rounded-5.bg-primary.text-white.col-8
+          .keyword_area #{mi(:search)} <span class="kwd"></span>
+          .filtering_area #{mi(:filter_alt)} <span class="fil"></span>

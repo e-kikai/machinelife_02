@@ -22,7 +22,7 @@ class MaiSearchController < ApplicationController
       filters = params[:f].present? ? params.require(:f).permit(maker: [], addr1: [], year: [], capacity: []).to_h : {}
 
       if @message.present?
-        @mai_search = MaiSearch.new(message: @message, filters:)
+        @mai_search = MaiSearchB02.new(message: @message, filters:)
         @mai_search.call
       else
         @error_mes = "質問がありません。"
