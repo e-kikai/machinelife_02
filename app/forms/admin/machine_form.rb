@@ -67,8 +67,13 @@ class Admin::MachineForm < FormBase
       machine.top_img = nil
     end
 
-    # 旧画像削除
-    machine.imgs = (imgs_parsed.datas - imgs_delete).to_json if imgs_delete.present?
+    # 旧画像削除(Hash対応)
+    if imgs_delete.present?
+      img_datas = imgs_parsed.datas
+      img_datas = img_datas.values if img_datas.is_a?(Hash)
+      machine.imgs = (img_datas - imgs_delete).to_json
+    end
+    # machine.imgs = (imgs_parsed.datas - imgs_delete).to_json if imgs_delete.present?
 
     # 旧PDF削除
     if old_pdfs_delete.present?
