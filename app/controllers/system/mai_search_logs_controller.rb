@@ -65,7 +65,7 @@ class System::MaiSearchLogsController <System::ApplicationController
     FROM detail_logs dl
     WHERE dl.utag = contacts.utag
     AND dl.machine_id = contacts.machine_id
-    AND dl.created_at BETWEEN contacts.created_at - INTERVAL '3 hours' AND contacts.created_at
+    AND dl.created_at BETWEEN contacts.created_at - INTERVAL '1 hours' AND contacts.created_at
     AND dl.r LIKE '%mai%'
   )
 SQL
