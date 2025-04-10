@@ -78,31 +78,34 @@ ans.8)
 
   SORT_QUERY_MESSAGE = '
 ## 処理
-<machines>は、マシンライフの在庫機械・工具からmessageの内容で検索した結果です。
-以下の内容をJSON形式で出力してください。
+<machines>は、マシンライフの在庫機械・工具から検索した結果JSONです。
+id ごとに1つの機械情報になっています。
 
-1. 検索結果の機械情報のうち、messageの検索条件に全然マッチしていないゴミ情報の「id」を"ids"に列挙してください。
+messageには、<machines>を検索したときの検索条件が入力されます。
 
-2.  <machines>からユーザが購入する際の商品選定基準になる項目を最大2項目まで考えてください。
-- 年式、型式は、選定基準には含めないでください。
+以下の処理結果を必ず出力フォーマットのJSON形式で出力してください。
 
-3. 選定基準の項目についての説明、具体的な選定方法アドバイスを200文字程度までで"report"に記述してください。
-- 選定項目の部分は[[項目]]としてください。
-- message内に質問があれば、回答してください。
+1. 検索結果の機械情報を巡回し、機械ごとのデータをよく分析・理解してください。
 
-4. <machines>の在庫機械・工具のIDごとに、選定基準の項目の値を"specs"に出力してください。
-- 機械情報は出品会社各社が自由に入力するため、記述方法がバラバラです。
+2. 検索結果の機械情報を巡回し、ユーザが購入する際の商品選定基準になる項目を1~2項目考えてください。
+- 項目から、型式、年式、メーカーは除外してください。
+
+3. 選定基準の項目についての説明、具体的な選定方法のアドバイスを200文字程度までで"report"に出力してください。
+- 選定基準の項目名の部分は[[項目]]としてください。
+
+4. 検索結果の機械情報を巡回し、機械IDごとの選定基準の項目の値を取得して、"specs"に出力してください。
+- 情報は出品会社各社が自由に入力するため、記述方法がバラバラです。
 例えば、
-  - 「300mmハイトゲージ」のように機械名に含まれている場合
-  - 型式、仕様に数値だけ記述されている
-  - 項目名があいまいなもの(加工能力と切断能力、項目名なし、オープンハイトをOH、ストロークをSなど略称)
-これらを考慮して、各項目の数値を取りこぼしなきよう幅広く取得してください。
+  - 「300mmハイトゲージ」のように name に値だけ含まれている
+  - model, spec に値だけ記述されている
+  - 項目名が違うもの、省略形のもの、項目名なしのもの(加工能力と切断能力、オープンハイトをOH、ストロークをSなど)
+これらを考慮して、間違ってもいいので、取りこぼさないようできるだけ値を取得してください。
+- capacity に項目の内容があれば"必ず"値を取得してください。
 - 各項目で単位表記を統一してください(例 : 「T」「トン」「t」「ton」はすべて 「T」に統一)。単位のないものは補完してください。
-- 値がないもの不明なものは、除外してください。
+- 値がないもの不明なものは除外してください。
 
 ## 出力フォーマット
 {
-"ids": [1, 2, 3, 4],
 "report": "3.のアドバイスをここに記述",
 "specs":
 {
@@ -118,6 +121,14 @@ ans.8)
 }
 }
 '.freeze
+
+# 1. 検索結果の機械情報を巡回し、messageの検索条件に全くマッチしていないゴミ情報をさがして、「id」を"ids"に列挙してください。
+
+# 例えば、
+#   - 「300mmハイトゲージ」のように name に含まれている
+#   - model, spec に数値だけ記述されている
+#   - 項目名が違うもの、省略形のもの、項目名なしのもの(加工能力と切断能力、オープンハイトをOH、ストロークをSなど)
+# これらを考慮して、間違ってもいいので、取りこぼさないよう、できるだけ値を取得してください。
 
 # 1. 検索結果の機械情報のうち、messageの検索内容を解釈し、
 # 検索条件にマッチするものの「id」を"ids"に列挙してください。
@@ -139,6 +150,7 @@ ans.8)
     @adv_machines = Machine.none
     @advice       = ""
     @specs        = {}
+    @spec_labels  = []
 
     @filtering = false
     @filtering_makers     = {}
@@ -309,9 +321,15 @@ ans.8)
     else
       generate_advice
     end
+  # rescue StandardError => e
+  #   raise e.full_message
+  #   # raise "MAI在庫検索処理でエラーが発生しました。"
+  # end
   rescue StandardError => e
-    raise e.full_message
-    # raise "MAI在庫検索処理でエラーが発生しました。"
+    # @error = e.full_message
+    @error = e.message
+    @error_mes = "MAIアドバイス生成処理でエラーが発生しました。"
+    raise e
   end
 
   # 検索結果＆アドバイス生成
@@ -335,7 +353,7 @@ ans.8)
     begin
       # 結果から、ID一覧を取得
       json_text = response.dig("choices", 0, "message", "content")
-      json = JSON.parse(json_text, symbolize_names: true)
+      json = JSON.parse(json_text)
 
       # search
       # @adv_machines =
@@ -347,22 +365,21 @@ ans.8)
       # @adv_machines = @machines.order(model2: :asc, created_at: :desc)
 
       @adv_machines = @machines.order(model2: :asc, created_at: :desc)
-      @adv_machines = @adv_machines.where.not(id: json[:ids]) if json[:ids].present?
+      # @adv_machines = @adv_machines.where.not(id: json[:ids]) if json[:ids].present?
 
       # レポート整理
-      @advice = (json[:report].presence || sort_array_text).gsub('。', "。\n")
+      @advice = json["report"].gsub('。', "。\n")
 
       # 項目整理
-      specs_temp = (json[:specs].presence || {})
+      specs_temp = (json["specs"].presence || {})
         .transform_values { |v| v.reject { |_, v2| v2.blank? || v2 == "不明" || v2 == "-" } }
 
       @spec_labels = specs_temp.keys
 
-      @specs = {}
       @spec_labels.each_with_index do |label, i|
         specs_temp[label].each do |id, v|
-          @specs[id.to_s.to_i] ||= []
-          @specs[id.to_s.to_i][i] = v
+          @specs[id.to_i] ||= []
+          @specs[id.to_i][i] = v
         end
       end
     rescue StandardError => e
