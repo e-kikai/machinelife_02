@@ -6,6 +6,17 @@ class MaiSearchB02
 
   IGNORE_WORDS = /\|?(切削工具|不明|工作機械|測定工具|中古)\|?/
   NC_WORDS     = /旋盤|フライス|研削|研磨|ボール|自動|彫刻|中ぐり/
+  NORMALIZATION_MAP = [
+    %w[一 1],
+    %w[二 2],
+    %w[三 3],
+    %w[四 4],
+    %w[五 5],
+    %w[六 6],
+    %w[七 7],
+    %w[八 8],
+    %w[九 9]
+  ].freeze
 
   SYSTEM_MESSAGE = "
 あなたは「全日本機械業連合会（全機連）」が運営する、中古工作機械・工具の販売サイト「マシンライフ」のAIアシスタント「MAI」です。
@@ -16,62 +27,62 @@ MAIは、中古機械・工具に精通した丁寧な口調の美人眼鏡秘�
 ".freeze
 
   QUERY_MESSAGE = '
-## 指示
-1. ユーザーの入力から、適切な機械・工具を特定してください。
-2. それをRDSで検索するための**正規表現ベースの検索キーワード**を生成してください。
+ユーザーの入力した検索条件から、適切な機械・工具をRDSで検索するための**正規表現ベースの検索キーワード**を生成してください。
+
+## 処理
+1. 入力から、適切な機械・工具を特定するためにキーワード分割してください。
+2. キーワードを以下の項目に分類し、正規表現化してください。
 3. 出力は**固定JSONフォーマット**で作成してください。
 
-## 出力フォーマット (JSON)
+## 出力JSONフォーマット
 - name: 機械・工具の一般名称（表記ゆれ・略称などを正規表現で列挙）
 - name2: 機械・工具の一般名称（あいまい検索なし、単一の名称）
-- maker: メーカー名の固有名詞部分
+- maker: メーカー名の固有名詞部分（例：アマダ、オークマ、滝沢）
 - model: 型式（半角英数字大文字に統一）
 - min_year / max_year: 年式（西暦4桁、範囲指定可能）
 - addr1: 都道府県名、正式名称で列挙
 - addr2: 市区町村名、正式名称で列挙
 - min_date / max_date: 登録日（フォーマット:YYYY/MM/DD、範囲指定可能）
-- capacity: 能力数値（正規表現）
-- img: 画像付きの機械を探す場合は、1
-- youtube: 動画付きの機械を探す場合は、1
-- commission: 試運転可能な機械を探す場合は、1
-- catalog: 電子カタログがある機械を探す場合は、1
+- capacity: 能力・寸法などの数値と単位（正規表現）
+- img(画像あり) / youtube(動画あり) / commission(試運転可) / catalog(電子カタログあり) : 対応が必要なら 1 を指定
 
 ## 出力例
 ex.1) 大阪近辺で、オークマかアマダの90年代の5尺立型旋盤の型式がLSかods-12で。
 ans.1)
 {"name": "((立||立型|縦)旋盤))|タテセンバン", "name2": "立旋盤", "maker": "オークマ|アマダ", "min_year": "1990", "max_year": "1999", "model": "LS|ODS12", "addr1": "大阪府", "capacity": "5尺"}
 
-ex.3) 東京近郊でアマダ製バンドソー250mm、動画があるもの
-ans.3)
+ex.2) 東京近郊でアマダ製バンドソー250mm、動画があるもの
+ans.2)
 {"name": "バンドソ|帯鋸|バンドノコ", "name2": "バンドソ", "maker": "アマダ", "addr1": "東京都|千葉県|埼玉県|神奈川県", "capacity": "(250(mm|ミリメートル|粍))", "youtube":"1"}
 
-ex.4) 東大阪にある7.5kwパッケージコンプレッサー、アネスト岩田製
-ans.4)
+ex.3) 東大阪にある7.5kwパッケージコンプレッサー、アネスト岩田製
+ans.3)
 {"name": "((パッケージ|パッケージ型)コンプレッサ)|コンプレッサ", "name2": "パッケージコンプレッサ", "maker": "岩田", "addr1": "大阪府", "addr2": "東大阪市", "capacity": "(7.5(kw|キロワット))"}
 
 ex.5) 大阪周辺にある相澤鐵工所1990年製の1000mm以上のメカシャーリング。
-ans.5)
+ans.4)
 {"name": "シャーリング|メカシャー", "name2": "シャーリング", "maker": "相澤", "min_year": "1990", "max_year": "1990, "addr1": "大阪府|兵庫県|京都府|奈良県|和歌山県", "capacity": "([1-9][0-9][0-9][0-9](mm|ミリメートル|粍))"}
 
-ex.6) 関西にある山崎のNC立フライス、2005年以降。
-ans.6)
+ex.5) 関西にある山崎のNC立フライス、2005年以降。
+ans.5)
 {"name": "NCフライス|NC立フライス|NC立型フライス", "name2": "NC立フライス", "maker": "ヤマザキ|山崎", "min_year": "2005", "addr1": "大阪府|兵庫県|京都府|奈良県|和歌山県"}
 
-ex.7) 1995年以降の60トンプレス、アマダで大阪にあるもの
-ans.7)
-{"name": "プレス", "name2": "プレス", "maker": "アマダ", "min_year": "1995", "addr1": "大阪府", "capacity": "60(T|トン)"}
-
-ex.8)  1995年以降の大阪にある滝沢の6尺旋盤で、試運転ができるもの
-ans.8)
+ex.6)  1995年以降の大阪にある滝沢の6尺旋盤で、試運転ができるもの
+ans.6)
 {"name": "旋盤", "name2": "旋盤", "maker": "滝沢", "min_year": "1995", "addr1": "大阪府", "capacity": "6尺", "commission": "1"}
 
+ex.7)  静岡鉄工のマシニング
+ans.7)
+{:name=>"マシニング|マシニングセンタ|MC", :name2=>"マシニングセンタ", :maker=>["静岡"]}
+
 ## ルール
-  ' + "- 今日の日付は#{Time.zone.today}" + '
-- name では類義語を | で並べる (例: バンドソ|帯鋸|バンドノコ)、単語末尾のーは除去。
-- name では個性を表す重要な要素(油圧プレスの油圧、石定盤の石、など)は、必ずマッチするようにしてください。
+-  ' + "- 今日の日付は#{Time.zone.today}" + '
+- キーワード分類の優先順位は、 model > maker > name > addr1 > addr2 > capacity > その他の順。
+- name では類義語を | で並べる (例: バンドソ|帯鋸|バンドノコ)。特徴語(油圧プレスの油圧、石定盤の石、など)は、必ずマッチするように。
 - capacity は正規表現化 (例: ([1-9][0-9][0-9][0-9](mm|ミリメートル|粍)))
 - maker は固有名詞のみ、
-- addr1 は maker に含まれる部分は除外
+- 英数記号のみのものは、 name ではなく model に (例 : B-Y-40 -> model: BY40, name: nil)
+- 正規表現では語尾の長音「ー」は除く
 - min_data、max_date、「新着」はmin_date:1週間前の日付,max_date:今日を取得、ピンポイントな日付はmaxとmin同一の日付を取得
 - 値のない項目は出力しないでください。
 '.freeze
@@ -136,7 +147,7 @@ messageには、<machines>を検索したときの検索条件が入力されま
 
   attr_reader(
     :message, :count, :level, :wheres, :machines, :advice, :adv_machines,
-    :filtering_makers, :filtering_addr1s, :filtering_years, :filtering_capacities, :filtering, :filters, :specs , :spec_labels
+    :filtering_makers, :filtering_addr1s, :filtering_years, :filtering_capacities, :filtering, :filters, :specs, :spec_labels , :spec_by_model
   )
 
   def initialize(message: "", filters: {})
@@ -238,8 +249,9 @@ messageには、<machines>を検索したときの検索条件が入力されま
         end
 
         ### キーワード整形 ###
-        @wheres[:name]     = self.class.nc_keyword(@wheres[:name])                      if @wheres[:name].present? # 機械名(NC)
-        @wheres[:capacity] = self.class.capacity_keyword(@wheres[:capacity])            if @wheres[:capacity].present? # 能力
+        # @wheres[:name]     = self.class.nc_keyword(@wheres[:name])
+        set_name if @wheres[:name].present? # 機械名(NC)
+        @wheres[:capacity] = self.class.capacity_keyword(@wheres[:capacity]) if @wheres[:capacity].present? # 能力
         @wheres[:maker]    = Maker.search_makers(@wheres[:maker].split('|')) if @wheres[:maker].present? # メーカー
       end
 
@@ -256,10 +268,11 @@ messageには、<machines>を検索したときの検索条件が入力されま
       @machines = @machines.where(addr1: @wheres[:addr1].split("|"))              if @wheres[:addr1].present? # 在庫場所
       @machines = @machines.where("machines.addr2 ~* ?", "(#{@wheres[:addr2]})")  if @wheres[:addr2].present? # 市区町村
       @machines = @machines.where("machines.name ~* ?", "(#{@wheres[:name]})")    if @wheres[:name].present? # 機械名
+      @machines = @machines.where("machines.name !~* ?", "(#{@wheres[:name_not]})") if @wheres[:name_not].present? # 機械名(否定)
       @machines = @machines.where(year: ..@wheres[:max_year])                     if @wheres[:max_year].present? # 年式(最大)
       @machines = @machines.where(year: @wheres[:min_year]..)                     if @wheres[:min_year].present? # 年式(最小)
-      @machines = @machines.where(created_at: ..@wheres[:max_date])               if @wheres[:max_date].present? # 年式(最大)
-      @machines = @machines.where(created_at: @wheres[:min_date]..)               if @wheres[:min_date].present? # 年式(最小)
+      @machines = @machines.where(created_at: ..@wheres[:max_date])               if @wheres[:max_date].present? # 登録日(最大)
+      @machines = @machines.where(created_at: @wheres[:min_date]..)               if @wheres[:min_date].present? # 登録日(最小)
       @machines = @machines.where("machines.model2 ~* ?", @wheres[:model])        if @wheres[:model].present? # 型式
       @machines = @machines.where("machines.search_capacity ~* ?", "(^|[^0-9])+(#{@wheres[:capacity]})") if @wheres[:capacity].present? # 能力
 
@@ -335,8 +348,8 @@ messageには、<machines>を検索したときの検索条件が入力されま
   # 検索結果＆アドバイス生成
   def generate_advice
     system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n\n<machines>\n#{machines_json}"
-    # machins_hash = @machines.pluck(:id, :search_keyword).map { |v| [id: v[0], info: v[1]] }
-    # system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n\n<machines>\n#{machins_hash}"
+    # machines_hash = @machines.pluck(:id, :search_keyword).map { |v| [id: v[0], info: v[1]] }
+    # system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n\n<machines>\n#{machines_hash}"
 
     response = client.chat(
       parameters: {
@@ -382,6 +395,27 @@ messageには、<machines>を検索したときの検索条件が入力されま
           @specs[id.to_i][i] = v
         end
       end
+
+      # 能力値補完(型式)
+      spec_by_model = {}
+
+      @machines.each do |ma|
+        next if ma.model2.blank? || ma.model2.length <= 3 || @specs[ma.id].blank?
+
+        spec_by_model[ma.model2] ||= []
+        @specs[ma.id].each_with_index { |v, i| spec_by_model[ma.model2][i] = v if spec_by_model[ma.model2][i].blank? }
+      end
+
+      @spec_by_model = spec_by_model
+
+      @machines.each do |ma|
+        next if ma.model2.blank? || ma.model2.length <= 3 || spec_by_model[ma.model2].blank?
+
+        @specs[ma.id] ||= []
+        spec_by_model[ma.model2].each_with_index { |v, i| @specs[ma.id][i] = v if @specs[ma.id][i].blank? }
+      end
+
+      @spec_by_model = spec_by_model
     rescue StandardError => e
       # @error = e.full_message
       @error = e.message
@@ -400,7 +434,8 @@ messageには、<machines>を検索したときの検索条件が入力されま
       spec: machine.spec,
       accessory: machine.accessory,
       comment: "#{machine.comment} ",
-      location: "#{machine.addr1} #{machine.addr2} #{machine.addr3} (#{machine.location})",
+      location: "#{machine.addr1} #{machine.addr2}",
+      # location: "#{machine.addr1} #{machine.addr2} #{machine.addr3} (#{machine.location})",
       # category: machine.xl_genre.xl_genre,
       # large_genre: machine.large_genre.large_genre,
       # genre: machine.genre.genre,
@@ -463,6 +498,22 @@ messageには、<machines>を検索したときの検索条件が入力されま
     kwd = "(?<!NC)(#{kwd})" if kwd =~ NC_WORDS && kwd !~ /NC/i
 
     kwd
+  end
+
+  def set_name
+    name     = @wheres[:name]
+    name_not = [@wheres[:name_not]]
+
+    name.gsub!(/CNC/i, 'NC') # CNC
+    name_not << "NC" if name.match?(NC_WORDS) && !name.match?(/NC/i) # not NC
+    name_not << "ブレーキ" if name.include?("プレス") && name.exclude?("ブレーキ") # not プレスブレーキ
+    name_not << "セット" if name.include?("プレス") && name.exclude?("セット") # not セットプレス
+    name_not << "油圧" if %w[プレス 電動].all? { |w| name.include?(w) } # not 電動プレス
+
+    NORMALIZATION_MAP.each { |v| name.gsub!(Regexp.union(v), "(#{v.join('|')})") } # 漢数字、数字ノーマライズ
+
+    @wheres[:name]     = name
+    @wheres[:name_not] = name_not.compact.uniq.join('|')
   end
 
   private

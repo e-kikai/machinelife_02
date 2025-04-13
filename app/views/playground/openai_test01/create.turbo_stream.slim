@@ -8,7 +8,7 @@
       .mx-auto.text-muted.small
         . = simple_format(h(@mai_search.wheres.to_s.strip))
         / . = simple_format(h(@mai_search.specs.to_s.strip))
-        / . = simple_format(h(@mai_search.specs))
+        . = simple_format(h(@mai_search.spec_by_model))
         . 検索レベル:#{@mai_search.level} 処理時間:#{@time}sec 途中件数:#{number_with_delimiter(@mai_search.machines&.count)}件
         . = @error
 
