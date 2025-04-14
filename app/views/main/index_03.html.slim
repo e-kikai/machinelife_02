@@ -57,7 +57,7 @@
 
 h2.mt-3
   span.text-primary-emphasis #{mi(:support_agent)}
-  span.fw-bold.text-primary-emphasis MAI
+  span.fw-bold.text-primary-emphasis<> MAI
   | 在庫検索 - 機械・工具に関する質問から、AIアシスタント
   span.fw-bold.text-primary-emphasis MAI
   | がマシンライフの在庫をおさがしいたします。
@@ -101,7 +101,7 @@ h2.mt-3
 /-- 新着 --/
 h2
   .row
-    .col-auto <span class="text-warning">#{mi(:info_outline)}</span> 新着中古機械
+    .col-auto <span class="text-warning">#{mi(:fiber_new)}</span> 新着中古機械
     .col-auto.ms-auto
       .d-inline-block.mx-2 = link_to "/feed.rss" do
         | #{mi(:rss_feed)} 新着RSS

@@ -18,6 +18,9 @@ class MaiSearchB02
     %w[九 9]
   ].freeze
 
+  NO_DATA_MAP = %w[不 未 -].freeze
+  # CHUCK_MAP   = %w[チャック クランプ バイス].freeze
+
   SYSTEM_MESSAGE = "
 あなたは「全日本機械業連合会（全機連）」が運営する、中古工作機械・工具の販売サイト「マシンライフ」のAIアシスタント「MAI」です。
 MAIは、中古機械・工具に精通した丁寧な口調の美人眼鏡秘書であり、プロフェッショナル向けに商品提案を行います。
@@ -89,10 +92,9 @@ ans.7)
 
   SORT_QUERY_MESSAGE = '
 ## 処理
-<machines>は、マシンライフの在庫機械・工具から検索した結果JSONです。
+1つ目の user で検索した検索条件を分析したキーワードが assistant で、
+それでマシンライフの在庫機械・工具から検索から検索した結果が2つ目のuser のJSONです。
 id ごとに1つの機械情報になっています。
-
-messageには、<machines>を検索したときの検索条件が入力されます。
 
 以下の処理結果を必ず出力フォーマットのJSON形式で出力してください。
 
@@ -106,14 +108,11 @@ messageには、<machines>を検索したときの検索条件が入力されま
 
 4. 検索結果の機械情報を巡回し、機械IDごとの選定基準の項目の値を取得して、"specs"に出力してください。
 - 情報は出品会社各社が自由に入力するため、記述方法がバラバラです。
-例えば、
-  - 「300mmハイトゲージ」のように name に値だけ含まれている
-  - model, spec に値だけ記述されている
-  - 項目名が違うもの、省略形のもの、項目名なしのもの(加工能力と切断能力、オープンハイトをOH、ストロークをSなど)
+例えば、name, model, spec の一部に値だけ記述されている、
+項目名が違うもの、省略形のもの、項目名なしのもの(加工能力と切断能力、オープンハイトをOH、ストロークをS)など。
 これらを考慮して、間違ってもいいので、取りこぼさないようできるだけ値を取得してください。
-- capacity に項目の内容があれば"必ず"値を取得してください。
 - 各項目で単位表記を統一してください(例 : 「T」「トン」「t」「ton」はすべて 「T」に統一)。単位のないものは補完してください。
-- 値がないもの不明なものは除外してください。
+- 値がない、不明ものは除外してください。
 
 ## 出力フォーマット
 {
@@ -147,7 +146,7 @@ messageには、<machines>を検索したときの検索条件が入力されま
 
   attr_reader(
     :message, :count, :level, :wheres, :machines, :advice, :adv_machines,
-    :filtering_makers, :filtering_addr1s, :filtering_years, :filtering_capacities, :filtering, :filters, :specs, :spec_labels , :spec_by_model
+    :filtering_makers, :filtering_addr1s, :filtering_years, :filtering_capacities, :filtering, :filters, :specs, :spec_labels
   )
 
   def initialize(message: "", filters: {})
@@ -347,9 +346,11 @@ messageには、<machines>を検索したときの検索条件が入力されま
 
   # 検索結果＆アドバイス生成
   def generate_advice
-    system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n\n<machines>\n#{machines_json}"
+    # system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n\n<machines>\n#{machines_json}"
     # machines_hash = @machines.pluck(:id, :search_keyword).map { |v| [id: v[0], info: v[1]] }
     # system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}\n\n<machines>\n#{machines_hash}"
+
+    system_message = "#{SYSTEM_MESSAGE}\n#{SORT_QUERY_MESSAGE}"
 
     response = client.chat(
       parameters: {
@@ -357,7 +358,10 @@ messageには、<machines>を検索したときの検索条件が入力されま
         # model: "gpt-4o",
         messages: [
           { role: "system", content: system_message },
-          { role: "user", content: "#{@message} #{@filters.values}" }
+          { role: "user", content: "#{@message} #{@filters.values}" },
+          { role: "assistant", content: @wheres.merge(@filters).to_s },
+          { role: "user", content: machines_json }
+          # { role: "user", content: "#{@message} #{@filters.values}" }
         ],
         temperature: 0
       }
@@ -385,7 +389,7 @@ messageには、<machines>を検索したときの検索条件が入力されま
 
       # 項目整理
       specs_temp = (json["specs"].presence || {})
-        .transform_values { |v| v.reject { |_, v2| v2.blank? || v2 == "不明" || v2 == "-" } }
+        .transform_values { |v| v.reject { |_, v2| v2.blank? || NO_DATA_MAP.any? { |w| v2.include?(w) } } }
 
       @spec_labels = specs_temp.keys
 
@@ -400,7 +404,7 @@ messageには、<machines>を検索したときの検索条件が入力されま
       spec_by_model = {}
 
       @machines.each do |ma|
-        next if ma.model2.blank? || ma.model2.length <= 3 || @specs[ma.id].blank?
+        next if ma.model2.blank? || ma.model2.length <= 2 || @specs[ma.id].blank?
 
         spec_by_model[ma.model2] ||= []
         @specs[ma.id].each_with_index { |v, i| spec_by_model[ma.model2][i] = v if spec_by_model[ma.model2][i].blank? }
@@ -409,7 +413,7 @@ messageには、<machines>を検索したときの検索条件が入力されま
       @spec_by_model = spec_by_model
 
       @machines.each do |ma|
-        next if ma.model2.blank? || ma.model2.length <= 3 || spec_by_model[ma.model2].blank?
+        next if ma.model2.blank? || ma.model2.length <= 2 || spec_by_model[ma.model2].blank?
 
         @specs[ma.id] ||= []
         spec_by_model[ma.model2].each_with_index { |v, i| @specs[ma.id][i] = v if @specs[ma.id][i].blank? }
@@ -428,13 +432,13 @@ messageには、<machines>を検索したときの検索条件が入力されま
     res = {
       id: machine.id,
       name: machine.name,
-      maker: machine.maker,
+      # maker: machine.maker,
       model: machine.model,
-      year: machine.myear,
+      # year: machine.myear,
       spec: machine.spec,
       accessory: machine.accessory,
       comment: "#{machine.comment} ",
-      location: "#{machine.addr1} #{machine.addr2}",
+      # location: "#{machine.addr1} #{machine.addr2}",
       # location: "#{machine.addr1} #{machine.addr2} #{machine.addr3} (#{machine.location})",
       # category: machine.xl_genre.xl_genre,
       # large_genre: machine.large_genre.large_genre,
@@ -509,6 +513,7 @@ messageには、<machines>を検索したときの検索条件が入力されま
     name_not << "ブレーキ" if name.include?("プレス") && name.exclude?("ブレーキ") # not プレスブレーキ
     name_not << "セット" if name.include?("プレス") && name.exclude?("セット") # not セットプレス
     name_not << "油圧" if %w[プレス 電動].all? { |w| name.include?(w) } # not 電動プレス
+    # name_not.merge CHUCK_MAP if CHUCK_MAP.any? { |w| name.include?(w) } # not チャック クランプ バイス
 
     NORMALIZATION_MAP.each { |v| name.gsub!(Regexp.union(v), "(#{v.join('|')})") } # 漢数字、数字ノーマライズ
 

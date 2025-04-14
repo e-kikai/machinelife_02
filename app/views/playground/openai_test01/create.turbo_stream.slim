@@ -8,7 +8,7 @@
       .mx-auto.text-muted.small
         . = simple_format(h(@mai_search.wheres.to_s.strip))
         / . = simple_format(h(@mai_search.specs.to_s.strip))
-        . = simple_format(h(@mai_search.spec_by_model))
+        / . = simple_format(h(@mai_search.spec_by_model))
         . 検索レベル:#{@mai_search.level} 処理時間:#{@time}sec 途中件数:#{number_with_delimiter(@mai_search.machines&.count)}件
         . = @error
 
@@ -157,7 +157,7 @@
                   | #{mi(:calendar_month)} 年式順
                 = radio_button_tag(:sort, :created_at, { class: "btn-check", data: { action: "change->mai-search-sort#call", attr: :news } })
                 = label_tag :sort_created_at, class: "btn btn-outline-info btn-sm px-3" do
-                  | #{mi(:info_outline)} 新着順
+                  | #{mi(:fiber_new)} 新着順
                 / = radio_button_tag(:sort, :access, { class: "btn-check", data: { action: "change->mai-search-sort#call", attr: :access } })
                 / = label_tag :sort_access, class: "btn btn-outline-info btn-sm px-3" do
                 /   | #{mi(:star)} 人気順

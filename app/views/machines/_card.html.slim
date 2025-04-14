@@ -10,3 +10,6 @@
   .position-absolute style="bottom:84px;right:4px;"
     = link_to "/contacts/new?r=crd_#{r}&m=#{machine.id}", class: "btn btn-sm btn-warning border-white px-1", data: { turbo: false }, target: :_blank, rel: :noopener do
       . #{mi(:forward_to_inbox)} 問合せ
+
+  / .position-absolute style="top:16px;right:4px;"
+  /   .text-warning.h4 #{mi(:fiber_new)}

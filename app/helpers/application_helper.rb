@@ -89,8 +89,47 @@ module ApplicationHelper
   end
 
   ### Material icon ###
-  def mi(symbol, cls = "")
-    content_tag(:i, symbol, class: "material-icons #{cls}", 'aria-hidden': true)
+  # def mi(symbol, cls = "")
+  #   content_tag(:i, symbol, class: "material-icons #{cls}", 'aria-hidden': true)
+  # end
+
+  # vertical-align 自動調整
+  def mi(symbol, cls = "", style: :outlined, fill: 0, wght: 400, grad: 0, opsz: 24, font_size: nil, css: "")
+    font_class = "material-symbols-#{style}" # :outlined, :rounded, :sharp
+    styles = []
+
+    # font-variation-settings
+    styles << "font-variation-settings: 'FILL' #{fill}, 'wght' #{wght}, 'GRAD' #{grad}, 'opsz' #{opsz};"
+
+    # フォントサイズ + vertical-align 自動補正
+    if font_size
+      styles << "font-size: #{font_size};"
+      styles << "vertical-align: #{calculate_vertical_align(font_size)};"
+    end
+
+    # 任意のCSS
+    styles << css if css.present?
+
+    content_tag(:span, symbol,
+                class: "#{font_class} #{cls}",
+                style: styles.join(" "),
+                'aria-hidden': true)
+  end
+
+  # vertical-align 自動調整
+  def calculate_vertical_align(font_size)
+    if font_size =~ /\A([\d.]+)(px|rem|em)\z/
+      size, unit = $1.to_f, $2
+      offset_ratio = case unit
+                    when "px" then -0.15 / 16
+                    when "rem", "em" then -0.15
+                    else 0
+                    end
+      offset_value = size * offset_ratio
+      "#{offset_value.round(3)}#{unit}"
+    else
+      "0"
+    end
   end
 
   ### ログインユーザ情報取得 ###

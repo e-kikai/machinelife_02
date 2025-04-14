@@ -143,7 +143,7 @@
                   | #{mi(:calendar_month)} 年式順
                 = radio_button_tag(:sort, :created_at, { class: "btn-check", data: { action: "change->mai-search-sort#call", attr: :news } })
                 = label_tag :sort_created_at, class: "btn btn-outline-info btn-sm px-3" do
-                  | #{mi(:info_outline)} 新着順
+                  | #{mi(:fiber_new)} 新着順
                 / = radio_button_tag(:sort, :access, { class: "btn-check", data: { action: "change->mai-search-sort#call", attr: :access } })
                 / = label_tag :sort_access, class: "btn btn-outline-info btn-sm px-3" do
                 /   | #{mi(:star)} 人気順

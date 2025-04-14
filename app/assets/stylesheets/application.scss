@@ -137,6 +137,13 @@ a {
   font-size: inherit;
 }
 
+.material-symbols-outlined,
+.material-symbols-rounded,
+.material-symbols-sharp {
+  vertical-align: -0.15rem;
+  font-size: 1.125rem;
+}
+
 p:last-of-type {
   margin-bottom: 0;
 }

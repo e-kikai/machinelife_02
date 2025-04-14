@@ -94,7 +94,7 @@ h1 #{@machine.full_name}
         .row
           .col-6
             = link_to "/contacts/new?r=dtl&m=#{@machine.id}", class: "btn btn-lg btn-warning", data: { turbo: false } do
-              .fw-bold #{mi(:forward_to_inbox)} 問い合わせ (無料)
+              .fw-bold #{mi(:forward_to_inbox, font_size: "1.5rem")} 問い合わせ (無料)
               .small お気軽に
           .col-6.p-0
             / .text-danger.fs-4

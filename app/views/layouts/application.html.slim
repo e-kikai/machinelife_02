@@ -6,7 +6,11 @@ html lang="ja"
 
     = display_meta_tags(default_meta_tags)
 
-    = stylesheet_link_tag 'https://fonts.googleapis.com/icon?family=Material+Icons', media: 'all'
+    / = stylesheet_link_tag 'https://fonts.googleapis.com/icon?family=Material+Icons', media: 'all'
+    = stylesheet_link_tag 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined', media: 'all'
+    = stylesheet_link_tag 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded', media: 'all'
+    = stylesheet_link_tag 'https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp', media: 'all'
+
     = stylesheet_link_tag 'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap', media: 'all'
     = stylesheet_link_tag "dart_application.css", 'data-turbo-track' => "reload"
 
