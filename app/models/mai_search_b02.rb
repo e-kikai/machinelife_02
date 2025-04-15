@@ -228,7 +228,8 @@ id ごとに1つの機械情報になっています。
       if @wheres.blank?
         response = client.chat(
           parameters: {
-            model: "gpt-4o-mini",
+            # model: "gpt-4o-mini",
+            model: "gpt-4.1-mini",
             messages: [
               { role: "system", content: "#{SYSTEM_MESSAGE}\n#{QUERY_MESSAGE}" },
               { role: "user", content: @message }
@@ -354,7 +355,8 @@ id ごとに1つの機械情報になっています。
 
     response = client.chat(
       parameters: {
-        model: "gpt-4o-mini",
+        # model: "gpt-4o-mini",
+        model: "gpt-4.1-mini",
         # model: "gpt-4o",
         messages: [
           { role: "system", content: system_message },
