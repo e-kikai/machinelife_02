@@ -67,4 +67,4 @@ nav#navbar.navbar.navbar-expand-lg.rounded.px-2.py-0.mb-1.border.border-success
                     | #{mi(:list)} 在庫一覧
                 td.text-center
                   = link_to "/contacts/new?r=com_lst&c=#{co.id}", class: "btn btn-warning btn-sm", data: { turbo: false } do
-                    | #{mi(:forward_to_inbox)} 問合せ
+                    | #{mi(:forward_to_inbox, fill: 1)} 問合せ

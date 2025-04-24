@@ -24,7 +24,7 @@ h1 <span class="#{@urikai.goal_class}">#{@urikai.goal_jp}</span> No. #{@urikai.i
       dd.col-8
         - if @urikai.end_date.blank?
           = link_to "/contacts/new/?r=ukt&c=#{@urikai.company_id}&mes=No.#{@urikai.id}[[#{@urikai.goal_jp}]]について問合せ", class: "btn btn-warning", data: { turbo: false } do
-            . #{mi(:forward_to_inbox)} この#{@urikai.goal_jp}について問い合わせ
+            . #{mi(:forward_to_inbox, fill: 1)} この#{@urikai.goal_jp}について問い合わせ
         - else
           . この情報は解決済みです (#{l @urikai.end_date})
 

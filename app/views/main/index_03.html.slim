@@ -18,7 +18,7 @@
 
 .row.gx-2
   .col-9
-    h2 <span class="text-success">#{mi(:category)}</span> 中古機械ジャンル検索
+    h2 <span class="text-success">#{mi(:category_search, fill: 1)}</span> 中古機械ジャンル検索
     .row.gx-1
       - @xl_genres.each do |xg|
         .col-4.p-1
@@ -46,7 +46,7 @@
         / = button_tag type: :submit, class: "btn btn-primary btn-sm" do
         /   | #{mi(:search)} 検索
 
-    h2.mt-4 <span class="text-success-emphasis">#{mi(:abc)}</span> キーワード検索
+    h2.mt-4 <span class="text-success-emphasis">#{mi(:match_word)}</span> キーワード検索
     .my-2 = form_tag "/machines", method: :get do
       / label.small for="k_mo" 型式・管理番号 etc.
       .input-group
@@ -101,7 +101,7 @@ h2.mt-3
 /-- 新着 --/
 h2
   .row
-    .col-auto <span class="text-warning">#{mi(:fiber_new)}</span> 新着中古機械
+    .col-auto <span class="text-danger">#{mi(:fiber_new, style: :sharp, fill: 1, opsz: 48)}</span> 新着中古機械
     .col-auto.ms-auto
       .d-inline-block.mx-2 = link_to "/feed.rss" do
         | #{mi(:rss_feed)} 新着RSS
@@ -126,22 +126,22 @@ h2
     .col.text-center = link_to ba[2], rel: :noopener, target: :_blank, onClick: "ga('send', 'event', 'banner', 'half', '#{ba[0]}', 1, true);" do
       = image_tag "#{Bidinfo::MEDIA_URL}#{ba[1]}", alt: ba[0]
 
-/ - if @histories.present?
-/   .my-2
-/     h2 #{mi(:history)} 閲覧履歴
-/     /** 閲覧履歴カルーセル  **/
-/     #historiesCarousel.carousel.slide
-/       .row
-/         .carousel-inner style="width:88%;margin:auto;"
-/           - @histories.each_slice(5).with_index do |mas, i|
-/             .carousel-item class=(:active if i.zero?)
-/               .row.gx-2
-/                 - mas.each do |ma|
-/                   .col-1.p-1 style="width:20%;"
-/                     = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker2, ma.name, ma.model, ma.myear, ma.addr1, ma.addr2], r: :hst }
+- if @histories.present?
+  .my-2
+    h2 #{mi(:history)} 閲覧履歴
+    /** 閲覧履歴カルーセル  **/
+    #historiesCarousel.carousel.slide
+      .row
+        .carousel-inner style="width:88%;margin:auto;"
+          - @histories.each_slice(5).with_index do |mas, i|
+            .carousel-item class=(:active if i.zero?)
+              .row.gx-2
+                - mas.each do |ma|
+                  .col-1.p-1 style="width:20%;"
+                    = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker2, ma.name, ma.model, ma.myear, ma.addr1, ma.addr2], r: :hst }
 
-/         button.carousel-control-prev type="button" data-bs-target="#historiesCarousel" data-bs-slide="prev" style="width:6%;"
-/           | #{mi(:arrow_back_ios, "text-dark fs-1 fw-bolder")}
+        button.carousel-control-prev type="button" data-bs-target="#historiesCarousel" data-bs-slide="prev" style="width:6%;"
+          | #{mi(:arrow_back_ios, "text-dark fs-1 fw-bolder")}
 
-/         button.carousel-control-next type="button" data-bs-target="#historiesCarousel" data-bs-slide="next" style="width:6%;"
-/           | #{mi(:arrow_forward_ios, "text-dark fs-1 fw-bolder")}
+        button.carousel-control-next type="button" data-bs-target="#historiesCarousel" data-bs-slide="next" style="width:6%;"
+          | #{mi(:arrow_forward_ios, "text-dark fs-1 fw-bolder")}

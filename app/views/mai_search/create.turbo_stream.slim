@@ -8,7 +8,8 @@
       .mx-auto.text-muted.small
         . = simple_format(h(@mai_search.wheres.to_s.strip))
         / . = simple_format(h(@mai_search.specs.to_s.strip))
-        / . = simple_format(h(@mai_search.specs))
+        / . = simple_format(h(@mai_search.spec_by_model))
+        . = simple_format(h(@mai_search.ids))
         . 検索レベル:#{@mai_search.level} 処理時間:#{@time}sec 途中件数:#{number_with_delimiter(@mai_search.machines&.count)}件
         . = @error
 
@@ -39,7 +40,7 @@
 
           h6.mt-2.fw-bold 条件を追加して、さらに絞り込む
           .p-3.rounded-3.bg-white.text-black.g-1
-            = form_with url: "/mai_search/", method: :post, data: { turbo_stream: true, action: "submit->mai-search#sendMessage" } do |f|
+            = form_with url: request.path, method: :post, data: { turbo_stream: true, action: "submit->mai-search#sendMessage" } do |f|
               = f.hidden_field :mai_search_log_id, value: @mai_search_log.id
               = f.hidden_field :message, value: @mai_search.message, data: { mai_search_target: "re_text" }, class: "re_message"
               - if @mai_search.filtering_makers.length > 1
@@ -54,16 +55,18 @@
                   = f.check_box("f[addr1]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:addr1]&.include?(k) }, k, nil)
                   = f.label "f[addr1]", k, { value: k, class: "btn btn-outline-primary btn-sm m-1 rounded-pill py-0", style: "min-width:78px;" }
 
-              - if @mai_search.filtering_years.length.positive?
+              - if @mai_search.filtering_years.present?
                 .mt-1.ms-1.fw-bold.small #{mi(:calendar_month)} 年式
                 - (1900..Time.current.year).step(10) do |year|
-                  - if @mai_search.filtering_years.key?((year / 10).to_s)
+                  - if @mai_search.filtering_years.include?((year / 10).to_s)
                     = f.check_box("f[year]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:year]&.include?(year.to_s) }, year, nil)
                     = f.label "f[year]", { value: year, class: "btn btn-outline-success btn-sm m-1 rounded-pill py-0", style: "min-width:78px;" } do
                       = year
                       small 年代
 
               - if @mai_search.filtering_capacities.length.positive?
+                / .small.mt-1
+                /   strong.small  #{mi(:filter_alt)} 能力
                 -  @mai_search.filtering_capacities.keys.group_by { |k| [k[2], k[1]] }.each do |label, arr|
                   .mt-1.ms-1.fw-bold.small  #{mi(:build)} #{label[0]} (#{label[1]})
                   - arr.each do |k|
@@ -71,6 +74,13 @@
                     = f.check_box("f[capacity]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:capacity]&.include?(cap) }, cap, nil)
                     = f.label "f[capacity]", cap, { value: cap, class: "btn btn-outline-dark btn-sm my-1 ms-1 rounded-2 p-0", style: "min-width:44px;" } do
                       = number_with_precision(k[0], strip_insignificant_zeros: true)
+                      / small = k[1]
+                / - @mai_search.filtering_capacities.each_key do |k|
+                /   - cap = "#{number_with_precision(k[0], strip_insignificant_zeros: true)}#{k[1]}"
+                /   = f.check_box("f[capacity]", { multiple: true, class: "btn-check", checked: @mai_search.filters[:capacity]&.include?(cap) }, cap, nil)
+                /   = f.label "f[capacity]", cap, { value: cap, class: "btn btn-outline-dark btn-sm m-1 rounded-pill py-0", style: "min-width:48px;" } do
+                /     = number_with_precision(k[0], strip_insignificant_zeros: true)
+                /     small = k[1]
 
               .mt-3 = f.button type: :submit, id: :searchButton, value: :model, class: "btn btn-primary", data: { mai_search_target: "button" } do
                 span.show-when-enabled #{mi(:search)} 絞り込み条件を追加して、再検索
@@ -111,7 +121,7 @@
           - if @mai_search.advice.present?
             h6.mt-2.fw-bold MAIからの商品選定アドバイス
             .p-3.rounded-3.bg-white.text-black
-              p == sanitize(@mai_search.advice.strip).gsub("\n", '<br>').gsub(/\[\[(.*?)\]\]/) { " <strong class='text-info'>#{Regexp.last_match(1)}</strong> " }.gsub(/\[(ID\s*:\s*([0-9]+).*?)\]/) { "<a href='/machines/#{Regexp.last_match(2)}?r=mai_src_rep' target='_blank' rel='noopener'>#{mi(:settings)} #{Regexp.last_match(1)}</a><a class='btn btn-xs btn-warning px-1 ms-1 me-2' data-turbo='false' target='_blank' rel='noopener' href='/contacts/new?r=mai_src_adv&m=#{Regexp.last_match(2)}'>#{mi(:forward_to_inbox)} 問合せ</a>" }
+              p == sanitize(@mai_search.advice.strip).gsub("\n", '<br>').gsub(/\[\[(.*?)\]\]/) { " <strong class='text-info'>#{Regexp.last_match(1)}</strong> " }.gsub(/\[(ID\s*:\s*([0-9]+).*?)\]/) { "<a href='/machines/#{Regexp.last_match(2)}?r=mai_src_rep' target='_blank' rel='noopener'>#{mi(:settings)} #{Regexp.last_match(1)}</a><a class='btn btn-xs btn-warning px-1 ms-1 me-2' data-turbo='false' target='_blank' rel='noopener' href='/contacts/new?r=mai_src_adv&m=#{Regexp.last_match(2)}'>#{mi(:forward_to_inbox, fill: 1)} 問合せ</a>" }
 
         - if @mai_search_log.present?
           .row
@@ -119,12 +129,12 @@
               | #{mi(:support_agent)} MAIの検索結果・アドバイスは、ご満足いただけましたか？
               span id="good_area_#{@mai_search_log.id}" = render "good", mai_search_log: @mai_search_log
 
-        .row
-          .my-2.col-12.g-1
+        .row.gx-0
+          .my-2.col-12
             - @mai_search.adv_machines.group_by(&:model2).each do |key, gm|
               - if key.present? && gm.length > 1
-                = link_to "/contacts/new?r=mai_src_smd_blk#{gm.map { |ma| "&m[]=#{ma.id}" }.join}", class: "m-1 mt-y btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
-                  . #{mi(:forward_to_inbox)} #{gm.first.model} <span class="small">(#{gm.size}件)に一括問合せ</span>
+                = link_to "/contacts/new?r=mai_src_smd_blk#{gm.map { |ma| "&m[]=#{ma.id}" }.join}", class: "mx-2 my-1 mt-y btn btn-md btn-warning", style: "min-width:230px;", data: { turbo: false }, target: :_blank, rel: :noopener do
+                  . #{mi(:forward_to_inbox, fill: 1)} #{gm.first.model} <span class="small">(#{gm.size}件) 一括問合せ</span>
         . data-controller="mai-search-sort"
           .row
             .col-auto.my-2
@@ -143,7 +153,7 @@
                   | #{mi(:calendar_month)} 年式順
                 = radio_button_tag(:sort, :created_at, { class: "btn-check", data: { action: "change->mai-search-sort#call", attr: :news } })
                 = label_tag :sort_created_at, class: "btn btn-outline-info btn-sm px-3" do
-                  | #{mi(:fiber_new)} 新着順
+                  | #{mi(:fiber_new, style: :sharp, fill: 1, opsz: 48)} 新着順
                 / = radio_button_tag(:sort, :access, { class: "btn-check", data: { action: "change->mai-search-sort#call", attr: :access } })
                 / = label_tag :sort_access, class: "btn btn-outline-info btn-sm px-3" do
                 /   | #{mi(:star)} 人気順

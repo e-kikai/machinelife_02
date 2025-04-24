@@ -38,9 +38,9 @@ h1 MAIログ集計 (#{title})
         th scope="col" style="width: 50px;border-left-style:solid;border-left-width:2px;" 関連
 
         th scope="col" style="width: 24px;border-left-style:double;border-left-width:3px;"
-          .text-success.m-auto #{mi(:thumb_up_alt)}
+          .text-success.m-auto #{mi(:thumb_up_alt, fill: 1)}
         th scope="col" style="width: 24px;"
-          .text-danger.m-auto #{mi(:thumb_down_alt)}
+          .text-danger.m-auto #{mi(:thumb_down_alt, fill: 1)}
 
     tbody
       - @rows.each do |row|

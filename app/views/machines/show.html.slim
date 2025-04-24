@@ -89,12 +89,12 @@ h1 #{@machine.full_name}
             iframe.w-100 src="https://www.youtube.com/embed/#{yt}" style="aspect-ratio: 16/9;"
 
         /** 問い合わせ  **/
-        h2  #{mi(:forward_to_inbox)} 中古機械についてのお問い合せ
+        h2  #{mi(:forward_to_inbox, fill: 1)} 中古機械についてのお問い合せ
         p.small.my-2 お問い合せフォーム TEL FAXより掲載会社へお問い合せください。
         .row
           .col-6
             = link_to "/contacts/new?r=dtl&m=#{@machine.id}", class: "btn btn-lg btn-warning", data: { turbo: false } do
-              .fw-bold #{mi(:forward_to_inbox, font_size: "1.5rem")} 問い合わせ (無料)
+              .fw-bold #{mi(:forward_to_inbox, fill: 1, font_size: "1.5rem")} 問い合わせ (無料)
               .small お気軽に
           .col-6.p-0
             / .text-danger.fs-4
@@ -176,14 +176,14 @@ h1 #{@machine.full_name}
     - if @sames.present?
       .
         h2 #{mi(:compare_arrows)} この機械 <strong>#{@machine.model}</strong> とおなじ機械はこちら
-        = link_to "/contacts/new?price=1&r=dtl_smd_blk&m[]=#{@machine.id}#{@sames.map { |ma| "&m[]=#{ma.id}" }.join}", class: "ms-2 mt-y btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
-          . #{mi(:forward_to_inbox)} #{@machine.model} <span class="small">(#{@sames.size + 1}件) に一括問い合わせ</span>
+        = link_to "/contacts/new?price=1&r=dtl_smd_blk&m[]=#{@machine.id}#{@sames.map { |ma| "&m[]=#{ma.id}" }.join}", class: "m-2 btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
+          . #{mi(:forward_to_inbox, fill: 1)} #{@machine.model} <span class="small">(#{@sames.size + 1}件) 一括問い合わせ</span>
 
         - if @machine.addr1.present?
           - addr_sames = @sames.where(addr1: @machine.addr1)
           - if addr_sames.present?
-            = link_to "/contacts/new?price=1&r=dtl_smd_sad_blk&m[]=#{@machine.id}#{addr_sames.map { |ma| "&m[]=#{ma.id}" }.join}", class: "ms-2 my-2 btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
-              . #{mi(:forward_to_inbox)} <strong>#{@machine.addr1}</strong>にある#{@machine.model} <span class="small">(#{addr_sames.size + 1}件) に一括問い合わせ</span>
+            = link_to "/contacts/new?price=1&r=dtl_smd_sad_blk&m[]=#{@machine.id}#{addr_sames.map { |ma| "&m[]=#{ma.id}" }.join}", class: "m-2 btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
+              . #{mi(:forward_to_inbox, fill: 1)} <strong>#{@machine.addr1}</strong>にある#{@machine.model} <span class="small">(#{addr_sames.size + 1}件) 一括問い合わせ</span>
 
         /** 同じ機械カルーセル  **/
         #samesCarousel.carousel.slide

@@ -9,7 +9,10 @@
   / .position-absolute.start-0.text-white.py-0.px-1.m-1.small style="background:rgb(0 0 0 / .75);bottom:78px;" ID:#{machine.id}
   .position-absolute style="bottom:84px;right:4px;"
     = link_to "/contacts/new?r=crd_#{r}&m=#{machine.id}", class: "btn btn-sm btn-warning border-white px-1", data: { turbo: false }, target: :_blank, rel: :noopener do
-      . #{mi(:forward_to_inbox)} 問合せ
+      . #{mi(:forward_to_inbox, fill: 1)} 問合せ
 
   / .position-absolute style="top:16px;right:4px;"
   /   .text-warning.h4 #{mi(:fiber_new)}
+
+  - if machine.created_at >= 7.days.ago
+    .position-absolute.bg-danger.fw-bold.px-2.text-white style="top:4px;left:4px;" NEW

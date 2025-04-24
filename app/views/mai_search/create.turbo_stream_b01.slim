@@ -121,12 +121,7 @@
           - if @mai_search.advice.present?
             h6.mt-2.fw-bold MAIからのアドバイス
             .p-3.rounded-3.bg-white.text-black
-              p == sanitize(@mai_search.advice.strip).gsub("\n", '<br>').gsub(/\[(ID\s*:\s*([0-9]+).*?)\]/) { "<a href='/machines/#{Regexp.last_match(2)}?r=mai_src_rep' target='_blank' rel='noopener'>#{mi(:settings)} #{Regexp.last_match(1)}</a><a class='btn btn-xs btn-warning px-1 ms-1 me-2' data-turbo='false' target='_blank' rel='noopener' href='/contacts/new?r=mai_src_adv&m=#{Regexp.last_match(2)}'>#{mi(:forward_to_inbox)} 問合せ</a>" }
-
-              / - ids = @mai_search.advice.scan(/ID\s*:\s*([0-9]+)/).flatten
-              / - if ids.present?
-              /   = link_to "/contacts/new?price=1&r=mai_src_adv_blk#{ids.map { |id| "&m[]=#{id}" }.join}", class: "mt-2 btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
-              /     . #{mi(:forward_to_inbox)} ここから、商品の金額を一括問い合わせができます。
+              p == sanitize(@mai_search.advice.strip).gsub("\n", '<br>').gsub(/\[(ID\s*:\s*([0-9]+).*?)\]/) { "<a href='/machines/#{Regexp.last_match(2)}?r=mai_src_rep' target='_blank' rel='noopener'>#{mi(:settings)} #{Regexp.last_match(1)}</a><a class='btn btn-xs btn-warning px-1 ms-1 me-2' data-turbo='false' target='_blank' rel='noopener' href='/contacts/new?r=mai_src_adv&m=#{Regexp.last_match(2)}'>#{mi(:forward_to_inbox, fill: 1)} 問合せ</a>" }
 
         - if @mai_search_log.present?
           .row
@@ -139,7 +134,7 @@
             - @mai_search.adv_machines.group_by(&:model2).each do |key, gm|
               - if key.present? && gm.length > 1
                 = link_to "/contacts/new?r=mai_src_smd_blk#{gm.map { |ma| "&m[]=#{ma.id}" }.join}", class: "m-1 mt-y btn btn-md btn-warning", data: { turbo: false }, target: :_blank, rel: :noopener do
-                  . #{mi(:forward_to_inbox)} #{gm.first.model} <span class="small">(#{gm.size}件) に一括問い合わせ</span>
+                  . #{mi(:forward_to_inbox, fill: 1)} #{gm.first.model} <span class="small">(#{gm.size}件) に一括問い合わせ</span>
         .row
           - @mai_search.adv_machines.each do |ma|
             .col-1.p-1 style="width:20%;"

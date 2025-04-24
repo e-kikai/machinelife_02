@@ -92,6 +92,9 @@ h1 #{@title}
                 .d-none.border.border-secondary.shadow.position-absolute style="top:-30px;left:110px;"
                   = image_tag ma.top_image_url, style: "max-width:320px;max-height:320px;"
 
+                - if ma.created_at >= 7.days.ago
+                  .position-absolute.bg-danger.fw-bold.px-2.text-white style="top:4px;left:4px;" NEW
+
               td.text-break = link_to ma.name, "/machines/#{ma.id}", 'data-turbo-frame': :_top
               td.text-break = ma.maker
               td.text-break = ma.model
@@ -108,7 +111,7 @@ h1 #{@title}
                   . = "(#{ma.location})"
               td.text-center
                 = link_to "/contacts/new?r=lst_src&m=#{ma.id}", class: "btn btn-warning btn-sm", data: { turbo: false } do
-                  | #{mi(:forward_to_inbox)} 問合せ
+                  | #{mi(:forward_to_inbox, fill: 1)} 問合せ
 
   .row
     .col-2.small 検索結果 : #{number_with_delimiter @count} 件

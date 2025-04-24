@@ -37,9 +37,9 @@ h1 MAI検索ログ
               = f.radio_button(:filter, :over, { class: "btn-check", checked: params[:filter] == "over" })
               = f.label :filter_over, "超過", class: "btn btn-outline-secondary btn-sm"
               = f.radio_button(:filter, :good, { class: "btn-check", checked: params[:filter] == "good" })
-              = f.label :filter_good, mi(:thumb_up_alt), class: "btn btn-outline-secondary btn-sm"
+              = f.label :filter_good, mi(:thumb_up_alt, fill: 1), class: "btn btn-outline-secondary btn-sm"
               = f.radio_button(:filter, :bad, { class: "btn-check", checked: params[:filter] == "bad" })
-              = f.label :filter_bad, mi(:thumb_down_alt), class: "btn btn-outline-secondary btn-sm"
+              = f.label :filter_bad, mi(:thumb_down_alt, fill: 1), class: "btn btn-outline-secondary btn-sm"
 
           .col-auto = f.button class: "btn btn-primary btn-sm" do
             . #{mi(:search)} 検索
@@ -73,7 +73,7 @@ h1 MAI検索ログ
           th scope="col" 処理<br />sec
           th scope="col" 最終<br />件数
           th scope="col" style="width:500px;" レポート (エラー)
-          th scope="col" #{mi(:thumb_up_alt)}
+          th scope="col" #{mi(:thumb_up_alt, fill: 1)}
 
       tbody
         - @pmai_search_logs.each do |sl|
@@ -118,8 +118,8 @@ h1 MAI検索ログ
                 = simple_format(h(sl.error))
               td
                 - if sl.good
-                  .text-success.m-auto #{mi(:thumb_up_alt)}
+                  .text-success.m-auto #{mi(:thumb_up_alt, fill: 1)}
                 - elsif sl.bad
-                  .text-danger.m-auto #{mi(:thumb_down_alt)}
+                  .text-danger.m-auto #{mi(:thumb_down_alt, fill: 1)}
 
   . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1

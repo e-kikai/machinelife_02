@@ -1,4 +1,4 @@
 = link_to "/playground/openai_test01/#{mai_search_log.id}/good", data: { turbo_method: :patch, turbo_stream: true }, class: "btn btn-sm #{mai_search_log.good? ? 'btn-success' : 'btn-secondary'} ms-2" do
-  . #{mi(:thumb_up_alt)} 高評価
+  . #{mi(:thumb_up_alt, fill: 1)} 高評価
 = link_to "/playground/openai_test01/#{mai_search_log.id}/bad", data: { turbo_method: :patch, turbo_stream: true }, class: "btn btn-sm #{mai_search_log.bad? ? 'btn-danger' : 'btn-secondary'} ms-2" do
-  . #{mi(:thumb_down_alt)} 低評価
+  . #{mi(:thumb_down_alt, fill: 1)} 低評価

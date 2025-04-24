@@ -66,7 +66,7 @@ h1 #{@company.company} 会社情報
               とお伝え下さい
           .text-danger.fs-4 #{mi(:fax, font_size: "1.5rem")} FAX : #{@company.contact_fax}
           . = link_to "/contacts/new?r=com_dtl&c=#{@company.id}", class: "btn btn-warning btn-md my-2", data: { turbo: false } do
-            | #{mi(:forward_to_inbox)} メールフォームから問合せ
+            | #{mi(:forward_to_inbox, fill: 1)} メールフォームから問合せ
         dt.col-3 担当者
         dd.col-9 = @company.officer
         dt.col-3 在庫一覧
