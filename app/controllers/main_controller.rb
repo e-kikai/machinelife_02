@@ -97,4 +97,6 @@ class MainController < ApplicationController
       format.rss
     end
   end
+
+  def info; end
 end

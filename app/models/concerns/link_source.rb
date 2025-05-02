@@ -36,7 +36,10 @@ module LinkSource
       "src" => "検索結果", "dtl" => "詳細", "com" => "会社", "blk" => "一括", "ukt" => "売りたし買いたし",
 
       # MAI
-      "mai" => "MAI", "adv" => "アドバイス"
+      "mai" => "MAI", "adv" => "アドバイス",
+
+      # QR
+      "qr" => "QR"
     }.freeze
   IGNORE_HOSTS = %w[mcnam.rsglab.com v22024].freeze
   IGNORE_IPS   = %w[219.145. 47.82. 222.90. 47.238.13.].freeze

@@ -1,6 +1,8 @@
+- machine_url = "#{request.base_url}#{request.path}"
+
 - set_meta_tags title: @machine.full_name
 - set_meta_tags description: "#{@machine.full_name}の中古機械詳細情報です。#{@machine.company.addr1}・#{@machine.company.company_remove_kabu}の中古機械情報ならマシンライフ！"
-- set_meta_tags canonical: "/machines/#{@machine.id}"
+- set_meta_tags canonical: machine_url
 
 - set_meta_tags twitter: { image: @machine.top_image_url }
 - set_meta_tags og: { image: @machine.top_image_url }
@@ -45,7 +47,9 @@ h1 #{@machine.full_name}
           | #{mi(:home)} 中古機械情報 マシンライフ トップページへ
 
     - else
-      .col-6.px-1
+      .col-6.px-1.position-relative
+        = render "new_label" if @machine.new?
+
         /** 画像表示カルーセル **/
         #imagesCarousel.carousel.slide
           .carousel-inner.ratio.ratio-4x3
@@ -104,6 +108,44 @@ h1 #{@machine.full_name}
             .text-danger.fs-4 FAX : #{@machine.company.contact_fax}
 
       .col-6.px-1
+        . data-controller="machine-share" data-machine-share-url-value=machine_url
+
+          - subject = "【マシンライフ】中古機械情報 : #{@machine.maker} #{@machine.model} #{@machine.name}"
+          - body = "\n\nマシンライフの中古機械情報です。\n\n#{@machine.maker} #{@machine.model} #{@machine.name}\n#{machine_url}?r=mail"
+          - x = "<マシンライフ 中古機械情報>\n\n#{@machine.maker} #{@machine.model} #{@machine.name}\n#{machine_url}\n\n#マシンライフ #中古機械 #ものづくり"
+
+          .mb-2.text-end
+            button.btn.btn-xs.btn-outline-dark data-action="click->machine-share#copy"
+              . #{mi(:link, font_size: "0.875rem")} リンクをコピー
+
+            a.btn.btn-xs.btn-outline-warning.ms-1 target="_blank" rel="noopener" href="mailto:?subject=#{subject}&body=#{URI.encode_www_form_component(body)}"
+              . #{mi(:mail, fill: 1, font_size: "0.875rem")} メールで送信
+
+            button.btn.btn-xs.btn-outline-info.ms-1 data-action="click->machine-share#qrcode" data-bs-toggle="modal" data-bs-target="#qrModal"
+              . #{mi(:qr_code, font_size: "0.875rem")} QRコード
+
+            a.btn.btn-xs.btn-dark.ms-1 target="_blank" rel="noopener" href="https://x.com/intent/tweet?text=#{URI.encode_www_form_component(x)}"
+              . <span class="fw-bold">X</span> ポスト
+
+            a.btn.btn-xs.text-white.ms-1 style="background-color:#1877F2" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=#{machine_url}"
+              . <span class="fw-bold">f</span> シェア
+
+          / Bootstrapモーダル
+          .modal.fade id="qrModal" tabindex="-1"
+            .modal-dialog.modal-dialog-centered
+              .modal-content
+                .modal-header
+                  h5.modal-title #{mi(:qr_code, font_size: "1.8rem")} QRコードでスマートフォンに共有
+                  button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
+                .modal-body
+                  .text-center data-machine-share-target="modal"
+
+          .toast-container.position-fixed.top-0.start-50.translate-middle-x.mt-4
+            .toast.fade
+              .d-flex.text-white.bg-primary.shadow.border.border-white
+                .toast-body #{mi(:content_copy, font_size: "1rem")} このページのリンクをコピーしました！
+                button.btn-close.btn-close-white.me-2.m-auto type="button" data-bs-dismiss="toast" aria-label="Close"
+
         dl.dl-spec.row.gx-0
           dt.col-3 管理番号
           dd.col-9 = @machine.no

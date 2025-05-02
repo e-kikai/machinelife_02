@@ -10,7 +10,7 @@
   /-- 動画 --/
   - machine.youtube_ids.each do |yt|
     = link_to "https://www.youtube.com/watch?v=#{yt}", rel: :noopener, target: :_blank, class: "btn btn-danger m-1" do
-      | #{mi(:movie)} 動画
+      | #{mi(:live_tv, fill: 1)} 動画
 
   /-- PDF --/
   - machine.pdfs_parsed.medias.each do |pdf|

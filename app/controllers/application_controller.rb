@@ -44,10 +44,19 @@ class ApplicationController < ActionController::Base
   USERS = { "zenkiren" => "ml1210" }.freeze
 
   before_action :digest_auth
+  # before_action :skip_session_for_bots # クッキー無効時にセッション処理をスキップ
 
   private
 
   def digest_auth
     authenticate_or_request_with_http_digest { |user| USERS[user] } if Rails.env.staging?
   end
+
+  # クッキー無効時にセッション処理をスキップ
+  # def skip_session_for_bots
+  #   user_agent = request.user_agent.to_s.downcase
+  #   if user_agent.include?('bot') || user_agent.include?('crawl') || user_agent.include?('spider')
+  #     request.session_options[:skip] = true
+  #   end
+  # end
 end

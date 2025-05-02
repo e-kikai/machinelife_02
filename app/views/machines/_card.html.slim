@@ -14,5 +14,7 @@
   / .position-absolute style="top:16px;right:4px;"
   /   .text-warning.h4 #{mi(:fiber_new)}
 
-  - if machine.created_at >= 7.days.ago
-    .position-absolute.bg-danger.fw-bold.px-2.text-white style="top:4px;left:4px;" NEW
+  = render "new_label" if machine.new?
+
+  - if machine.youtube_ids.present?
+    .position-absolute.bg-white.rounded-1 aria-hidden="true" style="top:4px;right:4px;" #{mi(:live_tv, "text-danger", fill: 1, font_size: "1.8rem")}

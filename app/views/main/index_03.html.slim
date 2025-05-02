@@ -83,7 +83,12 @@ h2.mt-3
               span.spinner-border.spinner-border-sm.me-2 role="status" aria-hidden="true"
               | MAIが検索中
 
-  . = render "/mai_search/info"
+  .col-9.mx-auto.small
+    .row
+      .fw-bold.col-6 #{mi(:info)} お知らせ
+      .col-6.text-end = link_to "/info" do
+        | #{mi(:list_alt)} 過去のお知らせ
+    = render "/mai_search/info", top: true
 
 / /-- 入札会バナー枠 --/
 / .row.my-2.gx-0
@@ -120,12 +125,6 @@ h2
         .text-danger #{mi(:more_time)} #{ma.elapsed}
         . = link_to "#{ma.full_name} #{ma.myear} : #{ma.company.company_remove_kabu}", "/machines/#{ma.id}"
 
-/-- 大バナー枠 --/
-.row.gx-0.my-2
-  - Bidinfo::BOTTOM_BANNERS.shuffle.each do |ba|
-    .col.text-center = link_to ba[2], rel: :noopener, target: :_blank, onClick: "ga('send', 'event', 'banner', 'half', '#{ba[0]}', 1, true);" do
-      = image_tag "#{Bidinfo::MEDIA_URL}#{ba[1]}", alt: ba[0]
-
 - if @histories.present?
   .my-2
     h2 #{mi(:history)} 閲覧履歴
@@ -145,3 +144,9 @@ h2
 
         button.carousel-control-next type="button" data-bs-target="#historiesCarousel" data-bs-slide="next" style="width:6%;"
           | #{mi(:arrow_forward_ios, "text-dark fs-1 fw-bolder")}
+
+/-- 大バナー枠 --/
+.row.gx-0.my-3
+  - Bidinfo::BOTTOM_BANNERS.shuffle.each do |ba|
+    .col.text-center = link_to ba[2], rel: :noopener, target: :_blank, onClick: "ga('send', 'event', 'banner', 'half', '#{ba[0]}', 1, true);" do
+      = image_tag "#{Bidinfo::MEDIA_URL}#{ba[1]}", alt: ba[0]

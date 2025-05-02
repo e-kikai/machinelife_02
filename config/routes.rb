@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     get "test", to: redirect("/?test=1")
     get "feed" => "main#feed"
     # get "admin_mail_feed" => "main#admin_mail_feed"
+    get "info" => "main#info"
 
     ### machine ###
     resources :companies, only: [:index, :show]

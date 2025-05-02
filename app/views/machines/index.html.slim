@@ -1,6 +1,6 @@
 - set_meta_tags title: @title
 - set_meta_tags description: "マシンライフに登録されている、#{@title}です。"
-- set_meta_tags canonical: request.path
+- set_meta_tags canonical: "#{request.base_url}#{request.path}"
 
 - breadcrumb @bread[0], @bread[1]
 
@@ -92,8 +92,7 @@ h1 #{@title}
                 .d-none.border.border-secondary.shadow.position-absolute style="top:-30px;left:110px;"
                   = image_tag ma.top_image_url, style: "max-width:320px;max-height:320px;"
 
-                - if ma.created_at >= 7.days.ago
-                  .position-absolute.bg-danger.fw-bold.px-2.text-white style="top:4px;left:4px;" NEW
+                = render "new_label" if ma.new?
 
               td.text-break = link_to ma.name, "/machines/#{ma.id}", 'data-turbo-frame': :_top
               td.text-break = ma.maker

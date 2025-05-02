@@ -271,4 +271,8 @@ class Machine < ApplicationRecord
     sales.find_each(&:save)
     ActiveRecord::Base.connection.execute "VACUUM FULL ANALYZE machines"
   end
+
+  def new?
+    created_at >= NEWS_DAY
+  end
 end

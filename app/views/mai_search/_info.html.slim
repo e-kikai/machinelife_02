@@ -1,40 +1,54 @@
-.small.fw-bold.col-9.mx-auto #{mi(:info)} お知らせ
-.border-top.border-bottom.mx-auto.mb-3.p-2.col-9.small
+.border-top.border-bottom.mx-auto.mb-3.p-2
 
-  .row
-    .col-2 2025/4/8
-    .col-10
-      | (新機能) トップページ : ページ下部に機械の「閲覧履歴」を追加しました。<br />
-      | (新機能) 新着商品に <span class="bg-danger fw-bold px-2 text-white">NEW</span> を追加しました。
+  .row.g-0.mb-1
+    .col-auto style="width: 12%" 2025/5/2
+    .col-auto style="width: 13%" <span class="bg-success px-2 text-center d-inline-block text-white" style="min-width:64px;">新機能</span>
+    .col
+      | 機械詳細 : シェアボタン(リンクをコピー、QRコードなど)を追加しました。
 
-  .row
-    .col-2 2025/4/15
-    .col-10
-      . = "(更新) MAI在庫検索 β2 : 検索精度と速度を改善しました。"
+  .row.g-0.mb-1
+    .col-auto style="width: 12%"  2025/4/24
+    .col-auto style="width: 13%" <span class="bg-success px-2 text-center d-inline-block text-white" style="min-width:64px;">新機能</span>
+    .col トップページ : 「閲覧履歴」を追加しました。
+  .row.g-0.mb-1
+    .col-auto style="width: 12%"
+    .col-auto style="width: 13%" <span class="bg-success px-2 text-center d-inline-block text-white" style="min-width:64px;">新機能</span>
+    .col  新着商品に <span class="bg-danger fw-bold px-2 text-center d-inline-block text-white" style="min-width:64px;">NEW</span> を追加しました。
 
-  .row
-    .col-2 2025/4/8
-    .col-10
-      | (更新) MAI在庫検索 β2 : 「試運転可」「動画あり」「新着」で検索できるようになりました。<br />
-      | 商品選定項目についての<span class="text-info">機械ごとの能力値</span>の表示と、<span class="text-info">ソート機能</span>を追加しました。
+  .row.g-0.mb-1
+    .col-auto style="width: 12%"  2025/4/15
+    .col-auto style="width: 13%" <span class="px-2 text-center d-inline-block fw-bold text-white" style="min-width:64px;background:#1a237e">MAI</span>
+    .col 在庫検索 β2 : 検索精度と速度を改善しました。
 
-  / .row
-  /   .col-2 2025/2/27
-  /   .col-10 = "(不具合修正) ジャンル検索 : ページ切り替え処理の不具合を修正しました。"
+  - if top == false
+    .row.g-0.mb-1
+      .col-auto style="width: 12%"  2025/4/8
+      .col-auto style="width: 13%" <span class="px-2 text-center d-inline-block fw-bold text-white" style="min-width:64px;;background:#1a237e">MAI</span>
+      .col
+        | 在庫検索 β2 : 「試運転可」「動画あり」「新着」で検索できるようになりました。<br />
+        | 商品選定項目についての<span class="text-info">機械ごとの能力値</span>の表示と、<span class="text-info">ソート機能</span>を追加しました。
 
-  / .row
-  /   .col-2 2025/2/26
-  /   .col-10
-  /     . = "(更新) MAI在庫検索 : 結果が多すぎたとき「絞り込み再検索」が行える様になりました。"
+    .row.g-0.mb-1
+      .col-auto style="width: 12%"  2025/2/27
+      .col-auto style="width: 13%" <span class="bg-warning px-2 text-center d-inline-block text-white" style="min-width:64px;">不具合修正</span>
+      .col ジャンル検索 : ページ切り替え処理の不具合を修正しました。
 
-  / .row
-  /   .col-2 2025/2/20
-  /   .col-10 = "(不具合修正) ジャンル検索 : メーカー名での絞り込みの不具合を修正しました。"
+    .row.g-0.mb-1
+      .col-auto style="width: 12%"  2025/2/26
+      .col-auto style="width: 13%" <span class="px-2 text-center d-inline-block fw-bold text-white" style="min-width:64px;;background:#1a237e">MAI</span>
+      .col 在庫検索 : 結果が多すぎたとき「絞り込み再検索」が行える様になりました。"
 
-  / .row
-  /   .col-2 2025/2/10
-  /   .col-10 = "(更新) 新着中古機械・工具 : 表示期間を1週間分に変更しました。"
+    .row.g-0.mb-1
+      .col-auto style="width: 12%"  2025/2/20
+      .col-auto style="width: 13%" <span class="bg-warning px-2 text-center d-inline-block text-white" style="min-width:64px;">不具合修正</span>
+      .col ジャンル検索 : メーカー名での絞り込みの不具合を修正しました。
 
-  .row
-    .col-2 2025/2/3
-    .col-10 = "(新機能) MAI 在庫検索 ver.βを公開しました。"
+    .row.g-0.mb-1
+      .col-auto style="width: 12%"  2025/2/10
+      .col-auto style="width: 13%" <span class="bg-primary px-2 text-center d-inline-block text-white" style="min-width:64px;">更新</span>
+      .col 新着中古機械・工具 : 表示期間を1週間分に変更しました。
+
+  .row.g-0.mb-1
+    .col-auto style="width: 12%"  2025/2/3
+    .col-auto style="width: 13%" <span class="px-2 text-center d-inline-block fw-bold text-white" style="min-width:64px;;background:#1a237e">MAI</span>
+    .col 在庫検索 ver.βを公開しました。
