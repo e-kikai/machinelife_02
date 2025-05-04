@@ -15,7 +15,7 @@ class HelpsController < ApplicationController
 
   def sitemap
     machines = Machine.sales
-    @makers = machines.where.not(maker2: "")
+    @makers = machines.where.not(maker2: ["", nil])
       .group("COALESCE(makers.maker_master, machines.maker2)").count
 
     @xl_genres             = XlGenre.order(:order_no).includes(:large_genres, :genres)

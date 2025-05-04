@@ -75,7 +75,7 @@ module LinkSource
         when /(xn--4bswgw9cs82at4b485i\.jp|大阪機械団地\.jp)/; "電子入札システム"
         when /mnok\.net/; "ものオク"
 
-        # 電子入札システム内
+        # システム内
         when /#{Rails.application.credentials.site[:machinelife]}(.*)$/
           path = Regexp.last_match(1)
           case path

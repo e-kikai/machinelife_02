@@ -97,7 +97,8 @@ h1 #{@machine.full_name}
         p.small.my-2 お問い合せフォーム TEL FAXより掲載会社へお問い合せください。
         .row
           .col-6
-            = link_to "/contacts/new?r=dtl&m=#{@machine.id}", class: "btn btn-lg btn-warning", data: { turbo: false } do
+            - r = params[:r].present? ? "#{params[:r]}_>_dtl" : "dtl"
+            = link_to "/contacts/new?r=#{r}&m=#{@machine.id}", class: "btn btn-lg btn-warning", data: { turbo: false } do
               .fw-bold #{mi(:forward_to_inbox, fill: 1, font_size: "1.5rem")} 問い合わせ (無料)
               .small お気軽に
           .col-6.p-0
@@ -106,6 +107,8 @@ h1 #{@machine.full_name}
             /   == sanitize(@machine.company.contact_tel).gsub(/[0-9-]+/) { |tel| phone_to(tel) }
             .text-danger.fs-4 TEL : #{@machine.company.contact_tel}
             .text-danger.fs-4 FAX : #{@machine.company.contact_fax}
+        .row
+          .col.small.text-secondary.mt-4 ご連絡の際に、「<strong>中古機械情報 マシンライフを見て</strong>」とお伝え下さい。
 
       .col-6.px-1
         . data-controller="machine-share" data-machine-share-url-value=machine_url

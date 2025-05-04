@@ -4,7 +4,7 @@ class MainController < ApplicationController
     @machines_count  = machines.count
     @companies_count = machines.distinct(:company_id).count("distinct company_id")
 
-    @news = machines.only_machines.news
+    @news = machines.only_machines.news.with_images
 
     if session[:utag].present?
       @histories = Machine.sales.joins(:detail_logs).where(detail_logs: { utag: session[:utag] })
