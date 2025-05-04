@@ -69,4 +69,4 @@ h1 問い合わせ一覧(すべて)
 
           td.text-wrap.text-break = simple_format(co.message)
           / td.text-end #{l(co.created_at)}
-          td.text-break title="#{CGI.unescape(co.referer.to_s)}" = CGI.unescape(co.link_source).gsub("問合せ|", "")
+          td.text-break title="#{CGI.unescape(co.referer.to_s)}" = CGI.unescape(co.link_source).gsub("問合せ |", "")

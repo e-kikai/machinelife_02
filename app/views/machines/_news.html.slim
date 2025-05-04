@@ -1,7 +1,7 @@
 .py-1.ps-4
-  = link_to "/machines/#{machine.id}" do
+  = link_to "/machines/#{machine.id}?r=nls" do
     = image_tag machine.top_image_thumb, alt: machine.full_name, class: "news_thumbnail float-start me-4"
 
   .text-danger #{mi(:more_time)} #{machine.elapsed}
-  . = link_to "/machines/#{machine.id}" do
+  . = link_to "/machines/#{machine.id}?r=nls" do
     | #{machine.full_name} #{machine.myear} : #{machine.company.company_remove_kabu}
