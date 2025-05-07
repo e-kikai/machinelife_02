@@ -279,13 +279,13 @@ class Machine < ApplicationRecord
 
   # あなたへのおすすめ
   def self.utag_favorites(utag)
-    utag_logs  = DetailLog.where(utag:, created_at: NEAR_DAY..)
-    near_utags = utag_logs.where.not(utag: [utag, nil]).select(:utag)
+    utag_logs  = DetailLog.where(utag:, created_at: NEAR_DAY..).select(:machine_id)
+    near_utags = DetailLog.where(machine_id: utag_logs).where.not(utag: [utag, nil]).distinct.select(:utag)
     # near_utags = utag_logs.where.not(utag: [nil]).select(:utag)
     Machine.where(
       id: DetailLog.where(utag: near_utags, created_at: NEAR_DAY..).select(:machine_id)
     ).where.not(
-      id: utag_logs.where(created_at: NEAR_DAY..1.day.ago).select(:machine_id)
+      id: DetailLog.where(utag:, created_at: NEAR_DAY..Time.current.beginning_of_day).select(:machine_id)
     ).order(created_at: :desc)
   end
 end
