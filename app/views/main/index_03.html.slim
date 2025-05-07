@@ -125,8 +125,31 @@ h2
         .text-danger #{mi(:more_time)} #{ma.elapsed}
         . = link_to "#{ma.full_name} #{ma.myear} : #{ma.company.company_remove_kabu}", "/machines/#{ma.id}"
 
+- if @favorites.present?
+  .my-3
+    h2
+      span.text-primary-emphasis #{mi(:support_agent)}
+      span.fw-bold.text-primary-emphasis<> MAI
+      | あなたへのオススメ - あなたの閲覧履歴から、オススメ機械をご提案いたします。
+    /** おすすめカルーセル  **/
+    #favoritesCarousel.carousel.slide
+      .row
+        .carousel-inner style="width:88%;margin:auto;"
+          - @favorites.each_slice(5).with_index do |mas, i|
+            .carousel-item class=(:active if i.zero?)
+              .row.gx-2
+                - mas.each do |ma|
+                  .col-1.p-1 style="width:20%;"
+                    = render partial: "/machines/card", locals: { machine: ma, titles: [ma.maker2, ma.name, ma.model, ma.myear, ma.addr1, ma.addr2], r: :mai_fav }
+
+        button.carousel-control-prev type="button" data-bs-target="#favoritesCarousel" data-bs-slide="prev" style="width:6%;"
+          | #{mi(:arrow_back_ios, "text-dark fs-1 fw-bolder")}
+
+        button.carousel-control-next type="button" data-bs-target="#favoritesCarousel" data-bs-slide="next" style="width:6%;"
+          | #{mi(:arrow_forward_ios, "text-dark fs-1 fw-bolder")}
+
 - if @histories.present?
-  .my-2
+  .my-3
     h2 #{mi(:history)} 閲覧履歴
     /** 閲覧履歴カルーセル  **/
     #historiesCarousel.carousel.slide

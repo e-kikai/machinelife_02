@@ -272,7 +272,20 @@ class Machine < ApplicationRecord
     ActiveRecord::Base.connection.execute "VACUUM FULL ANALYZE machines"
   end
 
+  # 新着判別
   def new?
     created_at >= NEWS_DAY
+  end
+
+  # あなたへのおすすめ
+  def self.utag_favorites(utag)
+    utag_logs  = DetailLog.where(utag:, created_at: NEAR_DAY..)
+    near_utags = utag_logs.where.not(utag: [utag, nil]).select(:utag)
+    # near_utags = utag_logs.where.not(utag: [nil]).select(:utag)
+    Machine.where(
+      id: DetailLog.where(utag: near_utags, created_at: NEAR_DAY..).select(:machine_id)
+    ).where.not(
+      id: utag_logs.where(created_at: NEAR_DAY..1.day.ago).select(:machine_id)
+    ).order(created_at: :desc)
   end
 end
