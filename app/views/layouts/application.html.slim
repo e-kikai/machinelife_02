@@ -83,8 +83,8 @@ html lang="ja"
       = render "/layouts/header_menu"
 
     .main_container
-      .alert.alert-danger.mt-2.mx-auto.col-10
-        span #{mi(:info)} 現在、お問い合わせ送信に不具合が生じています。<br />お問い合わせお急ぎの方は、お手数ですがTELもしくはFAXでお願いいたします。
+      / .alert.alert-danger.mt-2.mx-auto.col-10
+      /   span #{mi(:info)} 現在、お問い合わせ送信に不具合が生じています。<br />お問い合わせお急ぎの方は、お手数ですがTELもしくはFAXでお願いいたします。
 
       /-- 広告小バナー --/
       - unless request.path_info.include?("system")
