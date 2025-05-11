@@ -10,7 +10,7 @@ class MainController < ApplicationController
       @histories = Machine.sales.joins(:detail_logs).where(detail_logs: { utag: session[:utag] })
         .order("detail_logs.created_at" => :desc).limit(50)
 
-      @favorites = Machine.sales.utag_favorites(session[:utag]).limit(50)
+      @favorites = Machine.sales.utag_favorites(session[:utag]).limit(20)
     end
 
     @xl_genres             = XlGenre.order(:order_no).includes(:large_genres)
