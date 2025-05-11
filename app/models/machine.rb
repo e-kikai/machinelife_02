@@ -194,7 +194,7 @@ class Machine < ApplicationRecord
   end
 
   def nears(utag)
-    near_utags = DetailLog.where(machine_id: id, created_at: NEAR_DAY..).where.not(utag: [utag, nil]).select(:utag)
+    near_utags = DetailLog.where(machine_id: id, created_at: NEAR_DAY..).where.not(utag: [utag, nil]).where.not(host: ["", nil]).select(:utag)
     Machine.where(id: DetailLog.where(utag: near_utags, created_at: NEAR_DAY..).select(:machine_id))
   end
 
@@ -280,7 +280,8 @@ class Machine < ApplicationRecord
   # あなたへのおすすめ
   def self.utag_favorites(utag)
     utag_logs  = DetailLog.where(utag:, created_at: NEAR_DAY..).select(:machine_id)
-    near_utags = DetailLog.where(machine_id: utag_logs).where.not(utag: [utag, nil]).where.not(host: ["", nil]).distinct.select(:utag)
+    near_utags = DetailLog.where(machine_id: utag_logs, created_at: NEAR_DAY..).where.not(utag: [utag, nil]).where.not(host: ["", nil])
+      .select(:utag)
 
     Machine.where(
       id: DetailLog.where(utag: near_utags, created_at: NEAR_DAY..).select(:machine_id)
