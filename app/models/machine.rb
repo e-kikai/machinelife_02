@@ -57,6 +57,7 @@
 #
 class Machine < ApplicationRecord
   include SoftDelete
+  include Machine::Scoring
 
   after_create  :save
   before_update :update_search_keywords
@@ -140,8 +141,10 @@ class Machine < ApplicationRecord
   scope :where_keyword, ->(keyword) { where(KEYWORDSEARCH_SQL, to_keywords(keyword)) }
   # scope :where_keyword, ->(keyword) { merge(Machine.where("machines.name LIKE ?", "%#{keyword}%").or(Machine.where("machines.maker LIKE ?", "%#{keyword}%"))) }
 
-  scope :with_images, -> { where("(machines.top_image IS NOT NULL AND machines.top_image <> '') OR (machines.top_img IS NOT NULL AND machines.top_img <> '')") }
-  scope :without_images, -> { where(top_image: nil).where(top_img: nil) }
+  # scope :with_images, -> { where("(machines.top_image IS NOT NULL AND machines.top_image <> '') OR (machines.top_img IS NOT NULL AND machines.top_img <> '')") }
+  scope :with_images, -> { merge(Machine.where.not(top_image: [nil, ""]).or(Machine.where.not(top_img: [nil, ""]))) }
+  scope :without_images, -> { where(top_image: nil, top_img: nil) }
+  scope :with_youtube, -> { where.not(youtube: [nil, "", "http://youtu.be/"]) }
 
   ### value ###
   composed_of :top_img_media, class_name: "Media", mapping: [%i[top_img file]], constructor: ->(top_img) { Media.new(top_img, MEDIA_URL) }
@@ -287,6 +290,6 @@ class Machine < ApplicationRecord
       id: detail_logs_lim.where(utag: near_utags).select(:machine_id)
     ).where.not(
       id: DetailLog.where(utag:, created_at: NEAR_DAY..Time.current.beginning_of_day).select(:machine_id)
-    ).order(created_at: :desc)
+    )
   end
 end

@@ -16,5 +16,12 @@
 
   = render "machines/new_label" if machine.new?
 
-  - if machine.youtube_ids.present?
-    .position-absolute.bg-white aria-hidden="true" style="top:4px;right:4px;" #{mi(:live_tv, "text-danger", fill: 1, font_size: "1.5rem")}
+  .icon_area.position-absolute style="top:2px;right:6px;"
+    - if machine.youtube_ids.present?
+      .mt-1.bg-white aria-hidden="true" style="top:4px;right:4px;" #{mi(:live_tv, "text-danger", fill: 1, font_size: "1.3rem")}
+    - if machine.commission == 1
+      .mt-1.bg-white aria-hidden="true" style="top:4px;right:4px;" #{mi(:precision_manufacturing, "text-success", fill: 1, font_size: "1.3rem")}
+    - if machine.catalog_id.present?
+      .mt-1.bg-white aria-hidden="true" style="top:4px;right:4px;" #{mi(:menu_book, "text-primary", fill: 1, font_size: "1.3rem")}
+    - if machine.pdfs_parsed.medias.present?
+      .mt-1.bg-danger aria-hidden="true" style="top:4px;right:4px;" #{mi(:picture_as_pdf, "text-white", fill: 1, font_size: "1.3rem")}

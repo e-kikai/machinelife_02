@@ -48,9 +48,10 @@ class MachinesController < ApplicationController
     # raise "errr"
     @machine = Machine.with_deleted.find(params[:id])
 
-    @sames     = @machine.sames.sales.order(created_at: :desc)
+    # @sames     = @machine.sames.sales.order(created_at: :desc)
+    @sames     = @machine.sames.sales.order_by_content_score(:desc).order(created_at: :desc)
     @nitamonos = @machine.nitamonos.sales.order("machine_nitamonos.norm").limit(15)
-    @nears     = @machine.nears(session[:utag]).sales.order(created_at: :desc).limit(15) if session[:utag].present?
+    @nears     = @machine.nears(session[:utag]).sales.order_by_content_score(:desc).order(created_at: :desc).limit(15) if session[:utag].present?
 
     # ロギング
     if logging? && params[:id] != session[:before_machine_id]
