@@ -85,12 +85,16 @@ h1 #{@title}
                 = check_box_tag 'm[]', ma.id, { class: "form-check-input", multiple: true, include_hidden: false }
 
               td.dropend
-                = link_to("/machines/#{ma.id}", data: { turbo_frame: :_top },
-                  onmouseover: "this.nextElementSibling.classList.remove('d-none');",
-                  onmouseleave: "this.nextElementSibling.classList.add('d-none');") do
+                - if ma.image?
+                  = link_to("/machines/#{ma.id}", data: { turbo_frame: :_top },
+                    onmouseover: "this.nextElementSibling.classList.remove('d-none');",
+                    onmouseleave: "this.nextElementSibling.classList.add('d-none');") do
+                      = image_tag ma.top_image_thumb, alt: ma.full_name, class: "news_thumbnail"
+                  .d-none.border.border-secondary.shadow.position-absolute style="top:-30px;left:110px;"
+                    = image_tag ma.top_image_url, style: "max-width:320px;max-height:320px;"
+                - else
+                  = link_to "/machines/#{ma.id}", data: { turbo_frame: :_top } do
                     = image_tag ma.top_image_thumb, alt: ma.full_name, class: "news_thumbnail"
-                .d-none.border.border-secondary.shadow.position-absolute style="top:-30px;left:110px;"
-                  = image_tag ma.top_image_url, style: "max-width:320px;max-height:320px;"
 
                 = render "new_label" if ma.new?
 

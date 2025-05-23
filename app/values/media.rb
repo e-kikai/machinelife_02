@@ -1,7 +1,7 @@
 class Media
   attr_reader :file, :media_path, :name
 
-  NOTHING_URL = "machine/noimage_02.png".freeze
+  NOTHING_URL = "machine/noimage_03.png".freeze
   DAIHOU_NOTHING_URL = "daihou/daihou_noimg.png".freeze
 
   def initialize(file, media_path, name = "")

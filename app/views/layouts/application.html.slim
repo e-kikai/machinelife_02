@@ -31,7 +31,7 @@ html lang="ja"
           gtag('event', 'page_view', { page_location: event.detail.url, send_to: 'G-9FCEEFBV1P' });
         });
 
-  body class="#{"full" if @header_full}"
+  body class="#{"full" if @header_full}" data-controller="modal"
     /-- ヘッダ --/
     header
       - if @header_full
@@ -117,3 +117,23 @@ html lang="ja"
     /-- トップリンク --/
     = link_to "#", class: "btn btn-outline-success btn-lg position-fixed bottom-0 end-0 m-3" do
       | #{mi(:change_history, "fw-bold")}
+
+    /-- 共通メディア表示モーダル --/
+    .modal.fade id="mediaModal" tabindex="-1" aria-hidden="true" data-modal-target="modal"
+      .modal-dialog data-modal-target="dialog"
+        .modal-content
+          .modal-header.py-2
+            h5.modal-title data-modal-target="title"
+            button.btn-close type="button" data-bs-dismiss="modal" aria-label="閉じる"
+          .modal-body.p-0
+            .text-center.my-3 data-modal-target="spinner"
+              i.fas.fa-spinner.fa-spin.fa-2x.text-primary
+              span.spinner-border role="status" aria-hidden="true"
+              p.mt-2 読み込み中です…
+            .content-area data-modal-target="modalBody"
+          .modal-footer.justify-content-end.py-2
+            a.btn.btn-outline-primary.d-none data-modal-target="detailLink" target="_blank"
+              | #{mi(:description)} 詳細ページを表示
+
+            a.btn.btn-outline-dark.d-none.ms-4 data-modal-target="externalLink" target="_blank"
+              | #{mi(:open_in_new)} 別タブで開く

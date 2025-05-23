@@ -237,6 +237,10 @@ class Machine < ApplicationRecord
     top_image&.thumb&.url || top_img_media.thumbnail(noimage:)
   end
 
+  def image?
+    top_image.present? || top_img.present?
+  end
+
   ######
 
   # 能力値を開く

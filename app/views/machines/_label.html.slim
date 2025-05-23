@@ -9,18 +9,18 @@
 
   /-- 動画 --/
   - machine.youtube_ids.each do |yt|
-    = link_to "https://www.youtube.com/watch?v=#{yt}", rel: :noopener, target: :_blank, class: "btn btn-danger m-1" do
+    = link_to "https://www.youtube.com/watch?v=#{yt}", rel: :noopener, target: :_blank, class: "btn btn-danger m-1", data: { action: "click->modal#showMovie", title: machine.full_name, id: machine.id } do
       | #{mi(:live_tv, fill: 1)} 動画
 
   /-- PDF --/
   - machine.pdfs_parsed.medias.each do |pdf|
-    = link_to pdf.url, rel: :noopener, target: :_blank, class: "btn btn-light m-1" do
+    = link_to pdf.url, rel: :noopener, target: :_blank, class: "btn btn-light m-1", data: { action: "click->modal#showPdf", title: machine.full_name, id: machine.id } do
       | #{mi(:picture_as_pdf, "text-danger", fill: 1)} #{pdf.name}
   - machine.machine_pdfs.each do |pdf|
-    = link_to pdf.pdf.url, rel: :noopener, target: :_blank, class: "btn btn-light m-1" do
+    = link_to pdf.pdf.url, rel: :noopener, target: :_blank, class: "btn btn-light m-1", data: { action: "click->modal#showPdf", title: machine.full_name, id: machine.id } do
       | #{mi(:picture_as_pdf, "text-danger", fill: 1)} #{pdf.name}
 
   /-- 電子カタログ --/
   - if machine.catalog_id
-    = link_to "/catalogs/#{machine.catalog_id}.pdf", rel: :noopener, target: :_blank, class: "btn btn-primary m-1" do
+    = link_to "/catalogs/#{machine.catalog_id}.pdf", rel: :noopener, target: :_blank, class: "btn btn-primary m-1", data: { action: "click->modal#showPdf", title: machine.full_name, id: machine.id } do
       | #{mi(:menu_book, fill: 1)} 電子カタログ
