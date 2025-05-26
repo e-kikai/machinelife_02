@@ -27,10 +27,11 @@ export default class extends Controller {
   }
 
   isMobile() {
-    // iPhone, iPad, Androidスマホ・タブレット両方に対応
-    return /iPhone|iPad|Android.+Mobile|Android(?!.*Mobile)/i.test(navigator.userAgent)
+    if (/iPhone|Android.+Mobile/.test(navigator.userAgent)) return true;
+    if (/iPad|Android(?!.*Mobile)/.test(navigator.userAgent)) return true;
+    if (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document) return true;
+    return false;
   }
-
   escapeHtml(unsafe) {
     return unsafe
       .replace(/&/g, "&amp;")
