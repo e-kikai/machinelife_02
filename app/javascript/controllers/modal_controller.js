@@ -5,6 +5,10 @@ export default class extends Controller {
 
   connect() {
     this.modal = new bootstrap.Modal(this.modalTarget)
+    // モーダル閉じ時に必ず内容をクリア
+    this.modalTarget.addEventListener('hidden.bs.modal', () => {
+      this.modalBodyTarget.innerHTML = ""
+    })
   }
 
   reset(dialogSize = null) {
@@ -113,5 +117,9 @@ export default class extends Controller {
       <iframe src="${embedUrl}" style="width: 100%; height: 75vh; border: 0; display: block;" allowfullscreen="" loading="lazy"></iframe>
     `
     this.showModalContent(event, content, "modal-xl")
+  }
+
+  closeModal(event) {
+    this.modal.hide();
   }
 }

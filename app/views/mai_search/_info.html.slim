@@ -1,6 +1,12 @@
 .border-top.border-bottom.mx-auto.mb-3.p-2
 
   .row.g-0.mb-1
+    .col-auto style="width: 12%"  2025/5/26
+    .col-auto style="width: 13%"
+      span.bg-primary.px-2.text-center.d-inline-block.text-white style="min-width:64px;" 更新
+    .col 「動画」「電子カタログ」「MAP」をページ内で表示するようにしました。(PCのみ)
+
+  .row.g-0.mb-1
     .col-auto style="width: 12%"  2025/5/24
     .col-auto style="width: 13%"
       span.bg-success.px-2.text-center.d-inline-block.text-white style="min-width:64px;" 新機能
@@ -19,13 +25,13 @@
     .col
       | トップページ : 「#{mi(:stars_2, fill: 1)} あなたへのオススメ」を追加しました。
 
-  .row.g-0.mb-1
-    .col-auto style="width: 12%" 2025/5/2
-    .col-auto style="width: 13%" <span class="bg-success px-2 text-center d-inline-block text-white" style="min-width:64px;">新機能</span>
-    .col
-      | 機械詳細 : シェアボタン(リンクをコピー、QRコードなど)を追加しました。
-
   - if top == false
+
+    .row.g-0.mb-1
+      .col-auto style="width: 12%" 2025/5/2
+      .col-auto style="width: 13%" <span class="bg-success px-2 text-center d-inline-block text-white" style="min-width:64px;">新機能</span>
+      .col
+        | 機械詳細 : シェアボタン(リンクをコピー、QRコードなど)を追加しました。
 
     .row.g-0.mb-1
       .col-auto style="width: 12%"  2025/4/24

@@ -134,8 +134,8 @@ html lang="ja"
               p.mt-2 読み込み中です…
             .content-area data-modal-target="modalBody"
           .modal-footer.justify-content-end.py-2
-            a.btn.btn-outline-primary.d-none data-modal-target="detailLink" target="_blank"
+            a.btn.btn-outline-primary.d-none data-modal-target="detailLink" target="_blank" data-action="click->modal#closeModal"
               | #{mi(:description)} 詳細ページを表示
 
-            a.btn.btn-outline-dark.d-none.ms-4 data-modal-target="externalLink" target="_blank"
+            a.btn.btn-outline-dark.d-none.ms-4 data-modal-target="externalLink" target="_blank" data-action="click->modal#closeModal"
               | #{mi(:open_in_new)} 別タブで開く
