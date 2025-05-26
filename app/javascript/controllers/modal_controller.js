@@ -23,7 +23,8 @@ export default class extends Controller {
   }
 
   isMobile() {
-    return /iPhone|Android.+Mobile/.test(navigator.userAgent)
+    // iPhone, iPad, Androidスマホ・タブレット両方に対応
+    return /iPhone|iPad|Android.+Mobile|Android(?!.*Mobile)/i.test(navigator.userAgent)
   }
 
   escapeHtml(unsafe) {
@@ -37,7 +38,7 @@ export default class extends Controller {
 
   showModalContent(event, contentHtml, dialogSize) {
     const url = event.currentTarget.href
-    const rawTitle = event.currentTarget.dataset.title || "無名のメディア"
+    const rawTitle = event.currentTarget.dataset.title || ""
     const title = this.escapeHtml(rawTitle)
     const id = event.currentTarget.dataset.id
 
@@ -82,10 +83,9 @@ export default class extends Controller {
     const embedUrl = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1`
     const content = `
       <div class="ratio ratio-16x9">
-        <iframe src="${embedUrl}" style="width:100%; height:100%; border:0;" allowfullscreen allow="autoplay"></iframe>
+        <iframe src="${embedUrl}" allowfullscreen allow="autoplay" style="border:0;"></iframe>
       </div>
     `
-
     this.showModalContent(event, content, "modal-lg")
   }
 
@@ -93,6 +93,24 @@ export default class extends Controller {
     const url = event.currentTarget.href
     const content = `
       <iframe src="${url}" style="width: 100%; height: 75vh; border: 0; display: block;"></iframe>
+    `
+    this.showModalContent(event, content, "modal-xl")
+  }
+
+  showMap(event) {
+    const url = event.currentTarget.href;
+    let embedUrl = url;
+
+    // q=指定のGoogle Mapならoutput=embedを追加
+    if (url.includes("google.com/maps") && url.includes("q=")) {
+      // output=embed が既についていなければ付加
+      if (!url.includes("output=embed")) {
+        embedUrl = url + (url.includes("?") ? "&" : "?") + "output=embed";
+      }
+    }
+
+    const content = `
+      <iframe src="${embedUrl}" style="width: 100%; height: 75vh; border: 0; display: block;" allowfullscreen="" loading="lazy"></iframe>
     `
     this.showModalContent(event, content, "modal-xl")
   }

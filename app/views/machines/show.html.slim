@@ -94,7 +94,7 @@ h1 #{@machine.full_name}
         /** youtube **/
         - @machine.youtube_ids.each do |yt|
             / iframe.w-100 src="https://www.youtube.com/embed/#{yt}" style="aspect-ratio: 16/9;"
-            .tv-frame.p-2.bg-dark.rounded-4.position-relative
+            .tv-frame.p-2.bg-dark.rounded-4.position-relative.my-2
               = link_to "https://www.youtube.com/watch?v=#{yt}", target: '_blank', rel: 'noopener', class: 'youtube-thumb-link position-relative', data: { action: "click->modal#showMovie", title: @machine.full_name, id: @machine.id } do
                 = image_tag "https://img.youtube.com/vi/#{yt}/mqdefault.jpg",
                   class: 'card-img-top rounded-3 border border-3 border-light',
@@ -206,7 +206,7 @@ h1 #{@machine.full_name}
                   . = "(#{@machine.location})"
               .col-4.text-end
                 - if @machine.addr3.present?
-                  . = link_to "https://www.google.co.jp/maps/dir//#{@machine.addr}+#{@machine.company.company}/", rel: :noopener, target: :_blank, class: "btn btn-primary" do
+                  . = link_to "https://www.google.com/maps?q=#{@machine.addr}+#{@machine.company.company}", rel: :noopener, target: :_blank, class: "btn btn-primary", data: { action: "click->modal#showMap", title: "#{@machine.company.company} / #{@machine.addr}" } do
                     | #{mi(:map)} MAP
 
           - if current_user_id.present? && @machine.price.present?

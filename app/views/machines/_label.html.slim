@@ -14,13 +14,13 @@
 
   /-- PDF --/
   - machine.pdfs_parsed.medias.each do |pdf|
-    = link_to pdf.url, rel: :noopener, target: :_blank, class: "btn btn-light m-1", data: { action: "click->modal#showPdf", title: machine.full_name, id: machine.id } do
+    = link_to pdf.url, rel: :noopener, target: :_blank, class: "btn btn-light m-1", data: { action: "click->modal#showPdf", title:" #{machine.full_name} / #{pdf.name}", id: machine.id } do
       | #{mi(:picture_as_pdf, "text-danger", fill: 1)} #{pdf.name}
   - machine.machine_pdfs.each do |pdf|
-    = link_to pdf.pdf.url, rel: :noopener, target: :_blank, class: "btn btn-light m-1", data: { action: "click->modal#showPdf", title: machine.full_name, id: machine.id } do
+    = link_to pdf.pdf.url, rel: :noopener, target: :_blank, class: "btn btn-light m-1", data: { action: "click->modal#showPdf", title: "#{machine.full_name} / #{pdf.name}", id: machine.id } do
       | #{mi(:picture_as_pdf, "text-danger", fill: 1)} #{pdf.name}
 
   /-- 電子カタログ --/
   - if machine.catalog_id
-    = link_to "/catalogs/#{machine.catalog_id}.pdf", rel: :noopener, target: :_blank, class: "btn btn-primary m-1", data: { action: "click->modal#showPdf", title: machine.full_name, id: machine.id } do
+    = link_to "/catalogs/#{machine.catalog_id}.pdf", rel: :noopener, target: :_blank, class: "btn btn-primary m-1", data: { action: "click->modal#showPdf", title:"#{machine.full_name} / 電子カタログ", id: machine.id } do
       | #{mi(:menu_book, fill: 1)} 電子カタログ

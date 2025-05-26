@@ -123,7 +123,9 @@ html lang="ja"
       .modal-dialog data-modal-target="dialog"
         .modal-content
           .modal-header.py-2
-            h5.modal-title data-modal-target="title"
+            h5.modal-title
+              span.me-2 #{mi(:settings, fill: 1, font_size: "1.4rem")}
+              span data-modal-target="title"
             button.btn-close type="button" data-bs-dismiss="modal" aria-label="閉じる"
           .modal-body.p-0
             .text-center.my-3 data-modal-target="spinner"
