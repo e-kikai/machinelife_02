@@ -93,21 +93,30 @@ h1 #{@machine.full_name}
 
         /** youtube **/
         - @machine.youtube_ids.each do |yt|
-            / iframe.w-100 src="https://www.youtube.com/embed/#{yt}" style="aspect-ratio: 16/9;"
-            .tv-frame.p-2.bg-dark.rounded-4.position-relative.my-2
-              = link_to "https://www.youtube.com/watch?v=#{yt}", target: '_blank', rel: 'noopener', class: 'youtube-thumb-link position-relative', data: { action: "click->modal#showMovie", title: @machine.full_name, id: @machine.id } do
-                = image_tag "https://img.youtube.com/vi/#{yt}/mqdefault.jpg",
-                  class: 'card-img-top rounded-3 border border-3 border-light',
-                  alt: "#{@machine.full_name}の動画サムネイル"
-                / サムネ中央に再生アイコンを重ねて表示。
-                / 大きさ拡大（fs-1 → display-1相当 or 独自style）、半透明、完全中央配置
-                .position-absolute.top-50.start-50.translate-middle
-                  i.material-symbols-outlined.display-1.text-white.opacity-75.user-select-none.pe-none(style='font-size: 5rem;filter: drop-shadow(0 0 8px #222);') play_circle
-              / TV風パネル下部の装飾例（つまみやインジケータ等、装飾は好みに合わせて追加）
-              .d-flex.justify-content-center.align-items-center.mt-2.gap-2
-                .rounded-circle.bg-secondary.opacity-50(style='width: 16px; height: 16px;')
-                .rounded-circle.bg-secondary.opacity-50(style='width: 8px; height: 8px;')
-                .rounded-circle.bg-danger(style='width: 10px; height: 10px;')
+          / iframe.w-100 src="https://www.youtube.com/embed/#{yt}" style="aspect-ratio: 16/9;"
+          .tv-frame.p-2.bg-dark.rounded-4.position-relative.my-2
+            = link_to "https://www.youtube.com/watch?v=#{yt}", target: '_blank', rel: 'noopener', class: 'youtube-thumb-link position-relative', data: { action: "click->modal#showMovie", title: @machine.full_name, id: @machine.id } do
+              = image_tag "https://img.youtube.com/vi/#{yt}/mqdefault.jpg",
+                class: 'card-img-top rounded-3 border border-3 border-light',
+                alt: "#{@machine.full_name}の動画サムネイル"
+              / サムネ中央に再生アイコンを重ねて表示。
+              / 大きさ拡大（fs-1 → display-1相当 or 独自style）、半透明、完全中央配置
+              .position-absolute.top-50.start-50.translate-middle
+                i.material-symbols-outlined.display-1.text-white.opacity-75.user-select-none.pe-none.icon-animate(style='font-size: 5rem;filter: drop-shadow(0 0 8px #222);') play_circle
+            / TV風パネル下部の装飾例（つまみやインジケータ等、装飾は好みに合わせて追加）
+            .d-flex.justify-content-center.align-items-center.mt-2.gap-2
+              .rounded-circle.bg-secondary.opacity-50(style='width: 16px; height: 16px;')
+              .rounded-circle.bg-secondary.opacity-50(style='width: 8px; height: 8px;')
+              .rounded-circle.bg-danger(style='width: 10px; height: 10px;')
+        / - @machine.youtube_ids.each do |yt|
+        /   .tv-frame.p-2.bg-dark.rounded-4.position-relative
+        /     = link_to "https://www.youtube.com/watch?v=#{yt}", target: '_blank', rel: 'noopener', class: 'youtube-thumb-link position-relative d-block', data: { action: "click->modal#showMovie", title: @machine.full_name, id: @machine.id } do
+        /       = image_tag "https://img.youtube.com/vi/#{yt}/mqdefault.jpg",
+        /         class: 'card-img-top rounded-3 border border-3 border-light',
+        /         alt: "#{@machine.full_name}の動画サムネイル"
+        /       .position-absolute.top-50.start-50.translate-middle
+        /         i.material-symbols-outlined.display-1.text-white.opacity-75.user-select-none.pe-none.icon-animate(style='font-size: 5rem;filter: drop-shadow(0 0 8px #222);') play_circle
+
         /** 問い合わせ  **/
         .my-3
           h2 #{mi(:forward_to_inbox, fill: 1)} 中古機械についてのお問い合せ

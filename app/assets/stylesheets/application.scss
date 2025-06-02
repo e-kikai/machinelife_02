@@ -203,3 +203,13 @@ label.required:after {
     }
   }
 }
+
+.icon-animate {
+  transition: transform 0.22s cubic-bezier(0.42, 0, 0.58, 1), filter 0.22s;
+  filter: drop-shadow(0 0 8px #aaa);
+}
+.youtube-thumb-link:hover .icon-animate,
+.youtube-thumb-link:focus .icon-animate {
+  transform: scale(1.18);
+  filter: drop-shadow(0 0 20px #007bff);
+}

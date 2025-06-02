@@ -4,4 +4,4 @@
 
   .text-danger #{mi(:more_time)} #{machine.elapsed}
   . = link_to "/machines/#{machine.id}?r=nls" do
-    | #{machine.full_name} #{machine.myear} : #{machine.company.company_remove_kabu}
+    | #{machine.full_name} #{machine.myear} : #{machine.company.company_remove_kabu} #{machine.addr1}

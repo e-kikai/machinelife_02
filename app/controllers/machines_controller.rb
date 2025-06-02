@@ -65,10 +65,10 @@ class MachinesController < ApplicationController
 
   def news
     if params[:target] == "machines"
-      @news  = Machine.sales.only_machines.order(created_at: :desc)
+      @news  = Machine.sales.only_machines.order(id: :desc)
       @title = "新着中古機械一覧"
     else
-      @news  = Machine.sales.only_tools.order(created_at: :desc)
+      @news  = Machine.sales.only_tools.order(id: :desc)
       @title = "新着中古工具一覧"
     end
 
@@ -96,6 +96,21 @@ class MachinesController < ApplicationController
     search_path = request.fullpath
     if logging? && search_path != session[:before_search_path]
       SearchLog.create(log_data({ path: search_path, page: params[:page] || 1, count: @news.count }))
+
+      session[:before_search_path] = search_path
+    end
+  end
+
+  def movie
+    subquery = Machine.where.not(youtube: [nil, "", "http://youtu.be/"]).select('MAX(machines.id) AS id').group(:youtube)
+    @machines = Machine.sales.where(id: subquery).order(id: :desc)
+
+    @pagy, @pmachines = pagy(@machines, limit: 20)
+
+    # ロギング
+    search_path = request.fullpath
+    if logging? && search_path != session[:before_search_path]
+      SearchLog.create(log_data({ path: search_path, page: params[:page] || 1, count: @machines.count }))
 
       session[:before_search_path] = search_path
     end

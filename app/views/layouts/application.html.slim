@@ -31,7 +31,7 @@ html lang="ja"
           gtag('event', 'page_view', { page_location: event.detail.url, send_to: 'G-9FCEEFBV1P' });
         });
 
-  body class="#{"full" if @header_full}" data-controller="modal"
+  body class="#{"full" if @header_full}" data-controller="modal scroll-frame"
     /-- ヘッダ --/
     header
       - if @header_full
@@ -118,6 +118,14 @@ html lang="ja"
     = link_to "#", class: "btn btn-outline-success btn-lg position-fixed bottom-0 end-0 m-3" do
       | #{mi(:change_history, "fw-bold")}
 
+    / button.btn.btn-primary.position-fixed.bottom-0.end-0.mb-5.me-3.d-none.scroll-to-top-btn(
+    /   data-action="click->scroll-frame#scrollTop"
+    /   data-scroll-frame-target="topButton"
+    /   aria-label="トップへ戻る") do
+
+    / button.btn.btn-primary.position-fixed.bottom-0.end-0.m-4.d-none data-controller="scroll-top" data-action="click->scroll-top#scrollTop" data-scroll-top-target="button"
+    /   | #{mi(:change_history, "fw-bold")}
+
     /-- 共通メディア表示モーダル --/
     .modal.fade id="mediaModal" tabindex="-1" aria-hidden="true" data-modal-target="modal"
       .modal-dialog data-modal-target="dialog"
@@ -134,8 +142,8 @@ html lang="ja"
               p.mt-2 読み込み中です…
             .content-area data-modal-target="modalBody"
           .modal-footer.justify-content-end.py-2
-            a.btn.btn-outline-primary.d-none data-modal-target="detailLink" target="_blank" data-action="click->modal#closeModal"
+            a.btn.btn-outline-primary.d-none data-modal-target="detailLink" data-action="click->modal#closeModal"
               | #{mi(:description)} 詳細ページを表示
 
-            a.btn.btn-outline-dark.d-none.ms-4 data-modal-target="externalLink" target="_blank" data-action="click->modal#closeModal"
+            a.btn.btn-outline-dark.d-none.ms-4 data-modal-target="externalLink" target="_blank" rel="noopener" data-action="click->modal#closeModal"
               | #{mi(:open_in_new)} 別タブで開く

@@ -18,7 +18,7 @@ module LinkSource
       "kma" => "メーカー", "kmo" => "型式",
 
       # 表示形式
-      "crd" => "カード表示", "lst" => "リスト表示", "nls" => "新着リスト",
+      "crd" => "カード表示", "lst" => "リスト表示", "nls" => "新着リスト", "mov" => "動画パネル",
 
       # リロード
       "reload" => "リロード", "back" => "履歴",
@@ -82,6 +82,7 @@ module LinkSource
           case path
           when %r{^/news/machines(.*)$};           "機械新着 : #{Regexp.last_match(1)}"
           when %r{^/news/tools(.*)$};              "工具新着 : #{Regexp.last_match(1)}"
+          when %r{^/movie(.*)$};                   "新着動画 : #{Regexp.last_match(1)}"
           when %r{^/machines/([\d]+)};             "詳細 : #{Regexp.last_match(1)}"
           when %r{^/machines/large_genre/([\d]+)}; "中ジャンル : #{Regexp.last_match(1)}"
           when %r{^/machines/genre/([\d]+)};       "ジャンル : #{Regexp.last_match(1)}"

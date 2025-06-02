@@ -15,6 +15,8 @@
     = image_tag "banner/rec_02.gif", alt: "広告バナー募集中"
   .col-3.text-center = link_to "https://x.com/zenkiren", onclick: "ga('send', 'event', 'banner', 'bid', 'twitter', 1, true);", rel: :noopener, target: :_blank do
     = image_tag "banner/x_banner.png", alt: "x"
+  .col-3.text-center = link_to "/movie", onclick: "ga('send', 'event', 'banner', 'movie', 'ad_rec', 1, true);" do
+    = image_tag "banner/new_movies_01.png", alt: "新着動画一覧"
 
 .row.gx-2
   .col-9
@@ -123,7 +125,7 @@ h2
           = image_tag ma.top_image_thumb, alt: ma.full_name, class: "news_thumbnail float-start me-4"
 
         .text-danger #{mi(:more_time)} #{ma.elapsed}
-        . = link_to "#{ma.full_name} #{ma.myear} : #{ma.company.company_remove_kabu}", "/machines/#{ma.id}"
+        . = link_to "#{ma.full_name} #{ma.myear} : #{ma.company.company_remove_kabu} #{ma.addr1}", "/machines/#{ma.id}"
 
 - if @favorites.present?
   .my-3

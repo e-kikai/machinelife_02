@@ -17,5 +17,5 @@ class XlGenre < ApplicationRecord
   has_many :genres, through: :large_genres
   has_many :machines, through: :genres
 
-  MACHINE_IDS = [1, 2, 3, 4, 5, 6]
+  MACHINE_IDS = [1, 2, 3, 4, 5, 6].freeze
 end
