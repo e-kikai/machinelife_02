@@ -14,6 +14,6 @@ h1 #{@title} #{@view_date}
           = image_tag ma.top_image_thumb, alt: ma.full_name, class: "news_thumbnail float-start me-4"
 
         .text-danger #{mi(:more_time)} #{ma.elapsed}
-        . = link_to "#{ma.full_name} #{ma.myear} : #{ma.company.company_remove_kabu}", "/machines/#{ma.id}"
+        . = link_to "#{ma.full_name} #{ma.myear} : #{ma.company.company_remove_kabu} #{ma.addr1}", "/machines/#{ma.id}"
 
 . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1

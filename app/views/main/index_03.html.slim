@@ -1,5 +1,19 @@
 - set_meta_tags description: "全機連会員120社以上の中古機械・工具検索を中心に、電子カタログ、Web入札会など工作機械に関する様々な情報を掲載。"
 
+scss:
+  .genre-card {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    transition: 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+
+    &:hover {
+      background-color: #fff8e1;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+  }
+
+
 /-- 入札会バナー枠 --/
 .row.mt-3.mb-2.gx-0
   - @bidinfos.each do |bi|
@@ -21,18 +35,39 @@
 .row.gx-2
   .col-9
     h2 <span class="text-success">#{mi(:category_search, fill: 1)}</span> 中古機械ジャンル検索
-    .row.gx-1
+    .row.g-1.row-cols-4
       - @xl_genres.each do |xg|
-        .col-4.p-1
+        - font_style = xg.xl_genre.length > 6 ? 'letter-spacing: -0.1em;' : ''
+        - font_style += xg.xl_genre.length > 7 ? 'letter-spacing: 0;font-size: 0.8rem;line-height: 1.876;' : ''
+        .col
           .dropdown
-            button.btn.btn-light.border.w-100.rounded-1.px-0 type="button" data-bs-toggle="dropdown" aria-expanded="false"
-              | #{xg.xl_genre} (#{number_with_delimiter(@counts_by_xl_genre[xg.id])})
+            button.d-flex.align-items-center.p-1.w-100.text-start.rounded-0.genre-card type="button" data-bs-toggle="dropdown"
+              .d-flex.align-items-center.justify-content-center.me-2.flex-shrink-0 style="width: 60px; height: 60px;"
+                = image_tag "genres/xl_#{"%02d" % xg.id}_s.png", alt: xg.xl_genre, class: "object-fit-contain", style: "width:60px;height:60px;"
+              .flex-grow-1
+                .fw-semibold style="#{font_style}" = xg.xl_genre
+                .small
+                  span.text-primary-emphasis = number_with_delimiter(@counts_by_xl_genre[xg.id])
+                  span.text-muted.ms-1.small 件
             ul.dropdown-menu.dd_lg
               - xg.large_genres.each do |lg|
                 - if @counts_by_large_genre[lg.id].present?
                   li = link_to "/machines/large_genre/#{lg.id}", class: "dropdown-item" do
                     | #{lg.large_genre}
-                    small.text-danger = " (#{number_with_delimiter(@counts_by_large_genre[lg.id])})"
+                    small.text-primary-emphasis  = " (#{number_with_delimiter(@counts_by_large_genre[lg.id])})"
+
+    / .row.gx-1
+    /   - @xl_genres.each do |xg|
+    /     .col-4.p-1
+    /       .dropdown
+    /         button.btn.btn-light.border.w-100.rounded-1.px-0 type="button" data-bs-toggle="dropdown" aria-expanded="false"
+    /           | #{xg.xl_genre} (#{number_with_delimiter(@counts_by_xl_genre[xg.id])})
+    /         ul.dropdown-menu.dd_lg
+    /           - xg.large_genres.each do |lg|
+    /             - if @counts_by_large_genre[lg.id].present?
+    /               li = link_to "/machines/large_genre/#{lg.id}", class: "dropdown-item" do
+    /                 | #{lg.large_genre}
+    /                 small.text-danger = " (#{number_with_delimiter(@counts_by_large_genre[lg.id])})"
 
   .col-3
     h2 <span class="text-success-emphasis">#{mi(:pin_drop)}</span> 在庫地域検索
@@ -110,13 +145,18 @@ h2
   .row
     .col-auto <span class="text-danger">#{mi(:fiber_new, style: :sharp, fill: 1, opsz: 48)}</span> 新着中古機械
     .col-auto.ms-auto
-      .d-inline-block.mx-2 = link_to "/feed.rss" do
-        | #{mi(:rss_feed)} 新着RSS
+      .d-inline-block = link_to "/feed.rss" do
+        span.text-secondary  #{mi(:rss_feed)}
+        span.mx-1 新着RSS
       .d-inline-block.mx-2 = link_to "/news/machines" do
-        | #{mi(:keyboard_double_arrow_right)} 新着中古機械一覧
+        span.text-secondary  #{mi(:factory)}
+        span.mx-1 新着中古機械一覧
       .d-inline-block.mx-2 = link_to "/news/tools" do
-        | #{mi(:keyboard_double_arrow_right)} 新着中古工具一覧
-
+        span.text-secondary  #{mi(:handyman)}
+        span.mx-1 新着中古工具一覧
+      .d-inline-block.mx-2 = link_to "/movie" do
+        span.text-secondary #{mi(:live_tv)}
+        span.mx-1 新着動画一覧
 .row.gx-0
   - @news.each_with_index do |ma, i|
     .col-6 class=((i % 4).in?([1, 2]) ? "bg-light" : "bg-white")

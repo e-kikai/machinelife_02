@@ -4,7 +4,7 @@
 h1 在庫詳細アクセスログ
 
 /* 検索枠 */
-= turbo_frame_tag :detail_log_list do
+= turbo_frame_tag :detail_log_list, autoscroll: true, data: { autoscroll_block: "start" } do
   .row
     .col-11.mx-auto.my-2
       = form_with(url: "/system/detail_logs/", local: true, method: :get, html: { 'data-turbo-frame': :detail_log_list }) do |f|

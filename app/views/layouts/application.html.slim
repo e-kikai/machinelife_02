@@ -115,16 +115,8 @@ html lang="ja"
       .text-center.py-1.bg-dark.text-white style="min-width:992px;" Copyright &copy; #{Time.current.year} 全日本機械業連合会 All Rights Reserved.
 
     /-- トップリンク --/
-    = link_to "#", class: "btn btn-outline-success btn-lg position-fixed bottom-0 end-0 m-3" do
+    = link_to "#",role: :button, class: "btn btn-outline-success btn-lg position-fixed bottom-0 end-0 m-3 d-none", data: { action: "click->scroll-frame#scroll", scroll_frame_target: :button } do
       | #{mi(:change_history, "fw-bold")}
-
-    / button.btn.btn-primary.position-fixed.bottom-0.end-0.mb-5.me-3.d-none.scroll-to-top-btn(
-    /   data-action="click->scroll-frame#scrollTop"
-    /   data-scroll-frame-target="topButton"
-    /   aria-label="トップへ戻る") do
-
-    / button.btn.btn-primary.position-fixed.bottom-0.end-0.m-4.d-none data-controller="scroll-top" data-action="click->scroll-top#scrollTop" data-scroll-top-target="button"
-    /   | #{mi(:change_history, "fw-bold")}
 
     /-- 共通メディア表示モーダル --/
     .modal.fade id="mediaModal" tabindex="-1" aria-hidden="true" data-modal-target="modal"
