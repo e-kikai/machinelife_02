@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_28_134731) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_12_070534) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -417,6 +417,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_28_134731) do
     t.datetime "created_at", precision: nil, default: -> { "now()" }
     t.datetime "changed_at", precision: nil
     t.datetime "deleted_at", precision: nil
+    t.string "icon", default: ""
     t.index ["large_genre_id"], name: "genres_ix1"
   end
 
@@ -457,6 +458,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_28_134731) do
     t.datetime "created_at", precision: nil, default: -> { "now()" }
     t.datetime "changed_at", precision: nil
     t.datetime "deleted_at", precision: nil
+    t.string "icon", default: ""
   end
 
   create_table "machine_images", force: :cascade do |t|
@@ -879,6 +881,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_28_134731) do
     t.datetime "created_at", precision: nil, default: -> { "now()" }
     t.datetime "changed_at", precision: nil
     t.datetime "deleted_at", precision: nil
+    t.string "icon", default: ""
   end
 
   add_foreign_key "eipses", "sites", name: "eipses_fk1"

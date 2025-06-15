@@ -48,6 +48,6 @@ class System::GenresController < System::ApplicationController
   end
 
   def genre_params
-    params.require(:system_genre_form).permit(:genre_name, :genre_kana, :order_no, :capacity_label, :capacity_unit, :naming, :spec_labels)
+    params.require(:system_genre_form).permit(:genre_name, :genre_kana, :icon, :order_no, :capacity_label, :capacity_unit, :naming, :spec_labels)
   end
 end

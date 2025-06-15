@@ -18,6 +18,10 @@
     .col-8 = f.text_field :large_genre_kana, class: "form-control"
 
   .row.mb-2
+    .col-4.text-end = f.label :icon, "アイコン", class: 'col-form-label'
+    .col-8 = f.text_field :icon, class: "form-control"
+
+  .row.mb-2
     .col-4.text-end = f.label :order_no, "並び順", class: 'col-form-label required'
     .col-4 = f.number_field :order_no, class: "form-control text-end", required: true
 

@@ -50,6 +50,6 @@ class System::XlGenresController < System::ApplicationController
   end
 
   def xl_genre_params
-    params.require(:system_xl_genre_form).permit(:xl_genre_name, :xl_genre_kana, :order_no)
+    params.require(:system_xl_genre_form).permit(:xl_genre_name, :xl_genre_kana, :icon, :order_no)
   end
 end

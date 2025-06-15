@@ -5,6 +5,7 @@
 #  id(特大ジャンルID)                    :integer          not null, primary key
 #  changed_at                            :datetime
 #  deleted_at                            :datetime
+#  icon                                  :string           default("")
 #  order_no(並び順)                      :integer
 #  xl_genre(特大ジャンル名)              :text
 #  xl_genre_kana(特大ジャンル名（カナ）) :text
@@ -13,7 +14,7 @@
 class XlGenre < ApplicationRecord
   include SoftDelete
 
-  has_many :large_genres
+  has_many :large_genres, -> { order(:order_no) }
   has_many :genres, through: :large_genres
   has_many :machines, through: :genres
 

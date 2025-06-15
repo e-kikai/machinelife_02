@@ -13,6 +13,39 @@ scss:
     }
   }
 
+  .dropdown-item {
+    background-color: #ffffff;
+    transition: 0.2s ease;
+    &:hover {
+      background-color: #fef4d3;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+  }
+
+  .dropdown-menu {
+    background: linear-gradient(to bottom, rgba(0, 123, 255, 0.3), rgba(0, 123, 255, 0.6));
+    backdrop-filter: blur(7px);
+    opacity: 0;
+    transform: translate(-167.5px, -8px);
+    transition: opacity 0.1s ease, transform 0.1s ease;
+    display: block; // Bootstrapの干渉防止
+    visibility: hidden;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(7px);
+    border: 1px solid rgba(0,123,255,0.1);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .dropdown .dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  img.genre-muted {
+    filter: brightness(60%) contrast(70%) grayscale(40%);
+    opacity: 0.85;
+  }
 
 /-- 入札会バナー枠 --/
 .row.mt-3.mb-2.gx-0
@@ -40,21 +73,41 @@ scss:
         - font_style = xg.xl_genre.length > 6 ? 'letter-spacing: -0.1em;' : ''
         - font_style += xg.xl_genre.length > 7 ? 'letter-spacing: 0;font-size: 0.8rem;line-height: 1.876;' : ''
         .col
-          .dropdown
+          .dropdown.dropdown-center
             button.d-flex.align-items-center.p-1.w-100.text-start.rounded-0.genre-card type="button" data-bs-toggle="dropdown"
               .d-flex.align-items-center.justify-content-center.me-2.flex-shrink-0 style="width: 60px; height: 60px;"
-                = image_tag "genres/xl_#{"%02d" % xg.id}_s.png", alt: xg.xl_genre, class: "object-fit-contain", style: "width:60px;height:60px;"
+                = image_tag xg.icon, alt: xg.xl_genre, class: "object-fit-contain", style: "width:60px;height:60px;"
               .flex-grow-1
                 .fw-semibold style="#{font_style}" = xg.xl_genre
                 .small
                   span.text-primary-emphasis = number_with_delimiter(@counts_by_xl_genre[xg.id])
                   span.text-muted.ms-1.small 件
-            ul.dropdown-menu.dd_lg
-              - xg.large_genres.each do |lg|
-                - if @counts_by_large_genre[lg.id].present?
-                  li = link_to "/machines/large_genre/#{lg.id}", class: "dropdown-item" do
-                    | #{lg.large_genre}
-                    small.text-primary-emphasis  = " (#{number_with_delimiter(@counts_by_large_genre[lg.id])})"
+            / ul.dropdown-menu.dd_lg
+            /   - xg.large_genres.each do |lg|
+            /     - if @counts_by_large_genre[lg.id].present?
+            /       li = link_to "/machines/large_genre/#{lg.id}", class: "dropdown-item" do
+            /         | #{lg.large_genre}
+            /         small.text-primary-emphasis  = " (#{number_with_delimiter(@counts_by_large_genre[lg.id])})"
+
+            ul.dropdown-menu.p-3 style="min-width: 516px;"
+              .row.row-cols-2.g-1
+                - xg.large_genres.each do |lg|
+                  - next if @counts_by_large_genre[lg.id].blank?
+
+                  - lg_font_style = lg.large_genre.length > 10 ? 'font-size: 0.9rem;line-height: 1.876;' : ''
+                  - lg_font_style += lg.large_genre.length > 13 ? 'letter-spacing: -0.04em;' : ''
+
+                  .col.position-relative
+                    = link_to "/machines/large_genre/#{lg.id}", class: "dropdown-item p-1 border d-flex align-items-center", style: "width:240px;height:60px;" do
+                      / = image_tag sub.icon_path, width: 20, height: 20, class: "me-2"
+                      .d-flex.me-2.position-relative style="width: 48px; height: 48px;"
+                        = render 'genre_icon', icon: lg.icon, label: lg.large_genre, parent: xg.icon
+
+                      .flex-grow-1
+                        .fw-medium style="#{lg_font_style}" = lg.large_genre
+                        .small
+                          span.text-primary-emphasis = number_with_delimiter(@counts_by_large_genre[lg.id])
+                          span.text-muted.ms-1.small 件
 
     / .row.gx-1
     /   - @xl_genres.each do |xg|

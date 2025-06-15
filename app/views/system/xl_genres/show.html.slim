@@ -13,8 +13,9 @@ h1 中ジャンル一覧
       thead
         tr.small
           th scope="col" style="width: 40px;" ID
-          th scope="col" style="width: 200px;" 中ジャンル名
-          th scope="col" style="width: 200px;" 中ジャンル名(カナ)
+          th scope="col" style="width: 180px;" 中ジャンル名
+          th scope="col" style="width: 180px;" 中ジャンル名(カナ)
+          th scope="col" style="width: 48px;" アイコン
           th scope="col" style="width: 100px;" ジャンル一覧
           th scope="col" style="width: 100px;" 並び順
           th scope="col" style="width: 60px;"  削除
@@ -25,6 +26,17 @@ h1 中ジャンル一覧
             td.text-end #{lg.id}
             td = link_to lg.large_genre, "/system/large_genres/#{lg.id}/edit"
             td #{lg.large_genre_kana}
+            td
+              / - if lg.icon.present?
+              /   = image_tag lg.icon, alt: lg.large_genre, class: "object-fit-contain", style: "width:48px;height:48px;"
+              / - elsif lg.large_genre =~ /その他/
+              /   = image_tag @xl_genre.icon, alt: lg.large_genre, class: "object-fit-contain", style: "width:48px;height:48px;"
+              /   = image_tag "genres/another_01.webp", alt: "その他", class: "position-absolute bottom-0 end-0", style: "width:24px;height:24px;"
+              / - else
+              /   = image_tag @xl_genre.icon, alt: lg.large_genre, class: "object-fit-contain genre-muted", style: "width:48px;height:48px;"
+              .d-flex.m-auto.position-relative style="width: 48px; height: 48px;"
+                = render '/main/genre_icon', icon: lg.icon, label: lg.large_genre, parent: @xl_genre.icon
+
             td = link_to "ジャンル一覧 >>", "/system/large_genres/#{lg.id}"
             td.text-end #{lg.order_no.to_fs(:delimited)}
             td.text-center

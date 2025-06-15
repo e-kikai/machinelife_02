@@ -56,6 +56,6 @@ class System::LargeGenresController < System::ApplicationController
   end
 
   def large_genre_params
-    params.require(:system_large_genre_form).permit(:large_genre_name, :large_genre_kana, :order_no)
+    params.require(:system_large_genre_form).permit(:large_genre_name, :large_genre_kana, :icon, :order_no)
   end
 end

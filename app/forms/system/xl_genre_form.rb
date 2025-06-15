@@ -1,6 +1,7 @@
 class System::XlGenreForm < FormBase
   attribute :xl_genre_name, :string
   attribute :xl_genre_kana, :string
+  attribute :icon, :string
   attribute :order_no, :integer
 
   delegate :id, :persisted?, to: :xl_genre
@@ -8,7 +9,7 @@ class System::XlGenreForm < FormBase
   ### validater ###
   validates_presence_of %w[xl_genre_name order_no]
 
-  SLICE_ATTRS = %w[xl_genre_kana order_no].freeze
+  SLICE_ATTRS = %w[xl_genre_kana icon order_no].freeze
 
   def initialize(attributes = nil, xl_genre: XlGenre.new)
     @xl_genre = xl_genre

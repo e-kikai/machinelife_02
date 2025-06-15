@@ -1,0 +1,15 @@
+- actual_icon = icon
+- classes = ""
+
+- if label.to_s.match?(/その他/) || icon == "parent" || icon == "other"
+  - actual_icon = parent
+- elsif icon.blank?
+  - actual_icon = parent
+  - classes += " genre-muted"
+
+- begin
+  = image_tag actual_icon, alt: label, class: "object-fit-contain w-100 h-100 #{classes}"
+  - if label.to_s.match?(/その他/)
+    = image_tag "genres/etc_01.webp", alt: "その他", class: "position-absolute bottom-0 end-0 w-75 h-50"
+- rescue Sprockets::Rails::Helper::AssetNotFound
+  = image_tag 'machine/noimage_03.png', alt: label, class: "object-fit-contain w-100 h-100"

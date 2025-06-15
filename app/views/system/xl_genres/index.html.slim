@@ -13,8 +13,9 @@ h1 大ジャンル一覧
       thead
         tr.small
           th scope="col" style="width: 40px;" ID
-          th scope="col" style="width: 200px;" 大ジャンル名
-          th scope="col" style="width: 200px;" 大ジャンル名(カナ)
+          th scope="col" style="width: 180px;" 大ジャンル名
+          th scope="col" style="width: 180px;" 大ジャンル名(カナ)
+          th scope="col" style="width: 48px;" アイコン
           th scope="col" style="width: 120px;" 中ジャンル一覧
           th scope="col" style="width: 100px;" 並び順
           th scope="col" style="width: 60px;"  削除
@@ -25,6 +26,10 @@ h1 大ジャンル一覧
             td.text-end #{xl.id}
             td = link_to xl.xl_genre, "/system/xl_genres/#{xl.id}/edit"
             td #{xl.xl_genre_kana}
+            td
+              .d-flex.m-auto.position-relative style="width: 48px; height: 48px;"
+                = render '/main/genre_icon', icon: xl.icon, label: xl.xl_genre, parent: xl.icon
+
             td = link_to "中ジャンル一覧 >>", "/system/xl_genres/#{xl.id}"
             td.text-end #{xl.order_no.to_fs(:delimited)}
             td.text-center

@@ -6,6 +6,7 @@
 #  changed_at                             :datetime
 #  deleted_at                             :datetime
 #  hide_option(非表示オプション)          :integer
+#  icon                                   :string           default("")
 #  large_genre(大ジャンル名)              :text
 #  large_genre_kana(大ジャンル名（カナ）) :text
 #  order_no(並び順)                       :integer

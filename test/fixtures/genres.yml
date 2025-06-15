@@ -9,6 +9,7 @@
 #  deleted_at                              :datetime
 #  genre(ジャンル名)                       :text
 #  genre_kana(ジャンル名（カナ）)          :text
+#  icon                                    :string           default("")
 #  naming(命名規則)                        :text
 #  order_no(並び順)                        :integer
 #  spec_labels(その他能力項目(JSON)	 JSON) :text
