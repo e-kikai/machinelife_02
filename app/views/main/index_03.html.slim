@@ -13,7 +13,7 @@ scss:
     }
   }
 
-  .dropdown-item {
+  .top_genres .dropdown-item {
     background-color: #ffffff;
     transition: 0.2s ease;
     &:hover {
@@ -22,7 +22,7 @@ scss:
     }
   }
 
-  .dropdown-menu {
+  .top_genres .dropdown-menu {
     background: linear-gradient(to bottom, rgba(0, 123, 255, 0.3), rgba(0, 123, 255, 0.6));
     backdrop-filter: blur(7px);
     opacity: 0;
@@ -39,7 +39,7 @@ scss:
       background: linear-gradient(to bottom, rgb(255 0 0 / 30%), rgb(255 0 0 / 60%));
     }
 
-  .dropdown .dropdown-menu.show {
+  .top_genres .dropdown .dropdown-menu.show {
     opacity: 1;
     visibility: visible;
   }
@@ -67,7 +67,7 @@ scss:
   .col-3.text-center = link_to "https://x.com/zenkiren", onclick: "ga('send', 'event', 'banner', 'bid', 'twitter', 1, true);", rel: :noopener, target: :_blank do
     = image_tag "banner/x_banner.png", alt: "x"
 
-.row.gx-2
+.row.gx-2.top_genres
   .col-9
     h2 <span class="text-success">#{mi(:category_search, fill: 1)}</span> 中古機械・工具 ジャンル検索
     .row.g-1.row-cols-4
@@ -122,7 +122,7 @@ scss:
           - next if @counts_by_large_genre[lg.id].blank?
 
           - font_style = lg.large_genre.length > 6 ? 'font-size: 0.8rem;line-height: 1.667;' : ''
-          - font_style += lg.large_genre.length > 8 ? 'font-size: 1rem;line-height: 1;' : ''
+          - font_style += lg.large_genre.length > 8 ? 'font-size: 1rem;line-height: 1.1;' : ''
           .col
             .dropdown.dropdown-center
               button.d-flex.align-items-center.p-1.w-100.text-start.rounded-0.genre-card type="button" data-bs-toggle="dropdown"
@@ -131,7 +131,7 @@ scss:
                 .flex-grow-1
                   .fw-semibold style="#{font_style}" = lg.large_genre
                   .small
-                    span.text-primary-emphasis = number_with_delimiter(@counts_by_large_genre[lg.id])
+                    span.text-danger-emphasis = number_with_delimiter(@counts_by_large_genre[lg.id])
                     span.text-muted.ms-1.small 件
 
               ul.dropdown-menu.tool.p-3 style="min-width: 436px;"
