@@ -54,7 +54,7 @@ class Kobayashi < Base
 
       # 「新品」表記の削除
       name = m.at('td:nth(2)').text.f
-      hint = name.gsub(/(新品|一山|1山|未使用品|大量入荷|中!|価格表|お問い合わせはこちら！|下さい|各種|[0-9]+本$|他$|セット$)/, "").f
+      hint = name.gsub(/(新品|一山|1山|未使用品|大量入荷|中|!|価格表|お問い合わせはこちら|下さい|各種|[0-9]+本$|他$|セット$)/, "").f.strip
 
       #### ディープクロール ####
       # detail_uri = join_uri(@p.uri, m.at('td:nth(1) a')[:href])

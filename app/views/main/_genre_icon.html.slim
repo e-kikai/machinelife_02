@@ -1,7 +1,7 @@
 - actual_icon = icon
 - classes = ""
 
-- if label.to_s.match?(/その他/) || icon == "parent" || icon == "other"
+- if (label.to_s.match?(/その他/) && icon.blank?) || icon == "parent" || icon == "other"
   - actual_icon = parent
 - elsif icon.blank?
   - actual_icon = parent

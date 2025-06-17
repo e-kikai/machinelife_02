@@ -15,6 +15,7 @@ h1 ジャンル一覧
           th scope="col" style="width: 40px;" ID
           th scope="col" style="width: 200px;" ジャンル名
           th scope="col" style="width: 200px;" ジャンル名(カナ)
+          th scope="col" style="width: 48px;" アイコン
           th scope="col" style="width: 100px;" 能力
           th scope="col" style="width: 100px;" 並び順
           th scope="col" style="width: 60px;"  削除
@@ -25,6 +26,9 @@ h1 ジャンル一覧
             td.text-end #{ge.id}
             td = link_to ge.genre, "/system/genres/#{ge.id}/edit"
             td #{ge.genre_kana}
+            td
+              .d-flex.m-auto.position-relative style="width: 48px; height: 48px;"
+                = render '/main/genre_icon', icon: ge.icon, label: ge.genre, parent: @large_genre.icon
             td #{ge.capacity_label} (#{ge.capacity_unit})
             td.text-end #{ge.order_no.to_fs(:delimited)}
             td.text-center

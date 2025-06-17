@@ -9,23 +9,26 @@ h1 #{@title}
 /-- フィルタリング --/
 = form_with(url: request.fullpath, local: true, method: :get, html: { 'data-turbo-frame': :machine_list, id: :filtering_from }) do |f|
   = f.hidden_field :k, value: params[:k]
-  .row.g-0.my-1.p-1.border.border-success.small
-    .col-2.fw-bold #{mi(:filter_alt)} ジャンル
-    = render partial: "filtering_checkbox", collection: @fc_genres[0..9], as: :d
-    - if @fc_genres[10].present?
-      .col-2 = link_to "#genre_idsCol", data: { 'bs-toggle': :collapse } do
-        | #{mi(:more_horiz)} もっと表示
-      #genre_idsCol.collapse.row.g-0
-        = render partial: "filtering_checkbox", collection: @fc_genres[10..], as: :d
 
-  .row.g-0.my-1.p-1.border.border-success.small
-    .col-2.fw-bold #{mi(:filter_alt)} メーカー
-    = render partial: "filtering_checkbox", collection: @fc_makers[0..9], as: :d
-    - if @fc_makers[10].present?
-      .col-2 = link_to "#maker_idsCol", data: { 'bs-toggle': :collapse } do
-        | #{mi(:more_horiz)} もっと表示
-      #maker_idsCol.collapse.row.g-0
-        = render partial: "filtering_checkbox", collection: @fc_makers[10..], as: :d
+  - if @fc_genres.length > 1
+    .row.g-0.my-1.p-1.border.border-success.small
+      .col-2.fw-bold #{mi(:filter_alt)} ジャンル
+      = render partial: "filtering_checkbox", collection: @fc_genres[0..9], as: :d
+      - if @fc_genres[10].present?
+        .col-2 = link_to "#genre_idsCol", data: { 'bs-toggle': :collapse } do
+          | #{mi(:more_horiz)} もっと表示
+        #genre_idsCol.collapse.row.g-0
+          = render partial: "filtering_checkbox", collection: @fc_genres[10..], as: :d
+
+  - if @fc_makers.length > 1
+    .row.g-0.my-1.p-1.border.border-success.small
+      .col-2.fw-bold #{mi(:filter_alt)} メーカー
+      = render partial: "filtering_checkbox", collection: @fc_makers[0..9], as: :d
+      - if @fc_makers[10].present?
+        .col-2 = link_to "#maker_idsCol", data: { 'bs-toggle': :collapse } do
+          | #{mi(:more_horiz)} もっと表示
+        #maker_idsCol.collapse.row.g-0
+          = render partial: "filtering_checkbox", collection: @fc_makers[10..], as: :d
 
   .row.g-1.mb-2
     .col-3

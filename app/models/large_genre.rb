@@ -17,7 +17,6 @@ class LargeGenre < ApplicationRecord
   include SoftDelete
 
   belongs_to :xl_genre
-  has_many :genres
+  has_many :genres, -> { order(:order_no) }
   has_many :machines, through: :genres
-
 end

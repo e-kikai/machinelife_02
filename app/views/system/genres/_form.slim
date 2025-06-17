@@ -22,6 +22,10 @@
     .col-8 = f.text_field :genre_kana, class: "form-control"
 
   .row.mb-2
+    .col-4.text-end = f.label :icon, "アイコン", class: 'col-form-label'
+    .col-8 = f.text_field :icon, class: "form-control"
+
+  .row.mb-2
     .col-4.text-end = f.label :capacity_label, "能力", class: 'col-form-label'
     .col-4 = f.text_field :capacity_label, class: "form-control"
 
