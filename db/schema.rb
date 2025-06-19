@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_12_070534) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_18_145443) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -535,7 +535,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_12_070534) do
     t.string "top_image"
     t.text "search_keyword", default: ""
     t.text "search_capacity", default: ""
-    t.virtual "maker2", type: :string, as: "TRIM(BOTH FROM regexp_replace(regexp_replace(\nCASE\n    WHEN ((maker = '-'::text) OR (maker IS NULL) OR (maker ~ '--|^不明|-,|。|メーカー不明|？|^[-－ー]'::text)) THEN ''::text\n    WHEN (maker ~ '[(（].*[)）]'::text) THEN regexp_replace(maker, '[(（].*[)）]'::text, ''::text)\n    WHEN (maker ~ '[A-Za-z0-9] ?[\\/\\,\\(／（\\|、｜]+.*,?'::text) THEN \"substring\"(maker, '[A-Za-z0-9] ?[\\/\\,\\(／（\\|、｜]+(.*?),?$'::text)\n    WHEN (maker ~ '[\\/\\,\\(／（\\|、｜]'::text) THEN \"substring\"(maker, '^(.*?)[\\/\\,\\(／（\\|、｜]'::text)\n    ELSE maker\nEND, '((合同|有限|株式)会社)|(((鉄|鐵)工|工(作|業)|(製|制)作)所?製?)'::text, ''::text, 'g'::text), '([ァ-ヴ])[-－]'::text, '\\1ー'::text, 'g'::text))", stored: true
+    t.virtual "maker2", type: :string, as: "normalize_maker_name(maker)", stored: true
     t.index ["addr1"], name: "index_machines_on_addr1"
     t.index ["company_id"], name: "machines_ix4"
     t.index ["created_at"], name: "machines_ix5"
