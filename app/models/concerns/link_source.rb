@@ -83,6 +83,7 @@ module LinkSource
           when %r{^/news/machines(.*)$};           "機械新着 : #{Regexp.last_match(1)}"
           when %r{^/news/tools(.*)$};              "工具新着 : #{Regexp.last_match(1)}"
           when %r{^/movie(.*)$};                   "新着動画 : #{Regexp.last_match(1)}"
+          when %r{^/makers/(.*)$};                 "メーカー一覧 : #{Regexp.last_match(1)}"
           when %r{^/machines/([\d]+)};             "詳細 : #{Regexp.last_match(1)}"
           when %r{^/machines/large_genre/([\d]+)}; "中ジャンル : #{Regexp.last_match(1)}"
           when %r{^/machines/genre/([\d]+)};       "ジャンル : #{Regexp.last_match(1)}"
