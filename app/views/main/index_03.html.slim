@@ -1,54 +1,5 @@
 - set_meta_tags description: "全機連会員120社以上の中古機械・工具検索を中心に、電子カタログ、Web入札会など工作機械に関する様々な情報を掲載。"
 
-scss:
-  .genre-card {
-    background-color: #ffffff;
-    border: 1px solid #dee2e6;
-    transition: 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-
-    &:hover {
-      background-color: #fff8e1;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-  }
-
-  .top_genres .dropdown-item {
-    background-color: #ffffff;
-    transition: 0.2s ease;
-    &:hover {
-      background-color: #fef4d3;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-  }
-
-  .top_genres .dropdown-menu {
-    background: linear-gradient(to bottom, rgba(0, 123, 255, 0.3), rgba(0, 123, 255, 0.6));
-    backdrop-filter: blur(7px);
-    opacity: 0;
-    transform: translate(-127.5px, -8px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    display: block; // Bootstrapの干渉防止
-    visibility: hidden;
-    border: 1px solid rgba(0,123,255,0.1);
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  }
-
-    .dropdown-menu.tool {
-      background: linear-gradient(to bottom, rgb(255 0 0 / 30%), rgb(255 0 0 / 60%));
-    }
-
-  .top_genres .dropdown .dropdown-menu.show {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  img.genre-muted {
-    filter: brightness(60%) contrast(70%) grayscale(40%);
-    opacity: 0.85;
-  }
-
 /-- 入札会バナー枠 --/
 .row.mt-3.mb-1.gx-0
   - @bidinfos.each do |bi|
@@ -60,6 +11,8 @@ scss:
   / <div class="col-3 text-center"><a onclick="ga('send', 'event', 'banner', 'bid', (株)アジアマシナリ- 第18回FAX入札会, 1, true);" rel="noopener" target="_blank" href="https://www.asia-machinery.co.jp/pdf/nyuusatuannai.pdf"><img alt="(株)アジアマシナリ- 第18回FAX入札会" style="width: 240px;" src="https://s3-ap-northeast-1.amazonaws.com/machinelife/uploads/bidinfo/banner_image/157/asia_18(2).gif"></a></div>
   / <div class="col-3 text-center"><a onclick="ga('send', 'event', 'banner', 'bid', 大阪・港機工会 入札会, 1, true);" rel="noopener" target="_blank" href="https://www.jp.usedmachinery.bz/nk/nyusatsu/osakaminato/index.html"><img alt="大阪・港機工会 入札会" style="width: 240px;" src="https://s3-ap-northeast-1.amazonaws.com/machinelife/uploads/bidinfo/banner_image/158/kusumoto_01(2).gif"></a></div>
 
+  .col-3.text-center = link_to "/makers", onclick: "ga('send', 'event', 'banner', 'maker', 'ad_rec', 1, true);" do
+    = image_tag "banner/makers_01.png", alt: "メーカー一覧", style: "width:240px;height:60px;"
   .col-3.text-center = link_to "/movie", onclick: "ga('send', 'event', 'banner', 'movie', 'ad_rec', 1, true);" do
     = image_tag "banner/new_movies_01.png", alt: "新着動画一覧"
   .col-3.text-center = link_to "/helps/banner", onclick: "ga('send', 'event', 'banner', 'bid', 'ad_rec', 1, true);" do
@@ -73,9 +26,6 @@ scss:
     .row.g-1.row-cols-4
       - @xl_genres.each do |xg|
         - next if xg.id == 7
-        / - font_style = xg.xl_genre.length > 6 ? 'letter-spacing: -0.15em;' : ''
-        / - font_style += xg.xl_genre.length > 7 ? 'letter-spacing: 0;font-size: 0.8rem;line-height: 1.876;' : ''
-
         - font_style = xg.xl_genre.length > 6 ? 'font-size: 0.9rem;line-height: 1.667;' : ''
         - font_style += xg.xl_genre.length > 8 ? 'font-size: 0.8rem;line-height: 1.876;' : ''
         .col
@@ -190,6 +140,12 @@ scss:
         = hidden_field_tag :r, :kmo
         = button_tag type: :submit, value: :model, class: "btn btn-primary btn-sm" do
           | #{mi(:search)} 検索
+
+    .mt-4.text-center = link_to "/makers", onclick: "ga('send', 'event', 'banner', 'maker', 'ad_rec', 1, true);" do
+      = image_tag "banner/makers_01.png", alt: "メーカー一覧", style: "width:240px;height:60px;"
+
+    .mt-4.text-center = link_to "/movie", onclick: "ga('send', 'event', 'banner', 'movie', 'ad_rec', 1, true);" do
+      = image_tag "banner/new_movies_01.png", alt: "新着動画一覧"
 
 h2.mt-3
   span.text-primary-emphasis #{mi(:support_agent)}

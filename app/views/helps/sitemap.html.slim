@@ -23,7 +23,8 @@ h2 ジャンル
 
 h2 メーカー
 .row.g-2.mb-4
-  - @makers.sort.to_h.each do |maker, count|
+  / - @makers.sort.to_h.each do |maker, count|
+  - @makers.each do |maker, count|
     .col-auto style="min-width:16.6666%;" = link_to "/machines/maker/#{maker}" do
       | #{maker}
       small.text-danger = " (#{number_with_delimiter(count)})"

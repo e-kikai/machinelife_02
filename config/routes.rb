@@ -34,6 +34,8 @@ Rails.application.routes.draw do
     get "/news/:target/:date" => "machines#news"
     get "/news/:target/:date/:week" => "machines#news"
     get "/movie/" => "machines#movie"
+    get "/makers/" => "makers#index"
+    get "/makers/:key" => "makers#index"
 
     resources :catalogs, only: [:show]
 

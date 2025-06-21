@@ -1,0 +1,98 @@
+
+- set_meta_tags title: "メーカー検索 : #{@key}"
+/ - set_meta_tags description: @machine.company.addr
+- breadcrumb :something, "メーカー検索 : #{@key}"
+
+h1 メーカー検索 : #{@key}
+
+nav#navbar.navbar.navbar-expand-lg.rounded.px-2.py-0.mb-1.border.border-success
+  .navbar-brand.fs-6 50音順
+  ul.nav.nav-pills
+    - Maker::KANA_GROUP_REGEX.each_key do |key|
+      li.nav-item(data-turbolinks="false")
+        - if key == @key
+          .nav-link.fw-bold.text-dark = @key
+        - else
+          = link_to key, "/makers/#{key}", class: "nav-link"
+
+/ pagy対応 @pmachines を利用
+.container.mt-4.mb-4
+  .row.g-1.row-cols-5
+    - @makers.each do |ma, c|
+      - font_style = case
+      - when ma.length > 12; 'font-size: 0.8rem;line-height: 1;'
+      - when ma.length > 7; 'font-size: 1rem;line-height: 1;'
+      - when ma.length > 6; 'font-size: 0.9rem;line-height: 1.876;'
+
+      .col
+        = link_to "/machines/maker/#{ma}", class: "p-1 border d-flex align-items-center genre-card " do
+          .d-flex.align-items-center.justify-content-center.me-2.flex-shrink-0 style="width: 60px; height: 60px;"
+            - if @maker_images[ma]
+              = image_tag @maker_images[ma], alt: ma, loading: :lazy, class: "object-fit-cover", style: "width: 60px; height: 60px;"
+            - else
+              = image_tag Media::NOTHING_URL, alt: ma, loading: :lazy, class: "object-fit-cover", style: "width: 60px; height: 60px;"
+          .flex-grow-1
+            .fw-medium.text-dark style="#{font_style}" = ma
+            .small
+              span.text-primary-emphasis = number_with_delimiter(c)
+              span.text-muted.ms-1.small 件
+
+
+  / . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
+
+  / .row.row-cols-1.row-cols-md-4.g-2.mt-2
+  /   - @pmachines.each do |ma|
+  /     .col
+  /       .mb-4.rounded-4.mb-4
+  /         / サムネイル全体をリンク化し、TV風の外枠を追加
+  /         .tv-frame.p-2.bg-dark.rounded-4.position-relative.rounded-bottom-0
+  /           = link_to "https://www.youtube.com/watch?v=#{ma.youtube_ids.first}", target: '_blank', rel: 'noopener', class: 'youtube-thumb-link position-relative d-block', data: { action: "click->modal#showMovie", title: ma.full_name, id: ma.id } do
+  /             .ratio.ratio-16x9 = image_tag "https://img.youtube.com/vi/#{ma.youtube_ids.first}/mqdefault.jpg",
+  /               class: 'card-img-top rounded-3 border border-3 border-light',
+  /               alt: "#{ma.full_name}の動画サムネイル"
+  /             .position-absolute.top-50.start-50.translate-middle
+  /               i.material-symbols-outlined.display-1.text-white.opacity-75.user-select-none.pe-none.icon-animate(style='font-size: 5rem;filter: drop-shadow(0 0 8px #222);') play_circle
+
+  /             = render "machines/new_label" if ma.new?
+
+  /             .icon_area.position-absolute.user-select-none.pe-none style="top:2px;right:6px;"
+  /               - if ma.commission == 1
+  /                 .mt-1.bg-white aria-hidden="true" style="top:4px;right:4px;" #{mi(:precision_manufacturing, "text-success", fill: 1, font_size: "1.3rem")}
+  /               - if ma.catalog_id.present?
+  /                 .mt-1.bg-white aria-hidden="true" style="top:4px;right:4px;" #{mi(:menu_book, "text-primary", fill: 1, font_size: "1.3rem")}
+  /               - if ma.pdfs_parsed.medias.present?
+  /                 .mt-1.bg-danger aria-hidden="true" style="top:4px;right:4px;" #{mi(:picture_as_pdf, "text-white", fill: 1, font_size: "1.3rem")}
+
+  /           / TV風パネル下部の装飾例（つまみやインジケータ等、装飾は好みに合わせて追加）
+  /           .d-flex.justify-content-center.align-items-center.mt-2.gap-2.p-1
+  /             .rounded-circle.bg-secondary.opacity-50(style='width: 16px; height: 16px;')
+  /             .rounded-circle.bg-secondary.opacity-50(style='width: 8px; height: 8px;')
+  /             .rounded-circle.bg-danger(style='width: 10px; height: 10px;')
+  /             .position-absolute style="right:8px;" = link_to "/contacts/new?r=mov&m=#{ma.id}", class: "btn btn-sm btn-warning border-white px-1", data: { turbo: false }, target: :_blank, rel: :noopener do
+  /               . #{mi(:forward_to_inbox, fill: 1)} 問合せ
+
+  /             - if ma.youtube_ids.length > 1
+  /               .position-absolute.text-white.fw-bold.small style="left:8px;" = "#{ma.youtube_ids.length} movies"
+
+  /         .bg-light.bg-opacity-75.rounded-top-0.rounded-bottom-4.px-2.py-2
+  /           .align-items-center.gap-2.border-top.border-2.border-secondary-subtle.tv-label-fixed.mb-1.pt-1 style="height:74px; overflow-y: hidden;"
+
+  /             - ic = case
+  /             - when XlGenre::MACHINE_IDS.include?(ma.large_genre.xl_genre_id); :factory
+  /             - when ma.large_genre.xl_genre_id == 11; :device_unknown
+  /             - else :handyman
+
+  /             = link_to "/machines/#{ma.id}?r=mov", target: '_blank', rel: 'noopener' do
+  /               span.mx-1.text-secondary #{mi(ic)}
+  /               .d-inline-block.mx-1 = ma.maker
+  /               .d-inline-block.mx-1 = ma.name
+  /               .d-inline-block.mx-1 = ma.model
+  /               .d-inline-block.mx-1 = ma.myear
+  /               .d-inline-block.mx-1 = "/ #{ma.company.company_remove_kabu}"
+  /               .d-inline-block.mx-1 = ma.addr1
+
+  /         / .bg-white.rounded-top-0.rounded-bottom-2.px-3.py-2.shadow-sm.border-top
+  /         /   h5.fw-bold.fs-5.text-primary.mb-1 = link_to machine_path(ma), target: '_blank', rel: 'noopener', class: 'text-decoration-none' do
+  /         /     = ma.full_name
+
+  / . == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1
